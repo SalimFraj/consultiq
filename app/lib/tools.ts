@@ -1,6 +1,7 @@
 import complianceRules from "@/data/compliance-rules.json";
 import knowledgeBase from "@/data/knowledge-base.json";
 import projects from "@/data/projects.json";
+import weeklyUpdateSources from "@/data/weekly-update-sources.json";
 import workflowPatterns from "@/data/workflow-patterns.json";
 import type { ComplianceVerdict } from "./types";
 
@@ -8,20 +9,34 @@ type KnowledgeDocument = (typeof knowledgeBase.documents)[number];
 type Project = (typeof projects.projects)[number];
 type ComplianceRule = (typeof complianceRules.rules)[number];
 type WorkflowPattern = (typeof workflowPatterns.patterns)[number];
+type WeeklyUpdateEngagement = (typeof weeklyUpdateSources.engagements)[number];
+type ProjectSummary = Pick<Project, "id" | "name" | "client">;
+type ProjectStatusResult =
+  | {
+      found: true;
+      project: Project;
+    }
+  | {
+      found: false;
+      requested_project: string;
+      available_projects: ProjectSummary[];
+    };
 
 export type ToolName =
   | "search_knowledge_base"
   | "get_project_status"
   | "check_compliance"
   | "generate_document"
-  | "design_agentic_workflow";
+  | "design_agentic_workflow"
+  | "run_weekly_update_workflow";
 
 export const toolLabels: Record<ToolName, string> = {
   search_knowledge_base: "Searching knowledge base",
   get_project_status: "Retrieving project status",
   check_compliance: "Checking compliance",
   generate_document: "Generating document",
-  design_agentic_workflow: "Designing agentic workflow"
+  design_agentic_workflow: "Designing agentic workflow",
+  run_weekly_update_workflow: "Running weekly update workflow"
 };
 
 const stopWords = new Set([
@@ -89,7 +104,7 @@ export function searchKnowledgeBase(query: string) {
   };
 }
 
-export function getProjectStatus(projectId: string) {
+export function getProjectStatus(projectId: string): ProjectStatusResult {
   const normalized = projectId.toLowerCase().trim();
   const project = projects.projects.find((item: Project) => {
     return (
@@ -272,6 +287,140 @@ Human review required before client-facing or production use.`;
   };
 }
 
+function findWeeklyUpdateEngagement(projectId: string) {
+  const normalized = projectId.toLowerCase().trim();
+  return weeklyUpdateSources.engagements.find((engagement: WeeklyUpdateEngagement) => {
+    return (
+      engagement.project_id.toLowerCase() === normalized ||
+      engagement.project_name.toLowerCase() === normalized ||
+      engagement.project_name.toLowerCase().includes(normalized) ||
+      normalized.includes(engagement.project_name.toLowerCase())
+    );
+  });
+}
+
+type WeeklyUpdateWorkflowResult =
+  | {
+      found: true;
+      project: Project;
+      reporting_period: string;
+      execution_steps: string[];
+      source_artifacts: WeeklyUpdateEngagement["source_artifacts"];
+      detected_risks: {
+        total: number;
+        increasing: WeeklyUpdateEngagement["source_artifacts"]["risk_log"];
+        requires_escalation: boolean;
+      };
+      compliance_check: ReturnType<typeof checkCompliance>;
+      drafted_update: string;
+      approval_status: {
+        status: "human review required";
+        required_reviewer: string;
+        reason: string;
+      };
+      value_summary: {
+        before: string;
+        after: string;
+        estimated_time_saved: string;
+        risk_reduction: string;
+      };
+    }
+  | {
+      found: false;
+      requested_project: string;
+      reason: string;
+      available_projects?: ProjectSummary[];
+      project?: Project;
+    };
+
+export function runWeeklyUpdateWorkflow(projectId = "Project Northstar"): WeeklyUpdateWorkflowResult {
+  const projectStatus = getProjectStatus(projectId);
+  if (!projectStatus.found) {
+    return {
+      found: false,
+      requested_project: projectId,
+      reason: "No matching project was found in the local project register. The workflow runner will not invent project facts.",
+      available_projects: projectStatus.available_projects
+    };
+  }
+
+  const project = projectStatus.project;
+  const engagement = findWeeklyUpdateEngagement(project.id) ?? findWeeklyUpdateEngagement(project.name);
+  if (!engagement) {
+    return {
+      found: false,
+      requested_project: projectId,
+      project,
+      reason: "The project exists, but no sample notes or risk log packet is available for this workflow demo."
+    };
+  }
+
+  const sources = engagement.source_artifacts;
+  const increasingRisks = sources.risk_log.filter((risk) => risk.trend === "increasing");
+  const compliance = checkCompliance(
+    `Draft a weekly client update for ${project.name} using project notes, risk logs, and project status.`
+  );
+
+  const draftedUpdate = `# Weekly Client Update - ${project.name}
+
+## Reporting Period
+${engagement.reporting_period}
+
+## Overall Status
+${project.name} remains in ${project.phase} with ${project.risk_level} delivery risk. The team completed the first pass of the future-state onboarding workflow map and prepared the architecture review packet for ${project.next_milestone}.
+
+## Completed This Week
+- Integration mapping for onboarding exceptions is 80% complete.
+- Draft exception categories were approved by the client operations lead.
+- Future-state onboarding workflow map is ready for review.
+
+## Risks And Watch Items
+${sources.risk_log
+  .map((risk) => `- ${risk.id} (${risk.severity}, ${risk.trend}): ${risk.risk} Mitigation: ${risk.mitigation}`)
+  .join("\n")}
+
+## Decisions Needed
+${sources.decisions_needed.map((decision) => `- ${decision}`).join("\n")}
+
+## Next Milestone
+${project.next_milestone}
+
+## Review Gate
+This draft must be reviewed by ${project.owner} before it is used as a client-facing update.`;
+
+  return {
+    found: true,
+    project,
+    reporting_period: engagement.reporting_period,
+    execution_steps: [
+      "Read meeting notes, project notes, risk log, decisions, and stakeholder updates from the sample source packet.",
+      "Retrieved project phase, risk level, owner, and next milestone from the local project register.",
+      "Detected increasing and stable risks from the risk log.",
+      "Checked client-facing communication against deterministic compliance rules.",
+      "Drafted a weekly update and held it for engagement-owner approval."
+    ],
+    source_artifacts: sources,
+    detected_risks: {
+      total: sources.risk_log.length,
+      increasing: increasingRisks,
+      requires_escalation: increasingRisks.length > 0
+    },
+    compliance_check: compliance,
+    drafted_update: draftedUpdate,
+    approval_status: {
+      status: "human review required",
+      required_reviewer: project.owner,
+      reason: "Client-facing AI-assisted deliverables require engagement-owner review before external use."
+    },
+    value_summary: {
+      before: "A project lead manually reads scattered notes and risk logs, reconciles project facts, writes the update, and remembers review requirements.",
+      after: "The workflow collects the fake source packet, pulls project facts, detects risk movement, drafts the update, and stops at a review gate.",
+      estimated_time_saved: "Reduces a 60-90 minute weekly drafting task to a review-ready first draft in minutes.",
+      risk_reduction: "Makes increasing risks and required decisions explicit before the update leaves the team."
+    }
+  };
+}
+
 export function runTool(name: string, args: Record<string, unknown>) {
   switch (name as ToolName) {
     case "search_knowledge_base":
@@ -284,6 +433,8 @@ export function runTool(name: string, args: Record<string, unknown>) {
       return generateDocument(String(args.type ?? "brief"), String(args.context ?? ""));
     case "design_agentic_workflow":
       return designAgenticWorkflow(String(args.problem ?? ""));
+    case "run_weekly_update_workflow":
+      return runWeeklyUpdateWorkflow(String(args.project_id ?? args.projectId ?? "Project Northstar"));
     default:
       return {
         error: `Unknown tool: ${name}`

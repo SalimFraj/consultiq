@@ -29,6 +29,7 @@ const assistantPrompts = [
 ];
 
 const workflowPrompts = [
+  "Run the weekly update workflow for Project Northstar using the sample notes and risk log.",
   "Our teams spend too much time preparing weekly client updates from scattered notes and risk logs. Design an agentic workflow to improve this.",
   "Create an AI Lab prototype brief for automating internal engagement status reporting."
 ];
@@ -255,7 +256,9 @@ export default function Home() {
 
           <div className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
             <div className="mx-auto max-w-5xl space-y-4">
-              {activeConversation?.messages.length === 0 ? <EmptyState /> : null}
+              {activeConversation?.messages.length === 0 ? (
+                <EmptyState onRunWorkflow={() => void sendMessage(workflowPrompts[0])} />
+              ) : null}
 
               {activeConversation?.messages.map((message) => (
                 <ChatMessage key={message.id} message={message} />

@@ -48,7 +48,7 @@ export default function CapabilityPanel() {
             <p className="mt-1 text-xs leading-5 text-slate-500">server records stored</p>
           </div>
           <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
-            <p className="text-2xl font-semibold tracking-normal text-white">{suite ? `${suite.passCount}/${suite.totalCount}` : "9"}</p>
+            <p className="text-2xl font-semibold tracking-normal text-white">{suite ? `${suite.passCount}/${suite.totalCount}` : "10"}</p>
             <p className="mt-1 text-xs leading-5 text-slate-500">eval cases</p>
           </div>
         </section>

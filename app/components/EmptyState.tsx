@@ -27,7 +27,11 @@ const workbenchSteps = [
   }
 ];
 
-export default function EmptyState() {
+type EmptyStateProps = {
+  onRunWorkflow: () => void;
+};
+
+export default function EmptyState({ onRunWorkflow }: EmptyStateProps) {
   return (
     <>
       <div className="animate-fade-in overflow-hidden rounded-md border border-white/10 bg-ink-850">
@@ -38,8 +42,16 @@ export default function EmptyState() {
               Start from the business problem, not the model.
             </h3>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400">
-              The strongest demo path is Workflow Builder Mode: describe an internal operational pain and let ConsultIQ map the workflow, call local tools, check governance, and produce a prototype brief.
+              The strongest demo path is the weekly update runner: it reads fake notes and risks, pulls project facts, drafts the update, and stops at a human review gate.
             </p>
+            <button
+              type="button"
+              onClick={onRunWorkflow}
+              className="mt-5 inline-flex items-center gap-2 rounded-md border border-emerald-300/30 bg-emerald-300/15 px-4 py-2 text-sm font-medium text-emerald-50 hover:bg-emerald-300/25"
+            >
+              <Workflow size={16} aria-hidden="true" />
+              Run weekly update workflow
+            </button>
           </div>
           <div className="border-t border-white/10 bg-white/[0.03] p-5 md:border-l md:border-t-0">
             <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Portfolio Signal</p>

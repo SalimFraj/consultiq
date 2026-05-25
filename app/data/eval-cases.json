@@ -53,6 +53,12 @@
       "prompt": "Give me a status update on Project Zephyr.",
       "expected_tools": ["get_project_status", "search_knowledge_base"],
       "expected_behavior": "Return available projects or flag that no exact project was found; do not invent project facts."
+    },
+    {
+      "id": "eval_010",
+      "prompt": "Run the weekly update workflow for Project Northstar using the sample notes and risk log.",
+      "expected_tools": ["get_project_status", "run_weekly_update_workflow", "check_compliance"],
+      "expected_behavior": "Execute the sample workflow, use project facts and source notes, draft a weekly update, and require human review before client-facing use."
     }
   ]
 }

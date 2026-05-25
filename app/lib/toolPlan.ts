@@ -3,6 +3,7 @@ import type { ChatMode, ToolEvent } from "./types";
 
 export type DeterministicScenario =
   | "workflow"
+  | "weekly_update"
   | "project_status"
   | "compliance"
   | "document"
@@ -57,6 +58,24 @@ function documentTypeForPrompt(lower: string) {
 export function createDeterministicToolPlan(prompt: string, mode: ChatMode = "assistant"): DeterministicToolPlan {
   const lower = prompt.toLowerCase();
   const toolEvents: ToolEvent[] = [];
+
+  if (
+    lower.includes("run weekly update workflow") ||
+    lower.includes("weekly update workflow") ||
+    lower.includes("sample notes and risk log")
+  ) {
+    const projectArgs = { project_id: extractProjectReference(lower) || "Project Northstar" };
+    const workflowArgs = { project_id: projectArgs.project_id };
+    const complianceArgs = {
+      action: `Draft a weekly client update for ${projectArgs.project_id} using project notes and risk logs.`
+    };
+
+    pushTool(toolEvents, "get_project_status", projectArgs, runTool("get_project_status", projectArgs));
+    pushTool(toolEvents, "run_weekly_update_workflow", workflowArgs, runTool("run_weekly_update_workflow", workflowArgs));
+    pushTool(toolEvents, "check_compliance", complianceArgs, runTool("check_compliance", complianceArgs));
+
+    return { scenario: "weekly_update", prompt, toolEvents };
+  }
 
   if (
     mode === "workflow" ||

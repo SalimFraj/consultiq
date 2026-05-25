@@ -85,6 +85,20 @@ const functionDeclarations: Array<Record<string, unknown>> = [
       },
       required: ["problem"]
     }
+  },
+  {
+    name: "run_weekly_update_workflow",
+    description:
+      "Executes a deterministic sample weekly client update workflow using fake project notes, risk logs, project status, and compliance checks. It drafts the update but does not send anything externally.",
+    parameters: {
+      type: Type.OBJECT,
+      properties: {
+        project_id: {
+          type: Type.STRING,
+          description: "The project ID or project name to run the sample workflow for. Defaults to Project Northstar."
+        }
+      }
+    }
   }
 ];
 
@@ -92,6 +106,7 @@ function systemInstruction(mode: ChatMode) {
   const base = `You are ConsultIQ, an enterprise AI Builder Workbench for a consulting firm AI Lab.
 You help internal teams turn messy operational problems into governed, reusable agentic capabilities.
 Use tools for factual project, policy, compliance, document, and workflow-pattern information.
+When the user asks to run or execute the weekly update workflow, call run_weekly_update_workflow plus relevant project/compliance tools and show the execution steps.
 Do not make up project data, compliance verdicts, policies, owners, or dates. Cite the tool names and source titles or rule IDs when material facts come from tools.
 Compliance verdicts are deterministic tool outputs. You may explain them, but you must not override or soften them.
 Flag uncertainty clearly when local tools do not contain enough information.
@@ -195,7 +210,8 @@ function sanitizeUncalledToolCitations(message: string, toolEvents: ToolEvent[])
     "get_project_status",
     "check_compliance",
     "generate_document",
-    "design_agentic_workflow"
+    "design_agentic_workflow",
+    "run_weekly_update_workflow"
   ];
 
   return toolNames.reduce((current, toolName) => {
@@ -249,7 +265,81 @@ function demoResponse(messages: ClientMessage[], mode: ChatMode, startedAt: numb
   const toolEvents = plan.toolEvents;
   let message = "";
 
-  if (plan.scenario === "workflow") {
+  if (plan.scenario === "weekly_update") {
+    const workflow = firstToolResult<{
+      found?: boolean;
+      reason?: string;
+      project?: { name?: string; client?: string; phase?: string; risk_level?: string; owner?: string; next_milestone?: string };
+      reporting_period?: string;
+      execution_steps?: string[];
+      source_artifacts?: {
+        meeting_notes?: Array<{ date: string; source: string; note: string }>;
+        project_notes?: string[];
+        risk_log?: Array<{ id: string; severity: string; trend: string; risk: string; owner: string; mitigation: string }>;
+        decisions_needed?: string[];
+        stakeholder_updates?: string[];
+      };
+      detected_risks?: { total: number; increasing: Array<{ id: string; risk: string; severity: string; trend: string }>; requires_escalation: boolean };
+      drafted_update?: string;
+      approval_status?: { status: string; required_reviewer?: string; reason: string };
+      value_summary?: { before: string; after: string; estimated_time_saved: string; risk_reduction: string };
+    }>(plan, "run_weekly_update_workflow");
+
+    if (!workflow?.found) {
+      message = `# Weekly Update Workflow
+
+I could not run the workflow because the sample data was not available.
+
+Reason: ${workflow?.reason ?? "No matching project or source packet was found."}`;
+    } else {
+      const sources = workflow.source_artifacts;
+      message = `# Weekly Update Workflow Run
+
+## What Changed
+**Before:** ${workflow.value_summary?.before}
+
+**After:** ${workflow.value_summary?.after}
+
+**Value:** ${workflow.value_summary?.estimated_time_saved} ${workflow.value_summary?.risk_reduction}
+
+## Project Context
+- Project: ${workflow.project?.name}
+- Client: ${workflow.project?.client}
+- Phase: ${workflow.project?.phase}
+- Risk level: ${workflow.project?.risk_level}
+- Owner: ${workflow.project?.owner}
+- Next milestone: ${workflow.project?.next_milestone}
+- Reporting period: ${workflow.reporting_period}
+
+## Workflow Execution
+${workflow.execution_steps?.map((step, index) => `${index + 1}. ${step}`).join("\n")}
+
+## Source Artifacts Read
+### Meeting Notes
+${sources?.meeting_notes?.map((note) => `- ${note.date} (${note.source}): ${note.note}`).join("\n")}
+
+### Project Notes
+${sources?.project_notes?.map((note) => `- ${note}`).join("\n")}
+
+### Risk Log
+${sources?.risk_log?.map((risk) => `- ${risk.id} (${risk.severity}, ${risk.trend}): ${risk.risk} Owner: ${risk.owner}. Mitigation: ${risk.mitigation}`).join("\n")}
+
+## Risks Detected
+- Total risks: ${workflow.detected_risks?.total}
+- Increasing risks: ${workflow.detected_risks?.increasing.length}
+- Escalation needed: ${workflow.detected_risks?.requires_escalation ? "yes" : "no"}
+
+## Generated Weekly Client Update
+${workflow.drafted_update}
+
+## Review Gate
+Status: ${workflow.approval_status?.status}.
+
+Reviewer: ${workflow.approval_status?.required_reviewer}.
+
+Reason: ${workflow.approval_status?.reason}`;
+    }
+  } else if (plan.scenario === "workflow") {
     message = `# AI Lab Prototype Brief
 
 ## Problem Summary

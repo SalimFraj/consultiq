@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkCompliance, designAgenticWorkflow, searchKnowledgeBase } from "../app/lib/tools";
+import { checkCompliance, designAgenticWorkflow, runWeeklyUpdateWorkflow, searchKnowledgeBase } from "../app/lib/tools";
 
 describe("local tool layer", () => {
   it("requires review for client financial data shared with a vendor", () => {
@@ -37,5 +37,25 @@ describe("local tool layer", () => {
     expect(result.recommended_pattern).toBeTruthy();
     expect(result.recommended_autonomy_level).toBeTruthy();
     expect(result.default_human_gates.length).toBeGreaterThan(0);
+  });
+
+  it("runs the weekly update workflow with source artifacts and a review gate", () => {
+    const result = runWeeklyUpdateWorkflow("Project Northstar");
+
+    expect(result.found).toBe(true);
+    if (!result.found) throw new Error("Expected Project Northstar workflow to be found");
+    expect(result.project.name).toBe("Project Northstar");
+    expect(result.source_artifacts.meeting_notes.length).toBeGreaterThan(0);
+    expect(result.source_artifacts.risk_log.length).toBeGreaterThan(0);
+    expect(result.drafted_update).toContain("Weekly Client Update");
+    expect(result.approval_status.status).toBe("human review required");
+  });
+
+  it("does not invent workflow facts for an unknown project", () => {
+    const result = runWeeklyUpdateWorkflow("Project Zephyr");
+
+    expect(result.found).toBe(false);
+    if (result.found) throw new Error("Expected unknown project workflow to be rejected");
+    expect(result.reason).toContain("will not invent project facts");
   });
 });

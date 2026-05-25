@@ -164,6 +164,42 @@ function validateProjectLookup(
   return checks;
 }
 
+function validateWeeklyUpdateWorkflow(
+  toolEvents: ToolEvent[],
+  expectedBehavior: string
+): Array<{ check: string; passed: boolean; detail: string }> {
+  const checks: Array<{ check: string; passed: boolean; detail: string }> = [];
+  if (!expectedBehavior.toLowerCase().includes("execute the sample workflow")) return checks;
+
+  const workflowEvent = toolEvents.find((event) => event.name === "run_weekly_update_workflow");
+  const result = workflowEvent?.result as
+    | {
+        found?: boolean;
+        source_artifacts?: { meeting_notes?: unknown[]; risk_log?: unknown[] };
+        drafted_update?: string;
+        approval_status?: { status?: string };
+      }
+    | undefined;
+
+  checks.push({
+    check: "weekly_update_sources_present",
+    passed: Boolean(result?.source_artifacts?.meeting_notes?.length && result.source_artifacts.risk_log?.length),
+    detail: "Workflow output should include meeting notes and risk log source artifacts."
+  });
+  checks.push({
+    check: "weekly_update_draft_present",
+    passed: Boolean(result?.drafted_update?.includes("Weekly Client Update")),
+    detail: "Workflow output should include a generated weekly client update draft."
+  });
+  checks.push({
+    check: "weekly_update_review_gate",
+    passed: result?.approval_status?.status === "human review required",
+    detail: "Workflow output should stop at a human review gate before client-facing use."
+  });
+
+  return checks;
+}
+
 // ---------------------------------------------------------------------------
 // Main eval runner
 // ---------------------------------------------------------------------------
@@ -187,6 +223,9 @@ export function runEvalSuite(): EvalSuiteResponse {
 
     // 4. Unknown project guardrail checks (when applicable)
     checks.push(...validateProjectLookup(toolEvents, testCase.expected_behavior));
+
+    // 5. Executed workflow checks (when applicable)
+    checks.push(...validateWeeklyUpdateWorkflow(toolEvents, testCase.expected_behavior));
 
     const allChecksPassed = checks.length > 0 && checks.every((c) => c.passed);
     const failedChecks = checks.filter((c) => !c.passed);

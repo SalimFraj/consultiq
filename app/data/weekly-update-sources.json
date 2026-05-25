@@ -1,0 +1,60 @@
+{
+  "engagements": [
+    {
+      "project_id": "PRJ-2847",
+      "project_name": "Project Northstar",
+      "reporting_period": "May 18-22, 2026",
+      "source_artifacts": {
+        "meeting_notes": [
+          {
+            "date": "2026-05-18",
+            "source": "Architecture standup notes",
+            "note": "Integration mapping for onboarding exceptions is 80% complete. Two edge cases remain around joint accounts and missing tax identifiers."
+          },
+          {
+            "date": "2026-05-20",
+            "source": "Client working session",
+            "note": "Client operations lead approved the draft exception categories but asked for clearer ownership on escalated onboarding cases."
+          },
+          {
+            "date": "2026-05-21",
+            "source": "Delivery team sync",
+            "note": "Data access for the historical exception sample is delayed pending security approval."
+          }
+        ],
+        "project_notes": [
+          "Completed first pass of future-state onboarding workflow map.",
+          "Prepared architecture review packet for May 28 milestone.",
+          "Validated that client-facing updates need engagement-owner review before distribution.",
+          "Confirmed that no real client PII should be used in the prototype demo."
+        ],
+        "risk_log": [
+          {
+            "id": "R-17",
+            "severity": "medium",
+            "trend": "increasing",
+            "risk": "Security approval delay may reduce time available for architecture review validation.",
+            "owner": "S. Chen",
+            "mitigation": "Use masked sample records for prototype walkthrough and escalate access decision by May 24."
+          },
+          {
+            "id": "R-21",
+            "severity": "low",
+            "trend": "stable",
+            "risk": "Exception ownership model may be unclear for branch operations users.",
+            "owner": "A. Rivera",
+            "mitigation": "Add RACI review to next client working session."
+          }
+        ],
+        "decisions_needed": [
+          "Confirm whether masked historical exceptions can be used for the architecture review.",
+          "Approve the exception ownership model before the May 28 milestone."
+        ],
+        "stakeholder_updates": [
+          "Operations sponsor wants the weekly update to distinguish workflow progress from data-access risk.",
+          "Architecture lead wants decision owners listed explicitly."
+        ]
+      }
+    }
+  ]
+}

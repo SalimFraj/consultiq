@@ -2,7 +2,7 @@
 
 ConsultIQ is a full-stack portfolio prototype that demonstrates how an enterprise AI Lab could turn messy internal workflow problems into governed, reusable agentic capabilities.
 
-It is designed for an AI Builder / AI Solutions Designer role: the emphasis is not just chat, but workflow redesign, tool use, compliance boundaries, human review, and production-readiness thinking.
+It now has two useful demo paths: it can **execute** a sample weekly reporting workflow from fake notes and risk logs, and it can **design** new governed agentic workflows from messy business problems.
 
 ## Why I Built This
 
@@ -10,7 +10,7 @@ Most AI portfolio demos are chatbots with a prompt. That misses what enterprise 
 
 I started from the question: _what would an AI Lab inside a consulting firm actually need to take a messy internal problem and turn it into a governed agentic capability?_ That led to five design decisions that shaped everything:
 
-1. **Workflow-first, not chat-first.** The strongest mode is Workflow Builder: you describe a business pain, and ConsultIQ produces a structured AI Lab Prototype Brief with current-state analysis, proposed agentic workflow, tool requirements, compliance checks, human gates, MVP scope, and production-readiness criteria. The model is a synthesis layer on top of deterministic tools — not the source of truth.
+1. **Workflow-first, not chat-first.** The strongest demo executes a sample weekly update workflow: it reads fake notes and a risk log, pulls project facts, drafts the update, and stops at a review gate. The model is a synthesis layer on top of deterministic tools — not the source of truth.
 
 2. **Compliance verdicts are deterministic.** The `check_compliance` tool returns allowed, review required, or not allowed from local static rules. The model can explain the verdict, but it cannot override it. This is enforced in code: `enforceComplianceVerdict()` rewrites the model output if it drifts from the tool result. In a real firm, compliance cannot be a suggestion.
 
@@ -24,8 +24,8 @@ I started from the question: _what would an AI Lab inside a consulting firm actu
 
 | Signal | Where to look |
 |---|---|
-| Thinks in workflows, not just models | Workflow Builder Mode → 11-section AI Lab Prototype Brief |
-| Builds and hardens tools | 5 bounded tools with deterministic local execution, fallback chain |
+| Thinks in workflows, not just models | Weekly update runner + Workflow Builder Mode |
+| Builds and hardens tools | 6 bounded tools with deterministic local execution, fallback chain |
 | Treats governance as a design constraint | Compliance verdicts are code-enforced, not model-suggested |
 | Designs human-in-the-loop gates | Human-review flags, engagement-owner approval points |
 | Contributes reusable capabilities | Capability Factory panel with production signals |
@@ -64,9 +64,9 @@ ConsultIQ demonstrates that lifecycle in a compact prototype.
 ConsultIQ has two modes:
 
 - **Assistant Mode:** an internal consulting assistant for policies, project status, compliance checks, and document drafts.
-- **Workflow Builder Mode:** a guided AI Builder workflow that maps a messy internal problem into an agentic workflow proposal, risk assessment, MVP scope, evaluation checklist, and production-readiness checklist.
+- **Workflow Builder Mode:** runs the weekly update workflow demo and maps messy internal problems into agentic workflow proposals.
 
-The app shows tool activity, local tool results, compliance flags, human-review warnings, token estimates, latency, and governance metadata.
+The app shows source artifacts, tool activity, local tool results, compliance flags, human-review warnings, token estimates, latency, and governance metadata.
 
 It also includes a **Capability Factory** panel that frames each tool as a reusable internal capability, plus an eval harness that calls real tools and validates outputs for portfolio demo scenarios.
 
@@ -139,6 +139,7 @@ Non-quota provider errors are surfaced in the response metadata for observabilit
 - `check_compliance(action)` deterministically returns `allowed`, `review required`, or `not allowed`.
 - `generate_document(type, context)` produces markdown drafts for status updates, risk summaries, meeting agendas, client briefs, and AI Lab prototype briefs.
 - `design_agentic_workflow(problem)` maps a messy problem to local workflow patterns, human gates, autonomy level, and eval criteria.
+- `run_weekly_update_workflow(project_id)` executes the fake Northstar reporting workflow from notes and risk logs, drafts a weekly update, and stops at a review gate.
 
 ## API Guardrails
 
@@ -162,28 +163,30 @@ The `/api/chat` endpoint includes:
 
 ## Demo Scenarios
 
-For the **strongest demo path**, use Workflow Builder mode and try:
+For the **strongest demo path**, click **Run weekly update workflow** or try:
 
-1. _Our teams spend too much time preparing weekly client updates from scattered notes and risk logs. Design an agentic workflow to improve this._
-2. _Create an AI Lab prototype brief for automating internal engagement status reporting._
+1. _Run the weekly update workflow for Project Northstar using the sample notes and risk log._
+2. _Our teams spend too much time preparing weekly client updates from scattered notes and risk logs. Design an agentic workflow to improve this._
+3. _Create an AI Lab prototype brief for automating internal engagement status reporting._
 
 For Assistant mode:
 
-3. _What is our policy on using AI tools with client data?_
-4. _Give me a status update on Project Northstar._
-5. _Draft a risk summary for a client migration engagement._
-6. _Is it compliant to share a client's financial data with a third-party vendor for analysis?_
+4. _What is our policy on using AI tools with client data?_
+5. _Give me a status update on Project Northstar._
+6. _Draft a risk summary for a client migration engagement._
+7. _Is it compliant to share a client's financial data with a third-party vendor for analysis?_
 
 ## Evaluation Strategy
 
-The prototype includes `app/data/eval-cases.json` with 9 deterministic tool-plan regression cases. The eval harness (`/api/evals`):
+The prototype includes `app/data/eval-cases.json` with 10 deterministic tool-plan regression cases. The eval harness (`/api/evals`):
 
 1. Calls the shared deterministic tool-plan helper and real local tool layer with each eval prompt.
 2. Validates tool routing: were the expected tools actually called?
 3. Validates compliance verdicts: does the deterministic output match the expected verdict?
 4. Validates workflow sections: does the workflow tool output include required sections and a recommended pattern?
 5. Validates unknown-project guardrails so the app does not invent project facts.
-6. Reports per-check pass/fail with detailed reasoning.
+6. Validates the weekly update runner returns source artifacts, a draft, and a review gate.
+7. Reports per-check pass/fail with detailed reasoning.
 
 This is intentionally not presented as a full nondeterministic LLM quality evaluation. It is the first production-readiness layer: deterministic regression checks for tool routing, compliance, and structured workflow outputs.
 
@@ -236,6 +239,7 @@ This is still a portfolio prototype, so I kept the scope tight. If I were taking
 - Approval workflows for drafts that might become client-facing.
 - Stronger CI evals with saved golden outputs.
 - Persistent rate limiting outside the in-memory demo implementation.
+- A richer workflow timeline view for the weekly update runner.
 
 ## License
 
