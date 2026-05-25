@@ -217,33 +217,26 @@ npm run security:secrets
 
 ## Deployment
 
-The app is designed for Vercel.
+Live demo: [https://consultiq.vercel.app/](https://consultiq.vercel.app/)
 
-1. Push the repository to GitHub.
-2. Import the project into Vercel.
-3. Add `GEMINI_API_KEY` as an environment variable.
-4. Optionally add `GROQ_API_KEY` for synthesis fallback.
-5. Deploy.
+The app is deployed on Vercel. Provider keys are configured as Vercel environment variables, not committed to the repo. The app still runs without keys because the deterministic local demo path is built in.
 
-Live demo: pending Vercel deployment. Replace this line with the deployed URL before submitting the application.
+## Design Notes
 
-## Design Write-Up
+I wrote a short design note in [`DESIGN.md`](DESIGN.md). It covers the main choices I cared about: starting from workflow pain instead of a chat box, keeping compliance deterministic, showing tool boundaries, and making the app usable even when model providers are unavailable.
 
-See [`DESIGN.md`](DESIGN.md) for the decision narrative behind the workflow-first UX, deterministic compliance tool, fallback chain, and eval strategy.
+## What I Would Improve Next
+
+This is still a portfolio prototype, so I kept the scope tight. If I were taking it further, I would focus on:
+
+- Streaming tool progress instead of waiting for the full response.
+- Auth and role-based access before connecting real enterprise data.
+- Replacing the JSON files with approved internal systems of record.
+- Better observability around tool latency, failed calls, and user feedback.
+- Approval workflows for drafts that might become client-facing.
+- Stronger CI evals with saved golden outputs.
+- Persistent rate limiting outside the in-memory demo implementation.
 
 ## License
 
 MIT. See [`LICENSE`](LICENSE).
-
-## What I Would Improve In Production
-
-- Add streaming responses so tool calls appear in real time.
-- Add authentication and role-based access controls.
-- Replace static JSON with approved enterprise data connectors.
-- Add audit logging and prompt/version tracking.
-- Expand the eval harness into automated CI-gated regression tests with saved golden outputs.
-- Add observability dashboards for tool latency, failure rates, and user feedback.
-- Add approval workflows for client-facing drafts.
-- Add data-retention controls and incident response ownership.
-- Add persistent rate limiting via Redis and abuse detection.
-- Add end-to-end browser tests for critical user flows.
