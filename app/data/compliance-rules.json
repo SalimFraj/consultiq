@@ -1,0 +1,52 @@
+{
+  "rules": [
+    {
+      "id": "rule_001",
+      "category": "data_handling",
+      "rule": "Client PII, personal data, financial records, or confidential material must not be processed by external AI tools without approved contractual, privacy, and engagement controls.",
+      "verdict_keywords": ["client data", "personal data", "pii", "financial data", "financial records", "confidential", "external ai", "third-party", "vendor"],
+      "default_verdict": "review required",
+      "severity": "high"
+    },
+    {
+      "id": "rule_002",
+      "category": "client_communication",
+      "rule": "AI-assisted client-facing deliverables require human review by the engagement owner before being sent externally.",
+      "verdict_keywords": ["send to client", "client brief", "client update", "client updates", "weekly client update", "weekly client updates", "status update", "client-facing", "deliverable", "external email"],
+      "default_verdict": "review required",
+      "severity": "medium"
+    },
+    {
+      "id": "rule_003",
+      "category": "expense_limits",
+      "rule": "Client entertainment over CAD 300 per attendee requires compliance review. CAD 150-300 requires partner approval.",
+      "verdict_keywords": ["entertainment", "dinner", "gift", "expense", "alcohol", "300", "150"],
+      "default_verdict": "review required",
+      "severity": "medium"
+    },
+    {
+      "id": "rule_004",
+      "category": "approved_ai_use",
+      "rule": "Approved AI tools may be used for drafting, summarization, workflow analysis, and internal ideation with fake, anonymized, or non-confidential information.",
+      "verdict_keywords": ["draft", "summarize", "internal ideation", "fake data", "anonymized", "non-confidential"],
+      "default_verdict": "allowed",
+      "severity": "low"
+    },
+    {
+      "id": "rule_005",
+      "category": "security",
+      "rule": "Automations that change records, send messages, or access restricted repositories require role-based permissions, logging, and a rollback path.",
+      "verdict_keywords": ["change records", "send messages", "restricted", "repository", "automation", "write access", "delete"],
+      "default_verdict": "review required",
+      "severity": "high"
+    },
+    {
+      "id": "rule_006",
+      "category": "prohibited_data",
+      "rule": "Uploading raw credentials, secrets, private keys, or unmasked regulated data to unapproved systems is not allowed.",
+      "verdict_keywords": ["password", "secret", "private key", "credential", "raw regulated", "unmasked"],
+      "default_verdict": "not allowed",
+      "severity": "critical"
+    }
+  ]
+}

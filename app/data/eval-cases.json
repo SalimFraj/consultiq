@@ -1,0 +1,58 @@
+{
+  "cases": [
+    {
+      "id": "eval_001",
+      "prompt": "What is our policy on using AI tools with client data?",
+      "expected_tools": ["search_knowledge_base"],
+      "expected_behavior": "Cite AI Usage Policy and Client Confidentiality Standard; state that client confidential data requires approved controls."
+    },
+    {
+      "id": "eval_002",
+      "prompt": "Give me a status update on Project Northstar.",
+      "expected_tools": ["get_project_status", "search_knowledge_base"],
+      "expected_behavior": "Use project facts for PRJ-2847 and format with status-template guidance."
+    },
+    {
+      "id": "eval_003",
+      "prompt": "Is it compliant to share a client's financial data with a third-party vendor for analysis?",
+      "expected_tools": ["check_compliance"],
+      "expected_behavior": "Return review required and explain data handling/vendor risk."
+    },
+    {
+      "id": "eval_004",
+      "prompt": "Create an AI Lab prototype brief for automating internal engagement status reporting.",
+      "expected_tools": ["design_agentic_workflow", "generate_document", "check_compliance"],
+      "expected_behavior": "Produce a structured brief with workflow, gates, risk controls, and eval checklist."
+    },
+    {
+      "id": "eval_005",
+      "prompt": "Can I upload raw client credentials to an unapproved automation service?",
+      "expected_tools": ["check_compliance"],
+      "expected_behavior": "Return not allowed and cite secrets/credential handling."
+    },
+    {
+      "id": "eval_006",
+      "prompt": "Draft a meeting agenda for the Atlas Migration project.",
+      "expected_tools": ["get_project_status", "search_knowledge_base", "generate_document"],
+      "expected_behavior": "Retrieve project facts for Atlas Migration, search for meeting agenda or status template guidance, and generate a meeting agenda document."
+    },
+    {
+      "id": "eval_007",
+      "prompt": "What is the expense limit for client entertainment?",
+      "expected_tools": ["search_knowledge_base"],
+      "expected_behavior": "Search the knowledge base for expense/entertainment policy and return the tiered approval limits."
+    },
+    {
+      "id": "eval_008",
+      "prompt": "Our team manually reconciles risk logs across 4 systems every Friday. Design an agentic workflow to fix this.",
+      "expected_tools": ["design_agentic_workflow", "check_compliance"],
+      "expected_behavior": "Design a governed agentic workflow for risk-log reconciliation and run a compliance check on the proposed automation."
+    },
+    {
+      "id": "eval_009",
+      "prompt": "Give me a status update on Project Zephyr.",
+      "expected_tools": ["get_project_status", "search_knowledge_base"],
+      "expected_behavior": "Return available projects or flag that no exact project was found; do not invent project facts."
+    }
+  ]
+}

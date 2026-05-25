@@ -1,0 +1,62 @@
+{
+  "patterns": [
+    {
+      "id": "pattern_001",
+      "name": "Engagement Status Reporting Agent",
+      "best_for": ["weekly updates", "risk logs", "project reporting", "status decks"],
+      "steps": [
+        "Collect project status inputs from approved sources",
+        "Retrieve project phase, owner, and next milestone",
+        "Summarize accomplishments and blockers",
+        "Check communications and confidentiality rules",
+        "Draft update for engagement-owner review",
+        "Capture approval decision and final edits"
+      ],
+      "human_gates": ["engagement-owner approval", "risk escalation decision"],
+      "eval_criteria": ["uses current project facts", "flags risks", "does not invent status", "routes client-facing copy for review"]
+    },
+    {
+      "id": "pattern_002",
+      "name": "AI Lab Prototype Intake Agent",
+      "best_for": ["new AI ideas", "innovation intake", "prototype scoping", "capability factory"],
+      "steps": [
+        "Clarify business problem and measurable pain",
+        "Map current workflow and handoffs",
+        "Identify data sources and tool permissions",
+        "Assess autonomy level and governance risk",
+        "Define MVP scope and reusable components",
+        "Generate prototype brief and eval checklist"
+      ],
+      "human_gates": ["business sponsor approval", "privacy/security triage", "production owner assignment"],
+      "eval_criteria": ["clear problem statement", "bounded MVP", "risk controls present", "success metrics defined"]
+    },
+    {
+      "id": "pattern_003",
+      "name": "Compliance Triage Agent",
+      "best_for": ["policy interpretation", "data sharing", "approval routing", "AI usage review"],
+      "steps": [
+        "Classify requested action",
+        "Match policy rules and restrictions",
+        "Determine allowed/review/not allowed verdict",
+        "Explain rationale and escalation path",
+        "Generate review packet when needed"
+      ],
+      "human_gates": ["compliance owner review", "legal approval for high-risk cases"],
+      "eval_criteria": ["deterministic verdict", "rule citations", "no policy invention", "clear escalation when uncertain"]
+    },
+    {
+      "id": "pattern_004",
+      "name": "Knowledge Operations Agent",
+      "best_for": ["onboarding", "internal policy questions", "reusable guidance", "knowledge retrieval"],
+      "steps": [
+        "Search approved knowledge base",
+        "Rank source relevance",
+        "Answer with citations to retrieved documents",
+        "Flag stale or missing information",
+        "Recommend next action or owner"
+      ],
+      "human_gates": ["owner review for stale guidance", "subject-matter expert escalation"],
+      "eval_criteria": ["retrieves relevant docs", "cites source titles", "flags uncertainty", "does not answer beyond sources"]
+    }
+  ]
+}

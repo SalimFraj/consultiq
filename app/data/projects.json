@@ -1,0 +1,88 @@
+{
+  "projects": [
+    {
+      "id": "PRJ-2847",
+      "name": "Project Northstar",
+      "client": "Meridian Financial Group",
+      "status": "active",
+      "phase": "Design",
+      "risk_level": "medium",
+      "last_updated": "2026-05-10",
+      "owner": "S. Chen",
+      "next_milestone": "Architecture review - May 28",
+      "summary": "Modernizing the client onboarding journey and replacing manual exception tracking with a controlled workflow."
+    },
+    {
+      "id": "PRJ-3012",
+      "name": "Atlas Migration",
+      "client": "Harbourview Insurance",
+      "status": "active",
+      "phase": "Build",
+      "risk_level": "high",
+      "last_updated": "2026-05-13",
+      "owner": "M. Patel",
+      "next_milestone": "Data reconciliation checkpoint - June 3",
+      "summary": "Cloud migration for claims analytics, with open dependencies around data quality and access control."
+    },
+    {
+      "id": "PRJ-3175",
+      "name": "Cedar Controls",
+      "client": "Prairie Retail Co.",
+      "status": "active",
+      "phase": "Pilot",
+      "risk_level": "low",
+      "last_updated": "2026-05-16",
+      "owner": "A. Tremblay",
+      "next_milestone": "Store operations pilot readout - May 31",
+      "summary": "Internal controls automation pilot for regional store operations and exception management."
+    },
+    {
+      "id": "PRJ-3220",
+      "name": "Summit Ledger",
+      "client": "Northline Energy Services",
+      "status": "watch",
+      "phase": "Discovery",
+      "risk_level": "medium",
+      "last_updated": "2026-05-11",
+      "owner": "J. Morgan",
+      "next_milestone": "Finance process mapping - May 29",
+      "summary": "Finance close workflow redesign focused on approvals, reconciliations, and cycle-time reduction."
+    },
+    {
+      "id": "PRJ-3368",
+      "name": "Orion Workforce",
+      "client": "Pacific Health Network",
+      "status": "active",
+      "phase": "Implementation",
+      "risk_level": "medium",
+      "last_updated": "2026-05-18",
+      "owner": "L. Nguyen",
+      "next_milestone": "Change champion training - June 6",
+      "summary": "Workforce planning transformation with sensitive HR data handling and adoption risk."
+    },
+    {
+      "id": "PRJ-3491",
+      "name": "Maple Horizon",
+      "client": "Canterra Manufacturing",
+      "status": "active",
+      "phase": "Testing",
+      "risk_level": "low",
+      "last_updated": "2026-05-17",
+      "owner": "R. Hassan",
+      "next_milestone": "UAT defect triage - May 27",
+      "summary": "ERP reporting modernization with finance, procurement, and operations dashboards."
+    },
+    {
+      "id": "PRJ-3554",
+      "name": "Vector Assurance",
+      "client": "Lakeside Credit Union",
+      "status": "paused",
+      "phase": "Review",
+      "risk_level": "high",
+      "last_updated": "2026-05-07",
+      "owner": "E. Brooks",
+      "next_milestone": "Executive steering decision - May 24",
+      "summary": "Assurance workflow redesign paused pending privacy review and executive funding decision."
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "documents": [
+    {
+      "id": "doc_001",
+      "title": "AI Usage Policy v2.1",
+      "category": "governance",
+      "content": "Internal teams may use approved AI systems for drafting, summarization, workflow design, and knowledge retrieval. Client confidential information, personal data, financial records, source code, and regulated data must not be entered into external AI tools unless a data protection agreement, approved model route, and engagement-specific authorization are in place. AI outputs require human review before client delivery.",
+      "last_updated": "2026-03-01",
+      "owner": "Risk & Compliance"
+    },
+    {
+      "id": "doc_002",
+      "title": "Client Confidentiality Standard",
+      "category": "security",
+      "content": "Engagement teams must classify client materials before use. Confidential client files may only be stored in approved repositories. External sharing requires client authorization, business justification, access controls, and logging. Do not paste client financials, employee data, contracts, tax records, or diligence materials into unapproved tools.",
+      "last_updated": "2026-02-14",
+      "owner": "Office of General Counsel"
+    },
+    {
+      "id": "doc_003",
+      "title": "Engagement Delivery Guidelines",
+      "category": "delivery",
+      "content": "Each engagement should maintain a status cadence, risk log, decision register, stakeholder map, and delivery plan. Weekly client updates should summarize accomplishments, upcoming milestones, blockers, decisions required, scope changes, and risk movement. Material risks require partner notification within one business day.",
+      "last_updated": "2026-01-22",
+      "owner": "Delivery Excellence"
+    },
+    {
+      "id": "doc_004",
+      "title": "Expense and Client Entertainment Policy",
+      "category": "finance",
+      "content": "Client entertainment expenses up to CAD 150 per attendee may be approved by engagement managers when business purpose is documented. Expenses between CAD 150 and CAD 300 per attendee require partner approval. Anything above CAD 300 per attendee requires compliance review. Alcohol-heavy events, gifts, and public-sector client entertainment require additional review.",
+      "last_updated": "2025-12-09",
+      "owner": "Finance Operations"
+    },
+    {
+      "id": "doc_005",
+      "title": "Project Status Template",
+      "category": "delivery",
+      "content": "Recommended status update format: Executive summary, accomplishments, current phase, schedule health, budget health, risks and mitigations, decisions required, next milestone, and owner actions. Status labels should use green, amber, or red with one-sentence rationale.",
+      "last_updated": "2026-04-02",
+      "owner": "PMO"
+    },
+    {
+      "id": "doc_006",
+      "title": "Security Protocol for Internal Automations",
+      "category": "security",
+      "content": "Automations must use least-privilege access, approved secrets storage, audit logging, role-based permissions, and documented rollback steps. Bots and agents must not send messages, create tickets, or alter records without a defined authorization boundary and monitoring plan.",
+      "last_updated": "2026-03-18",
+      "owner": "Cybersecurity"
+    },
+    {
+      "id": "doc_007",
+      "title": "New Joiner Onboarding Checklist",
+      "category": "people",
+      "content": "New joiners should complete device setup, MFA enrollment, mandatory security training, privacy training, timesheet orientation, engagement staffing intake, and AI acceptable-use training. Managers should assign a buddy and schedule a first-week project context review.",
+      "last_updated": "2026-01-08",
+      "owner": "People Operations"
+    },
+    {
+      "id": "doc_008",
+      "title": "Billing Codes and Time Entry Guidance",
+      "category": "finance",
+      "content": "Billable client delivery work must be coded to the active engagement code. Internal AI Lab experimentation should use innovation investment codes unless sponsored by a business unit. Time spent remediating delivery defects should be flagged for PMO review when it exceeds 8 hours per week.",
+      "last_updated": "2026-02-03",
+      "owner": "Finance Operations"
+    },
+    {
+      "id": "doc_009",
+      "title": "AI Governance Framework",
+      "category": "governance",
+      "content": "AI initiatives should document business objective, user group, data classification, model provider, tool permissions, human oversight, evaluation plan, failure modes, adoption path, and production owner. High-impact or client-facing AI requires privacy, security, legal, and risk review before release.",
+      "last_updated": "2026-04-19",
+      "owner": "Responsible AI Office"
+    },
+    {
+      "id": "doc_010",
+      "title": "Client Communication Protocol",
+      "category": "communications",
+      "content": "Client-facing deliverables must be reviewed by the engagement owner before sending. AI-assisted drafts must be labeled internally during review. Do not represent AI-generated analysis as final professional judgment. Material project risks and scope changes should be communicated with clear owner actions.",
+      "last_updated": "2026-02-27",
+      "owner": "Client Experience"
+    },
+    {
+      "id": "doc_011",
+      "title": "AI Lab Prototype Intake Standard",
+      "category": "innovation",
+      "content": "A prototype intake should capture the business problem, current workflow, measurable pain, target users, data sources, autonomy level, approval gates, reusable capabilities, expected value, evaluation criteria, and production constraints. Prototype briefs should be completed before engineering build begins.",
+      "last_updated": "2026-05-04",
+      "owner": "AI Lab"
+    },
+    {
+      "id": "doc_012",
+      "title": "Production Readiness Checklist for Agents",
+      "category": "engineering",
+      "content": "Production agent readiness requires stable tool contracts, authentication model, observability, rate limits, fallback behavior, model evaluation, user feedback capture, prompt/version control, data retention rules, incident response ownership, and a documented human escalation path.",
+      "last_updated": "2026-04-26",
+      "owner": "Platform Engineering"
+    }
+  ]
+}
