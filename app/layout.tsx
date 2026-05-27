@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const inter = Inter({
@@ -38,7 +39,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>{children}</body>
+      <body style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
