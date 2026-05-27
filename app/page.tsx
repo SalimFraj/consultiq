@@ -61,7 +61,10 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [governanceOpen, setGovernanceOpen] = useState(false);
   const [caseStudyOpen, setCaseStudyOpen] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
+  const hasHydratedRef = useRef(false);
+  const shouldAutoScrollRef = useRef(false);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -89,14 +92,28 @@ export default function Home() {
     }
   }, [conversations]);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [conversations, activeId, loading]);
-
   const activeConversation = useMemo(
     () => conversations.find((conversation) => conversation.id === activeId),
     [activeId, conversations]
   );
+
+  useEffect(() => {
+    if (!activeConversation) return;
+
+    if (!hasHydratedRef.current) {
+      hasHydratedRef.current = true;
+      requestAnimationFrame(() => {
+        scrollAreaRef.current?.scrollTo({ top: 0 });
+        window.scrollTo({ top: 0 });
+      });
+      return;
+    }
+
+    if (!shouldAutoScrollRef.current) return;
+
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!loading) shouldAutoScrollRef.current = false;
+  }, [activeConversation, loading]);
 
   const prompts = mode === "workflow" ? workflowPrompts : assistantPrompts;
   const messageCount = activeConversation?.messages.length ?? 0;
@@ -115,6 +132,10 @@ export default function Home() {
     setActiveId(conversation.id);
     setMode(nextMode);
     setInput("");
+    requestAnimationFrame(() => {
+      scrollAreaRef.current?.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0 });
+    });
   };
 
   const switchMode = (nextMode: ChatMode) => {
@@ -151,6 +172,10 @@ export default function Home() {
     setActiveId(replacement.id);
     setMode(replacement.mode);
     setInput("");
+    requestAnimationFrame(() => {
+      scrollAreaRef.current?.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0 });
+    });
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify([replacement]));
   };
 
@@ -173,6 +198,7 @@ export default function Home() {
       updatedAt: new Date().toISOString()
     }));
     setInput("");
+    shouldAutoScrollRef.current = true;
     setLoading(true);
 
     try {
@@ -258,7 +284,7 @@ export default function Home() {
         <section className="flex min-h-[70vh] flex-1 flex-col">
           <ChatHeader mode={mode} messageCount={messageCount} toolCallCount={toolCallCount} />
 
-          <div className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
+          <div ref={scrollAreaRef} className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
             <div className="mx-auto max-w-5xl space-y-4">
               {activeConversation?.messages.length === 0 ? (
                 <EmptyState onRunWorkflow={() => void sendMessage(workflowPrompts[0])} />
