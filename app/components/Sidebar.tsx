@@ -1,6 +1,6 @@
 "use client";
 
-import { Bot, MessageSquare, Plus, ShieldCheck, Sparkles, Trash2, Workflow } from "lucide-react";
+import { BookOpen, Bot, MessageSquare, Plus, ShieldCheck, Sparkles, Trash2, Workflow } from "lucide-react";
 import type { ChatMode } from "@/lib/types";
 
 type Conversation = {
@@ -22,6 +22,7 @@ type SidebarProps = {
   onClearConversations: () => void;
   onSendPrompt: (prompt: string) => void;
   onOpenGovernance: () => void;
+  onOpenCaseStudy: () => void;
 };
 
 export default function Sidebar({
@@ -35,7 +36,8 @@ export default function Sidebar({
   onDeleteConversation,
   onClearConversations,
   onSendPrompt,
-  onOpenGovernance
+  onOpenGovernance,
+  onOpenCaseStudy
 }: SidebarProps) {
   return (
     <aside className="w-full border-b border-white/10 bg-ink-900 lg:min-h-screen lg:w-80 lg:border-b-0 lg:border-r">
@@ -88,6 +90,18 @@ export default function Sidebar({
           <span>
             AI Governance
             <span className="block text-xs text-slate-500">Model, data, tools, and review boundaries</span>
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={onOpenCaseStudy}
+          className="flex w-full items-start gap-3 rounded-md border border-sky-300/25 bg-sky-300/[0.06] px-4 py-3 text-left text-sm text-slate-200 hover:bg-sky-300/10"
+        >
+          <BookOpen size={18} className="mt-0.5 text-sky-200" aria-hidden="true" />
+          <span>
+            Case Study
+            <span className="block text-xs text-slate-500">Problem, architecture, evals, and production path</span>
           </span>
         </button>
 

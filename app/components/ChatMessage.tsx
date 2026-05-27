@@ -1,3 +1,4 @@
+import CapabilityCandidatePacket from "./CapabilityCandidatePacket";
 import DocumentPreview from "./DocumentPreview";
 import ToolCallIndicator from "./ToolCallIndicator";
 import type { AssistantMetadata, ToolEvent } from "@/lib/types";
@@ -71,6 +72,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         ) : (
           <p className="whitespace-pre-wrap text-sm leading-6 text-slate-200">{message.content}</p>
         )}
+
+        {isAssistant ? <CapabilityCandidatePacket toolEvents={message.toolEvents ?? []} /> : null}
 
         {isAssistant ? <ToolCallIndicator events={message.toolEvents ?? []} /> : null}
 

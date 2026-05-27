@@ -1,9 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, ClipboardCheck, FlaskConical, PackageCheck, Play, Wrench } from "lucide-react";
-import { capabilities } from "@/lib/evals";
+import {
+  CheckCircle2,
+  ClipboardCheck,
+  ClipboardList,
+  FlaskConical,
+  PackageCheck,
+  Play,
+  ShieldCheck,
+  Workflow,
+  Wrench
+} from "lucide-react";
+import { capabilities } from "@/lib/capabilities";
+import { capabilityLifecycle, type CapabilityLifecycleStage, type CapabilityLifecycleStatus } from "@/lib/capabilityLifecycle";
 import type { EvalSuiteResponse } from "@/lib/types";
+
+const lifecycleIcons: Record<CapabilityLifecycleStage["stage"], typeof ClipboardList> = {
+  intake: ClipboardList,
+  prototype: Workflow,
+  eval: FlaskConical,
+  review: ShieldCheck,
+  production: PackageCheck
+};
+
+const statusLabels: Record<CapabilityLifecycleStatus, string> = {
+  demonstrated: "Demonstrated",
+  "review-gated": "Review gated",
+  "production-candidate": "Production candidate"
+};
+
+const statusClasses: Record<CapabilityLifecycleStatus, string> = {
+  demonstrated: "border-emerald-300/20 bg-emerald-300/10 text-emerald-100",
+  "review-gated": "border-amber-300/20 bg-amber-300/10 text-amber-100",
+  "production-candidate": "border-sky-300/20 bg-sky-300/10 text-sky-100"
+};
 
 export default function CapabilityPanel() {
   const [suite, setSuite] = useState<EvalSuiteResponse | null>(null);
@@ -24,19 +55,58 @@ export default function CapabilityPanel() {
     <aside className="w-full border-t border-white/10 bg-ink-900 xl:w-96 xl:border-l xl:border-t-0">
       <div className="space-y-5 p-4">
         <section className="rounded-md border border-white/10 bg-ink-950/50 p-4">
-          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Capability Factory</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">AI Lab Capability Factory</p>
           <h2 className="mt-1 inline-flex items-center gap-2 text-lg font-semibold tracking-normal text-white">
             <PackageCheck size={18} className="text-emerald-200" aria-hidden="true" />
-            Reusable agent components
+            From workflow pain to reusable capability
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-400">
-            Each tool is framed as a reusable capability with a production signal, not a one-off chatbot feature.
+            ConsultIQ shows how an AI Lab can intake a messy process, prototype the workflow, evaluate guardrails,
+            and package the result for reuse.
           </p>
+        </section>
+
+        <section>
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Lifecycle</p>
+            <span className="text-xs text-slate-500">Factory path</span>
+          </div>
+          <ol className="space-y-2">
+            {capabilityLifecycle.map((item, index) => {
+              const Icon = lifecycleIcons[item.stage];
+              return (
+                <li key={item.stage} className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-white/10 bg-ink-950 text-slate-300">
+                      <Icon size={15} aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-sm font-medium text-slate-100">
+                          {index + 1}. {item.label}
+                        </p>
+                        <span className={`rounded-full border px-2 py-0.5 text-[11px] ${statusClasses[item.status]}`}>
+                          {statusLabels[item.status]}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs leading-5 text-slate-400">{item.description}</p>
+                      <p className="mt-2 text-xs leading-5 text-slate-500">
+                        <span className="text-slate-300">Evidence:</span> {item.evidence}
+                      </p>
+                      <p className="mt-1 text-xs leading-5 text-slate-500">
+                        <span className="text-slate-300">Production signal:</span> {item.productionSignal}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
         </section>
 
         <section className="grid grid-cols-2 gap-2">
           <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
-            <p className="text-2xl font-semibold tracking-normal text-white">5</p>
+            <p className="text-2xl font-semibold tracking-normal text-white">{capabilities.length}</p>
             <p className="mt-1 text-xs leading-5 text-slate-500">bounded tools</p>
           </div>
           <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">

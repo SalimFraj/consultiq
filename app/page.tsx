@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import CaseStudyModal from "./components/CaseStudyModal";
 import CapabilityPanel from "./components/CapabilityPanel";
 import ChatHeader from "./components/ChatHeader";
 import ChatMessage, { type UIMessage } from "./components/ChatMessage";
@@ -59,6 +60,7 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [governanceOpen, setGovernanceOpen] = useState(false);
+  const [caseStudyOpen, setCaseStudyOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -233,6 +235,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-ink-950 text-white">
       <GovernanceModal open={governanceOpen} onClose={() => setGovernanceOpen(false)} />
+      <CaseStudyModal open={caseStudyOpen} onClose={() => setCaseStudyOpen(false)} />
       <div className="flex min-h-screen flex-col lg:flex-row">
         <Sidebar
           mode={mode}
@@ -249,6 +252,7 @@ export default function Home() {
           onClearConversations={clearConversations}
           onSendPrompt={(prompt) => void sendMessage(prompt)}
           onOpenGovernance={() => setGovernanceOpen(true)}
+          onOpenCaseStudy={() => setCaseStudyOpen(true)}
         />
 
         <section className="flex min-h-[70vh] flex-1 flex-col">
