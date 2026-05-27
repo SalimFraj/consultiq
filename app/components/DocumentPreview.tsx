@@ -6,9 +6,10 @@ import remarkGfm from "remark-gfm";
 
 type DocumentPreviewProps = {
   content: string;
+  label?: string;
 };
 
-export default function DocumentPreview({ content }: DocumentPreviewProps) {
+export default function DocumentPreview({ content, label = "Generated Brief" }: DocumentPreviewProps) {
   const copy = async () => {
     await navigator.clipboard.writeText(content);
   };
@@ -16,7 +17,7 @@ export default function DocumentPreview({ content }: DocumentPreviewProps) {
   return (
     <div className="rounded-md border border-white/10 bg-ink-950/60">
       <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-        <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Generated Brief</span>
+        <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">{label}</span>
         <button
           type="button"
           onClick={copy}

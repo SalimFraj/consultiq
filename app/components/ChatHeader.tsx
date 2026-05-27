@@ -15,7 +15,7 @@ export default function ChatHeader({ mode, messageCount, toolCallCount }: ChatHe
           <div className="mb-2 flex flex-wrap gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2.5 py-1 text-xs text-emerald-100">
               {mode === "workflow" ? <Workflow size={13} aria-hidden="true" /> : <MessageSquare size={13} aria-hidden="true" />}
-              {mode === "workflow" ? "Workflow Builder Mode" : "Assistant Mode"}
+              {mode === "workflow" ? "Run Workflow" : "Ask ConsultIQ"}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
               <Database size={13} aria-hidden="true" />
@@ -23,7 +23,7 @@ export default function ChatHeader({ mode, messageCount, toolCallCount }: ChatHe
             </span>
           </div>
           <h2 className="text-xl font-semibold tracking-normal text-white">
-            {mode === "workflow" ? "Design a governed agentic workflow" : "Ask about policy, projects, compliance, or drafts"}
+            {mode === "workflow" ? "Execute a governed reporting workflow" : "Ask about policy, projects, compliance, or drafts"}
           </h2>
         </div>
         <div className="grid grid-cols-3 gap-2 text-center">

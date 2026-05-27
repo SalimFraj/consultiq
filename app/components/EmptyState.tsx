@@ -4,26 +4,26 @@ const workbenchSteps = [
   {
     icon: MessageSquare,
     step: "1",
-    title: "Intake",
-    description: "Capture the operational problem, target users, and measurable pain."
+    title: "Read Sources",
+    description: "Load fake project notes, meeting notes, decisions, and risk logs."
   },
   {
     icon: Workflow,
     step: "2",
-    title: "Workflow",
-    description: "Map handoffs, candidate tools, autonomy level, and decision boundaries."
+    title: "Run Process",
+    description: "Pull project status, detect risks, and assemble the weekly update."
   },
   {
     icon: ShieldCheck,
     step: "3",
-    title: "Governance",
-    description: "Check data, policy, compliance, and human-review requirements."
+    title: "Review Gate",
+    description: "Flag client-facing approval requirements before anything is used."
   },
   {
     icon: FlaskConical,
     step: "4",
-    title: "Prototype",
-    description: "Produce MVP scope, eval checks, and production-readiness criteria."
+    title: "Output",
+    description: "Produce an approval-ready update plus traceable evidence."
   }
 ];
 
@@ -39,10 +39,10 @@ export default function EmptyState({ onRunWorkflow }: EmptyStateProps) {
           <div className="p-5">
             <p className="text-xs uppercase tracking-[0.18em] text-slate-500">First Run</p>
             <h3 className="mt-2 text-2xl font-semibold tracking-normal text-white">
-              Start from the business problem, not the model.
+              Run the weekly reporting workflow.
             </h3>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400">
-              The strongest demo path is the weekly update runner: it reads fake notes and risks, pulls project facts, drafts the update, and stops at a human review gate.
+              The strongest demo path executes the process end to end: read fake notes and risks, pull project facts, draft the update, and stop at a human review gate.
             </p>
             <button
               type="button"

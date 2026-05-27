@@ -35,7 +35,7 @@ export default function ComposerForm({ input, mode, loading, firstPrompt, onInpu
           onKeyDown={handleKeyDown}
           placeholder={
             mode === "workflow"
-              ? "Describe a messy internal workflow problem..."
+              ? "Run or design a governed workflow..."
               : "Ask about policy, projects, compliance, or a document draft..."
           }
           rows={3}

@@ -1,6 +1,7 @@
 import CapabilityCandidatePacket from "./CapabilityCandidatePacket";
 import DocumentPreview from "./DocumentPreview";
 import ToolCallIndicator from "./ToolCallIndicator";
+import WorkflowRunCard, { getWeeklyWorkflowEvent } from "./WorkflowRunCard";
 import type { AssistantMetadata, ToolEvent } from "@/lib/types";
 import { AlertTriangle, Bot, CheckCircle2, UserRound } from "lucide-react";
 
@@ -29,6 +30,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
   const tokenEstimate =
     message.metadata?.estimatedOutputTokens ?? Math.max(1, Math.ceil(message.content.length / 4));
   const shouldRenderDocument = isAssistant && /(^|\n)#\s/.test(message.content);
+  const workflowEvent = isAssistant ? getWeeklyWorkflowEvent(message.toolEvents ?? []) : undefined;
 
   return (
     <article className={`flex ${isAssistant ? "justify-start" : "justify-end"} ${isAssistant ? "animate-slide-in-left" : "animate-slide-in-right"}`}>
@@ -67,7 +69,9 @@ export default function ChatMessage({ message }: ChatMessageProps) {
           </div>
         ) : null}
 
-        {shouldRenderDocument ? (
+        {workflowEvent ? (
+          <WorkflowRunCard event={workflowEvent} />
+        ) : shouldRenderDocument ? (
           <DocumentPreview content={message.content} />
         ) : (
           <p className="whitespace-pre-wrap text-sm leading-6 text-slate-200">{message.content}</p>

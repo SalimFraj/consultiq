@@ -59,7 +59,7 @@ export default function Sidebar({
           className="flex w-full items-center justify-center gap-2 rounded-md border border-white/10 bg-white px-4 py-2.5 text-sm font-medium text-ink-950 hover:bg-slate-200"
         >
           <Plus size={16} aria-hidden="true" />
-          New Chat
+          New Session
         </button>
 
         <div className="grid grid-cols-2 gap-2 rounded-md border border-white/10 bg-ink-950 p-1">
@@ -69,7 +69,7 @@ export default function Sidebar({
             className={`flex items-center justify-center gap-2 rounded px-3 py-2 text-sm transition-colors ${mode === "workflow" ? "bg-white text-ink-950" : "text-slate-300 hover:bg-white/10"}`}
           >
             <Workflow size={15} aria-hidden="true" />
-            Workflow
+            Run Workflow
           </button>
           <button
             type="button"
@@ -77,7 +77,7 @@ export default function Sidebar({
             className={`flex items-center justify-center gap-2 rounded px-3 py-2 text-sm transition-colors ${mode === "assistant" ? "bg-white text-ink-950" : "text-slate-300 hover:bg-white/10"}`}
           >
             <MessageSquare size={15} aria-hidden="true" />
-            Assistant
+            Ask
           </button>
         </div>
 
@@ -106,7 +106,7 @@ export default function Sidebar({
         </button>
 
         <section>
-          <p className="mb-2 text-xs uppercase tracking-[0.18em] text-slate-500">Demo Prompts</p>
+          <p className="mb-2 text-xs uppercase tracking-[0.18em] text-slate-500">Demo Paths</p>
           <div className="space-y-2">
             {prompts.map((prompt) => (
               <button

@@ -39,7 +39,7 @@ export default function ToolCallIndicator({ events, loading, mode = "assistant" 
           </div>
           <p className="text-sm text-slate-300">
             {mode === "workflow"
-              ? "Designing the workflow, selecting tools, and checking governance boundaries..."
+              ? "Reading sources, running workflow steps, and checking governance boundaries..."
               : "Reading the request, selecting approved tools, and preparing a grounded answer..."}
           </p>
         </div>
