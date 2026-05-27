@@ -1,45 +1,83 @@
 # ConsultIQ Design Notes
 
-ConsultIQ is built around one idea: enterprise AI value comes from redesigned workflows, not isolated model prompts. The prototype uses a consulting-firm AI Lab scenario because that setting makes the important constraints visible: sensitive data, review gates, reusable tools, and production ownership.
+This file explains the technical choices behind ConsultIQ. The README is the reviewer-facing overview; this document is the shorter engineering rationale.
 
-## Workflow-First Interaction
+## 1. Workflow First
 
-The default experience is Workflow Builder mode. The first action is no longer just "ask a question"; it is "run the weekly update workflow." That path executes a fake reporting workflow for Project Northstar: read source notes, read the risk log, pull project status, check review requirements, draft the weekly update, and stop before client-facing use.
+The default path is **Run Workflow**, not a blank chatbot. The strongest demo runs the fake Project Northstar weekly reporting workflow:
 
-A user can still start with operational pain, such as weekly status reporting or risk-log reconciliation, and the system turns it into an AI Lab Prototype Brief. The brief requires current-state workflow, proposed agentic workflow, tools and data sources, human approval points, autonomy level, compliance assessment, MVP scope, eval criteria, and production-readiness criteria.
+1. Read fake meeting notes and project notes.
+2. Read the fake risk log.
+3. Pull project status from the local project register.
+4. Detect risk movement.
+5. Check client-facing review requirements.
+6. Draft the weekly update.
+7. Stop at human approval.
 
-This structure is intentional. It shows both sides of the builder role: executing a bounded workflow when the process is known, and designing a governed prototype when the problem is still ambiguous.
+That interaction is closer to enterprise AI builder work than a general assistant answer. It shows process redesign, tool orchestration, auditability, and decision boundaries.
 
-## Deterministic Tools
+## 2. Deterministic Tools
 
-The local tool layer is deterministic and uses fake enterprise data. The model can synthesize, explain, and format, but it does not own project facts or compliance verdicts. Compliance is especially strict: `check_compliance` returns `allowed`, `review required`, or `not allowed`, and the agent layer enforces that verdict if provider output drifts.
+The local tool layer uses fake static data and deterministic logic. The model can synthesize and format, but it does not own facts or compliance decisions.
 
-That design mirrors a regulated enterprise pattern: models can assist judgment, but policy decisions need traceable systems of record and human accountability.
+The key tools are:
 
-`run_weekly_update_workflow` is the clearest example. It uses a fake source packet, retrieves project facts from the local register, detects risk movement, writes a draft, and returns a human-review-required status. It does not send email, update a CRM, or pretend to touch real enterprise systems.
+- `run_weekly_update_workflow`
+- `search_knowledge_base`
+- `get_project_status`
+- `check_compliance`
+- `design_agentic_workflow`
+- `generate_document`
 
-## Fallback Chain
+`check_compliance` returns `allowed`, `review required`, or `not allowed` from local rules. The agent layer enforces that verdict if provider output drifts. This mirrors a regulated environment: models can assist judgment, but policy decisions need traceable systems of record.
+
+## 3. Provider Fallback
 
 The runtime has three tiers:
 
-1. Gemini function calling for live tool use and synthesis.
-2. Groq synthesis fallback using already executed local tool results.
-3. Deterministic local fallback when no provider is available.
+1. Gemini function calling and synthesis.
+2. Groq synthesis fallback using local tool results that already ran.
+3. Deterministic local demo fallback when no provider is available.
 
-The fallback chain exists so the demo remains reviewable without credentials or quota. It also shows production thinking: failures should degrade visibly and preserve local controls instead of silently breaking the workflow.
+Fallback exists so the demo remains reviewable without credentials or quota. It is also a production-readiness signal: provider failure should degrade visibly while preserving local controls.
 
-## Eval Strategy
+The UI should not show raw labels such as `provider_error` as if the app broke. When Gemini is unavailable or quota-limited, the footer explains the provider path in plain language:
 
-The eval harness is a deterministic tool-plan regression suite. It does not claim to grade nondeterministic model quality. Instead, it checks the parts this prototype can verify reliably:
+```text
+Provider path: Gemini unavailable; local tools ran, Groq wrote the final answer.
+```
 
-- expected local tools are called,
+That makes fallback observable without making resilience look like failure.
+
+## 4. Human Review Gates
+
+Client-facing or sensitive outputs are not treated as final actions. The weekly update workflow returns `human review required`, identifies the required reviewer, and explains why approval is needed.
+
+This matters because enterprise autonomy is not all-or-nothing. The useful pattern here is supervised automation: the agent drafts, organizes evidence, and exposes risks, while a human owns external use.
+
+## 5. Eval Strategy
+
+The eval harness is a deterministic tool-plan regression suite. It does not claim to grade open-ended model quality.
+
+It checks:
+
+- expected tools are called,
 - compliance verdicts match static rules,
 - workflow outputs contain required structure,
 - the weekly update runner returns source artifacts, a draft, and a review gate,
 - unknown project prompts do not invent facts.
 
-This is the first layer of a production eval strategy. A production version would add golden-output tests, model-graded quality checks, human review sampling, and CI gates tied to prompt/tool versions.
+A production version would add golden-output tests, model-graded quality checks, human review sampling, prompt/tool versioning, and CI gates.
 
-## Production Path
+## 6. Production Path
 
-To productionize this pattern, the static JSON files would become approved enterprise connectors, the in-memory rate limiter would move to Redis, auth and role-based access would gate tool access, and every tool call would be logged with prompt version, data source version, latency, and review outcome.
+To productionize this pattern:
+
+- replace JSON files with approved enterprise connectors,
+- add auth and role-based tool access,
+- persist approval decisions,
+- move rate limiting to Redis or an equivalent shared store,
+- log tool calls with prompt version, data source version, latency, and review outcome,
+- add monitoring, incident ownership, and rollback paths.
+
+The prototype intentionally avoids real enterprise integrations. It is a portfolio-safe demonstration of how the workflow would be designed and governed.

@@ -22,11 +22,30 @@ type ChatMessageProps = {
   message: UIMessage;
 };
 
+function providerPathLabel(metadata?: AssistantMetadata) {
+  if (!metadata?.providerError) return null;
+
+  if (metadata.model.startsWith("groq:")) {
+    return metadata.providerError === "quota_limited"
+      ? "Provider path: Gemini quota-limited; local tools ran, Groq wrote the final answer."
+      : "Provider path: Gemini unavailable; local tools ran, Groq wrote the final answer.";
+  }
+
+  if (metadata.model.includes("deterministic fallback")) {
+    return metadata.providerError === "quota_limited"
+      ? "Provider path: Gemini quota-limited; deterministic local demo generated the answer."
+      : "Provider path: Gemini unavailable; deterministic local demo generated the answer.";
+  }
+
+  return "Provider path: Live provider recovered with local tool guardrails.";
+}
+
 export default function ChatMessage({ message }: ChatMessageProps) {
   const isAssistant = message.role === "assistant";
   const isFallback = Boolean(
     message.metadata?.model.includes("fallback") || message.metadata?.model.startsWith("groq:")
   );
+  const providerPath = providerPathLabel(message.metadata);
   const tokenEstimate =
     message.metadata?.estimatedOutputTokens ?? Math.max(1, Math.ceil(message.content.length / 4));
   const shouldRenderDocument = isAssistant && /(^|\n)#\s/.test(message.content);
@@ -86,8 +105,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             <span>Model: {message.metadata.model}</span>
             <span>Latency: {message.metadata.latencyMs}ms</span>
             <span>Tools: {message.metadata.toolsUsed.length > 0 ? message.metadata.toolsUsed.join(", ") : "none"}</span>
-            {message.metadata.providerError ? (
-              <span className="text-amber-300/70">Provider: {message.metadata.providerError}</span>
+            {providerPath ? (
+              <span className="text-amber-300/80">{providerPath}</span>
             ) : null}
           </footer>
         ) : null}

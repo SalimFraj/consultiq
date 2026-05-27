@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "security:audit": "npm audit --omit=dev",
-    "security:secrets": "node scripts/check-secrets.mjs"
+    "security:secrets": "node scripts/check-secrets.mjs",
+    "screenshots:docs": "node scripts/capture-docs-screenshots.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.34.0",
