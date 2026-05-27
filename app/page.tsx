@@ -61,6 +61,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [governanceOpen, setGovernanceOpen] = useState(false);
   const [caseStudyOpen, setCaseStudyOpen] = useState(false);
+  const [composerFocusToken, setComposerFocusToken] = useState(0);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const hasHydratedRef = useRef(false);
@@ -132,6 +133,7 @@ export default function Home() {
     setActiveId(conversation.id);
     setMode(nextMode);
     setInput("");
+    setComposerFocusToken((token) => token + 1);
     requestAnimationFrame(() => {
       scrollAreaRef.current?.scrollTo({ top: 0 });
       window.scrollTo({ top: 0 });
@@ -172,6 +174,7 @@ export default function Home() {
     setActiveId(replacement.id);
     setMode(replacement.mode);
     setInput("");
+    setComposerFocusToken((token) => token + 1);
     requestAnimationFrame(() => {
       scrollAreaRef.current?.scrollTo({ top: 0 });
       window.scrollTo({ top: 0 });
@@ -262,7 +265,7 @@ export default function Home() {
     <main className="min-h-screen bg-ink-950 text-white">
       <GovernanceModal open={governanceOpen} onClose={() => setGovernanceOpen(false)} />
       <CaseStudyModal open={caseStudyOpen} onClose={() => setCaseStudyOpen(false)} />
-      <div className="flex min-h-screen flex-col lg:flex-row">
+      <div className="flex min-h-screen flex-col lg:h-screen lg:min-h-0 lg:overflow-hidden lg:flex-row">
         <Sidebar
           mode={mode}
           conversations={conversations}
@@ -281,10 +284,10 @@ export default function Home() {
           onOpenCaseStudy={() => setCaseStudyOpen(true)}
         />
 
-        <section className="flex min-h-[70vh] flex-1 flex-col">
+        <section className="flex min-h-[70vh] flex-1 flex-col lg:h-screen lg:min-h-0">
           <ChatHeader mode={mode} messageCount={messageCount} toolCallCount={toolCallCount} />
 
-          <div ref={scrollAreaRef} className="flex-1 overflow-y-auto px-4 py-5 lg:px-6">
+          <div ref={scrollAreaRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-5 lg:px-6">
             <div className="mx-auto max-w-5xl space-y-4">
               {activeConversation?.messages.length === 0 ? (
                 <EmptyState onRunWorkflow={() => void sendMessage(workflowPrompts[0])} />
@@ -304,6 +307,7 @@ export default function Home() {
             mode={mode}
             loading={loading}
             firstPrompt={prompts[0] ?? ""}
+            focusToken={composerFocusToken}
             onInputChange={setInput}
             onSubmit={() => void sendMessage()}
           />

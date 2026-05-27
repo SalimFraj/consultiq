@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, KeyboardEvent } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef } from "react";
 import { ArrowUp, Sparkles } from "lucide-react";
 import type { ChatMode } from "@/lib/types";
 
@@ -9,11 +9,18 @@ type ComposerFormProps = {
   mode: ChatMode;
   loading: boolean;
   firstPrompt: string;
+  focusToken: number;
   onInputChange: (value: string) => void;
   onSubmit: () => void;
 };
 
-export default function ComposerForm({ input, mode, loading, firstPrompt, onInputChange, onSubmit }: ComposerFormProps) {
+export default function ComposerForm({ input, mode, loading, firstPrompt, focusToken, onInputChange, onSubmit }: ComposerFormProps) {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    if (focusToken > 0) textareaRef.current?.focus();
+  }, [focusToken]);
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit();
@@ -30,6 +37,7 @@ export default function ComposerForm({ input, mode, loading, firstPrompt, onInpu
     <form onSubmit={handleSubmit} className="border-t border-white/10 bg-ink-900 px-4 py-4 lg:px-6">
       <div className="mx-auto flex max-w-5xl flex-col gap-3 md:flex-row">
         <textarea
+          ref={textareaRef}
           value={input}
           onChange={(event) => onInputChange(event.target.value)}
           onKeyDown={handleKeyDown}

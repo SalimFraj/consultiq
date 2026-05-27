@@ -40,7 +40,7 @@ export default function Sidebar({
   onOpenCaseStudy
 }: SidebarProps) {
   return (
-    <aside className="w-full border-b border-white/10 bg-ink-900 lg:min-h-screen lg:w-80 lg:border-b-0 lg:border-r">
+    <aside className="w-full border-b border-white/10 bg-ink-900 lg:h-screen lg:w-80 lg:overflow-y-auto lg:border-b-0 lg:border-r">
       <div className="space-y-5 p-4">
         <div>
           <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-md border border-emerald-300/20 bg-emerald-300/10 text-emerald-100">

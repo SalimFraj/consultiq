@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
   CheckCircle2,
+  ChevronDown,
   ClipboardCheck,
   ClipboardList,
   FlaskConical,
@@ -52,56 +53,17 @@ export default function CapabilityPanel() {
   };
 
   return (
-    <aside className="w-full border-t border-white/10 bg-ink-900 xl:w-96 xl:border-l xl:border-t-0">
-      <div className="space-y-5 p-4">
+    <aside className="w-full border-t border-white/10 bg-ink-900 xl:h-screen xl:w-80 xl:overflow-y-auto xl:border-l xl:border-t-0">
+      <div className="space-y-4 p-4">
         <section className="rounded-md border border-white/10 bg-ink-950/50 p-4">
           <p className="text-xs uppercase tracking-[0.18em] text-slate-500">AI Lab Capability Factory</p>
-          <h2 className="mt-1 inline-flex items-center gap-2 text-lg font-semibold tracking-normal text-white">
+          <h2 className="mt-1 inline-flex items-center gap-2 text-base font-semibold tracking-normal text-white">
             <PackageCheck size={18} className="text-emerald-200" aria-hidden="true" />
-            From workflow pain to reusable capability
+            Reusable workflow capability
           </h2>
           <p className="mt-2 text-sm leading-6 text-slate-400">
-            ConsultIQ shows how an AI Lab can intake a messy process, prototype the workflow, evaluate guardrails,
-            and package the result for reuse.
+            Compact proof that the workflow runner has bounded tools, evals, and a review gate.
           </p>
-        </section>
-
-        <section>
-          <div className="mb-2 flex items-center justify-between">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Lifecycle</p>
-            <span className="text-xs text-slate-500">Factory path</span>
-          </div>
-          <ol className="space-y-2">
-            {capabilityLifecycle.map((item, index) => {
-              const Icon = lifecycleIcons[item.stage];
-              return (
-                <li key={item.stage} className="rounded-md border border-white/10 bg-white/[0.03] p-3">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-white/10 bg-ink-950 text-slate-300">
-                      <Icon size={15} aria-hidden="true" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm font-medium text-slate-100">
-                          {index + 1}. {item.label}
-                        </p>
-                        <span className={`rounded-full border px-2 py-0.5 text-[11px] ${statusClasses[item.status]}`}>
-                          {statusLabels[item.status]}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-xs leading-5 text-slate-400">{item.description}</p>
-                      <p className="mt-2 text-xs leading-5 text-slate-500">
-                        <span className="text-slate-300">Evidence:</span> {item.evidence}
-                      </p>
-                      <p className="mt-1 text-xs leading-5 text-slate-500">
-                        <span className="text-slate-300">Production signal:</span> {item.productionSignal}
-                      </p>
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
         </section>
 
         <section className="grid grid-cols-2 gap-2">
@@ -123,6 +85,41 @@ export default function CapabilityPanel() {
           </div>
         </section>
 
+        <details className="group rounded-md border border-white/10 bg-white/[0.03]">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
+            <span>
+              <span className="block text-xs uppercase tracking-[0.18em] text-slate-500">Lifecycle</span>
+              <span className="mt-1 block text-sm font-medium text-slate-100">Factory path</span>
+            </span>
+            <ChevronDown size={15} className="shrink-0 text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
+          </summary>
+          <ol className="space-y-2 border-t border-white/10 p-3">
+            {capabilityLifecycle.map((item, index) => {
+              const Icon = lifecycleIcons[item.stage];
+              return (
+                <li key={item.stage} className="rounded-md border border-white/10 bg-ink-950/50 p-3">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-white/10 bg-ink-950 text-slate-300">
+                      <Icon size={15} aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-sm font-medium text-slate-100">
+                          {index + 1}. {item.label}
+                        </p>
+                        <span className={`rounded-full border px-2 py-0.5 text-[11px] ${statusClasses[item.status]}`}>
+                          {statusLabels[item.status]}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs leading-5 text-slate-400">{item.description}</p>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </details>
+
         <section>
           <div className="mb-2 flex items-center justify-between">
             <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Capabilities</p>
@@ -130,11 +127,14 @@ export default function CapabilityPanel() {
           </div>
           <div className="space-y-2">
             {capabilities.map((capability) => (
-              <details key={capability.tool} className="rounded-md border border-white/10 bg-white/[0.03]">
+              <details key={capability.tool} className="group rounded-md border border-white/10 bg-white/[0.03]">
                 <summary className="cursor-pointer list-none px-3 py-2">
-                  <span className="flex items-center gap-2 text-sm font-medium text-slate-100">
-                    <Wrench size={14} className="text-slate-400" aria-hidden="true" />
-                    {capability.name}
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="flex min-w-0 items-center gap-2 text-sm font-medium text-slate-100">
+                      <Wrench size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+                      <span className="truncate">{capability.name}</span>
+                    </span>
+                    <ChevronDown size={14} className="shrink-0 text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
                   </span>
                   <span className="text-xs text-slate-500">{capability.tool}</span>
                 </summary>
