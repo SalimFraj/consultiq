@@ -262,10 +262,10 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-ink-950 text-white">
+    <main className="min-h-[100dvh] bg-ink-950 text-white">
       <GovernanceModal open={governanceOpen} onClose={() => setGovernanceOpen(false)} />
       <CaseStudyModal open={caseStudyOpen} onClose={() => setCaseStudyOpen(false)} />
-      <div className="flex min-h-screen flex-col lg:h-screen lg:min-h-0 lg:overflow-hidden lg:flex-row">
+      <div className="flex min-h-[100dvh] flex-col xl:h-screen xl:min-h-0 xl:overflow-hidden xl:flex-row">
         <Sidebar
           mode={mode}
           conversations={conversations}
@@ -284,10 +284,10 @@ export default function Home() {
           onOpenCaseStudy={() => setCaseStudyOpen(true)}
         />
 
-        <section className="flex min-h-[70vh] flex-1 flex-col lg:h-screen lg:min-h-0">
+        <section className="flex min-h-[calc(100dvh-73px)] flex-1 flex-col xl:h-screen xl:min-h-0">
           <ChatHeader mode={mode} messageCount={messageCount} toolCallCount={toolCallCount} />
 
-          <div ref={scrollAreaRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-5 lg:px-6">
+          <div ref={scrollAreaRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-4 lg:px-6 lg:py-5">
             <div className="mx-auto max-w-5xl space-y-4">
               {activeConversation?.messages.length === 0 ? (
                 <EmptyState onRunWorkflow={() => void sendMessage(workflowPrompts[0])} />

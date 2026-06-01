@@ -125,7 +125,7 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
             <Workflow size={14} aria-hidden="true" />
             Workflow Run
           </p>
-          <h3 className="mt-2 text-xl font-semibold tracking-normal text-white">
+          <h3 className="mt-2 text-lg font-semibold tracking-normal text-white sm:text-xl">
             Weekly update workflow executed for {workflow.project?.name ?? "Project Northstar"}
           </h3>
           <p className="mt-1 text-sm leading-6 text-emerald-50/80">
@@ -149,7 +149,7 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
           </div>
         </div>
 
-        <div className="grid gap-3 border-t border-emerald-300/15 p-4 md:grid-cols-3">
+        <div className="grid gap-3 border-t border-emerald-300/15 p-4 sm:grid-cols-3">
           <div>
             <p className="text-2xl font-semibold tracking-normal text-white">
               {workflow.value_summary?.estimated_time_saved ? "60-90m" : "Minutes"}
@@ -179,7 +179,7 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
           </p>
           <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">{steps.length} steps</span>
         </div>
-        <ol className="grid gap-3 md:grid-cols-2">
+        <ol className="grid gap-3 sm:grid-cols-2">
           {steps.map((step, index) => (
             <li key={`${step}-${index}`} className="flex gap-3">
               <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-300/30 bg-emerald-300/10 text-xs font-semibold text-emerald-100">

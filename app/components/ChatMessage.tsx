@@ -52,9 +52,9 @@ export default function ChatMessage({ message }: ChatMessageProps) {
   const workflowEvent = isAssistant ? getWeeklyWorkflowEvent(message.toolEvents ?? []) : undefined;
 
   return (
-    <article className={`flex ${isAssistant ? "justify-start" : "justify-end"} ${isAssistant ? "animate-slide-in-left" : "animate-slide-in-right"}`}>
-      <div className={`w-full max-w-3xl rounded-md border px-4 py-4 ${isAssistant ? "border-white/10 bg-ink-850" : "border-slate-500/30 bg-slate-800"}`}>
-        <div className="mb-3 flex items-center justify-between gap-3">
+    <article className={`flex min-w-0 ${isAssistant ? "justify-start" : "justify-end"} ${isAssistant ? "animate-slide-in-left" : "animate-slide-in-right"}`}>
+      <div className={`min-w-0 rounded-md border px-3 py-4 sm:px-4 ${isAssistant ? "w-full max-w-3xl border-white/10 bg-ink-850" : "max-w-[92%] border-slate-500/30 bg-slate-800 sm:max-w-3xl"}`}>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
             {isAssistant ? <Bot size={14} aria-hidden="true" /> : <UserRound size={14} aria-hidden="true" />}
             {isAssistant ? "ConsultIQ" : "You"}
@@ -66,7 +66,7 @@ export default function ChatMessage({ message }: ChatMessageProps) {
           <div className="mb-3 rounded-md border border-amber-300/25 bg-amber-300/10 px-3 py-2 text-sm text-amber-50">
             <div className="flex gap-2">
               <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-200" aria-hidden="true" />
-              <div>
+              <div className="min-w-0">
                 <p className="font-medium">Review gate active</p>
                 <p className="mt-1 text-amber-100/85">
                   {isFallback
@@ -101,10 +101,10 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         {isAssistant ? <ToolCallIndicator events={message.toolEvents ?? []} /> : null}
 
         {message.metadata ? (
-          <footer className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-white/10 pt-3 text-xs text-slate-500">
+          <footer className="mt-3 flex min-w-0 flex-wrap gap-x-4 gap-y-1 border-t border-white/10 pt-3 text-xs text-slate-500">
             <span>Model: {message.metadata.model}</span>
             <span>Latency: {message.metadata.latencyMs}ms</span>
-            <span>Tools: {message.metadata.toolsUsed.length > 0 ? message.metadata.toolsUsed.join(", ") : "none"}</span>
+            <span className="break-words">Tools: {message.metadata.toolsUsed.length > 0 ? message.metadata.toolsUsed.join(", ") : "none"}</span>
             {providerPath ? (
               <span className="text-amber-300/80">{providerPath}</span>
             ) : null}

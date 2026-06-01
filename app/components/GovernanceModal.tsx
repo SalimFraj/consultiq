@@ -63,20 +63,20 @@ export default function GovernanceModal({ open, onClose }: GovernanceModalProps)
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 px-3 py-3 sm:items-center sm:px-4 sm:py-6"
       onClick={onClose}
       onKeyDown={handleFocusTrap}
     >
       {/* stopPropagation prevents backdrop click from closing when clicking inside */}
       <div
         ref={panelRef}
-        className="max-h-[90vh] w-full max-w-2xl overflow-auto rounded-md border border-white/10 bg-ink-900 shadow-panel"
+        className="max-h-[92dvh] w-full max-w-2xl overflow-auto rounded-md border border-white/10 bg-ink-900 shadow-panel"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label="AI Governance"
       >
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+        <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-4 sm:px-5">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Responsible AI</p>
             <h2 className="text-lg font-semibold tracking-normal text-white">AI Governance</h2>
@@ -85,7 +85,7 @@ export default function GovernanceModal({ open, onClose }: GovernanceModalProps)
             <X size={16} aria-hidden="true" />
           </button>
         </div>
-        <div className="space-y-5 px-5 py-5 text-sm leading-6 text-slate-300">
+        <div className="space-y-5 px-4 py-5 text-sm leading-6 text-slate-300 sm:px-5">
           <section>
             <h3 className="mb-1 inline-flex items-center gap-2 font-semibold text-white">
               <ShieldCheck size={16} className="text-emerald-200" aria-hidden="true" />

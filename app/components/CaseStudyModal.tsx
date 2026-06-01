@@ -88,22 +88,22 @@ export default function CaseStudyModal({ open, onClose }: CaseStudyModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 px-3 py-3 sm:items-center sm:px-4 sm:py-6"
       onClick={onClose}
       onKeyDown={handleFocusTrap}
     >
       <div
         ref={panelRef}
-        className="max-h-[90vh] w-full max-w-3xl overflow-auto rounded-md border border-white/10 bg-ink-900 shadow-panel"
+        className="max-h-[92dvh] w-full max-w-3xl overflow-auto rounded-md border border-white/10 bg-ink-900 shadow-panel"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label="ConsultIQ case study"
       >
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
-          <div>
+        <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-4 sm:px-5">
+          <div className="min-w-0">
             <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Case Study</p>
-            <h2 className="text-lg font-semibold tracking-normal text-white">From workflow pain to capability candidate</h2>
+            <h2 className="text-base font-semibold tracking-normal text-white sm:text-lg">From workflow pain to capability candidate</h2>
           </div>
           <button
             ref={closeButtonRef}
@@ -116,14 +116,14 @@ export default function CaseStudyModal({ open, onClose }: CaseStudyModalProps) {
           </button>
         </div>
 
-        <div className="space-y-5 px-5 py-5">
+        <div className="space-y-5 px-4 py-5 sm:px-5">
           <p className="text-sm leading-6 text-slate-300">
             ConsultIQ is a compact AI Builder portfolio artifact. It demonstrates how I would identify a repeatable
             internal workflow, build a governed prototype, expose traceability and evals, and package the result as a
             reusable capability candidate.
           </p>
 
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             {caseStudySections.map(({ icon: Icon, title, body }) => (
               <section key={title} className="rounded-md border border-white/10 bg-white/[0.03] p-4">
                 <h3 className="inline-flex items-center gap-2 text-sm font-semibold text-white">
