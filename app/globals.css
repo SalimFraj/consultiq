@@ -82,6 +82,18 @@ code {
   }
 }
 
+@keyframes workflowProgress {
+  0% {
+    transform: translateX(-100%);
+  }
+  55% {
+    transform: translateX(15%);
+  }
+  100% {
+    transform: translateX(260%);
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.35s ease-out both;
 }
@@ -96,6 +108,42 @@ code {
 
 .animate-slide-in-right {
   animation: slideInRight 0.3s ease-out both;
+}
+
+.animate-workflow-progress {
+  width: 42%;
+  animation: workflowProgress 2.2s ease-in-out infinite;
+}
+
+.glow-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-card::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(110, 231, 183, 0.12), transparent 32%),
+    linear-gradient(315deg, rgba(125, 211, 252, 0.08), transparent 30%);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.glow-card:hover::before,
+.glow-card:focus-within::before {
+  opacity: 1;
+}
+
+.glow-card-emerald::before {
+  background: linear-gradient(135deg, rgba(110, 231, 183, 0.16), transparent 42%);
+}
+
+.glow-card-amber::before {
+  background: linear-gradient(135deg, rgba(252, 211, 77, 0.14), transparent 42%);
 }
 
 /* ── Loading skeleton pulse ──────────────────────────── */

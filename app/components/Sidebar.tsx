@@ -1,6 +1,7 @@
 "use client";
 
-import { BookOpen, Bot, ChevronDown, MessageSquare, Plus, ShieldCheck, Sparkles, Trash2, Workflow } from "lucide-react";
+import { useEffect, useState } from "react";
+import { BookOpen, Bot, Command, MessageSquare, Plus, ShieldCheck, Sparkles, Trash2, Workflow, X } from "lucide-react";
 import type { ChatMode } from "@/lib/types";
 
 type Conversation = {
@@ -46,11 +47,16 @@ function BrandIntro({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function NewSessionButton({ mode, onNewChat }: Pick<SidebarProps, "mode" | "onNewChat">) {
+type ActionCallback = () => void;
+
+function NewSessionButton({ mode, onNewChat, onAfterAction }: Pick<SidebarProps, "mode" | "onNewChat"> & { onAfterAction?: ActionCallback }) {
   return (
     <button
       type="button"
-      onClick={() => onNewChat(mode)}
+      onClick={() => {
+        onNewChat(mode);
+        onAfterAction?.();
+      }}
       className="flex w-full items-center justify-center gap-2 rounded-md border border-white/10 bg-white px-4 py-2.5 text-sm font-medium text-ink-950 hover:bg-slate-200"
     >
       <Plus size={16} aria-hidden="true" />
@@ -59,12 +65,15 @@ function NewSessionButton({ mode, onNewChat }: Pick<SidebarProps, "mode" | "onNe
   );
 }
 
-function ModeSwitch({ mode, onSwitchMode }: Pick<SidebarProps, "mode" | "onSwitchMode">) {
+function ModeSwitch({ mode, onSwitchMode, onAfterAction }: Pick<SidebarProps, "mode" | "onSwitchMode"> & { onAfterAction?: ActionCallback }) {
   return (
     <div className="grid grid-cols-2 gap-2 rounded-md border border-white/10 bg-ink-950 p-1">
       <button
         type="button"
-        onClick={() => onSwitchMode("workflow")}
+        onClick={() => {
+          onSwitchMode("workflow");
+          onAfterAction?.();
+        }}
         className={`flex min-h-10 items-center justify-center gap-2 rounded px-3 py-2 text-sm transition-colors ${
           mode === "workflow" ? "bg-white text-ink-950" : "text-slate-300 hover:bg-white/10"
         }`}
@@ -74,7 +83,10 @@ function ModeSwitch({ mode, onSwitchMode }: Pick<SidebarProps, "mode" | "onSwitc
       </button>
       <button
         type="button"
-        onClick={() => onSwitchMode("assistant")}
+        onClick={() => {
+          onSwitchMode("assistant");
+          onAfterAction?.();
+        }}
         className={`flex min-h-10 items-center justify-center gap-2 rounded px-3 py-2 text-sm transition-colors ${
           mode === "assistant" ? "bg-white text-ink-950" : "text-slate-300 hover:bg-white/10"
         }`}
@@ -88,13 +100,17 @@ function ModeSwitch({ mode, onSwitchMode }: Pick<SidebarProps, "mode" | "onSwitc
 
 function UtilityActions({
   onOpenGovernance,
-  onOpenCaseStudy
-}: Pick<SidebarProps, "onOpenGovernance" | "onOpenCaseStudy">) {
+  onOpenCaseStudy,
+  onAfterAction
+}: Pick<SidebarProps, "onOpenGovernance" | "onOpenCaseStudy"> & { onAfterAction?: ActionCallback }) {
   return (
     <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
       <button
         type="button"
-        onClick={onOpenGovernance}
+        onClick={() => {
+          onOpenGovernance();
+          onAfterAction?.();
+        }}
         className="flex w-full items-start gap-3 rounded-md border border-slate-500/40 bg-ink-850 px-4 py-3 text-left text-sm text-slate-200 hover:bg-white/10"
       >
         <ShieldCheck size={18} className="mt-0.5 shrink-0 text-emerald-200" aria-hidden="true" />
@@ -106,7 +122,10 @@ function UtilityActions({
 
       <button
         type="button"
-        onClick={onOpenCaseStudy}
+        onClick={() => {
+          onOpenCaseStudy();
+          onAfterAction?.();
+        }}
         className="flex w-full items-start gap-3 rounded-md border border-sky-300/25 bg-sky-300/[0.06] px-4 py-3 text-left text-sm text-slate-200 hover:bg-sky-300/10"
       >
         <BookOpen size={18} className="mt-0.5 shrink-0 text-sky-200" aria-hidden="true" />
@@ -119,7 +138,7 @@ function UtilityActions({
   );
 }
 
-function PromptList({ prompts, onSendPrompt }: Pick<SidebarProps, "prompts" | "onSendPrompt">) {
+function PromptList({ prompts, onSendPrompt, onAfterAction }: Pick<SidebarProps, "prompts" | "onSendPrompt"> & { onAfterAction?: ActionCallback }) {
   return (
     <section>
       <p className="mb-2 text-xs uppercase tracking-[0.18em] text-slate-500">Demo Paths</p>
@@ -128,7 +147,10 @@ function PromptList({ prompts, onSendPrompt }: Pick<SidebarProps, "prompts" | "o
           <button
             type="button"
             key={prompt}
-            onClick={() => onSendPrompt(prompt)}
+            onClick={() => {
+              onSendPrompt(prompt);
+              onAfterAction?.();
+            }}
             className="group flex min-h-12 w-full items-start gap-2 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-left text-sm leading-5 text-slate-300 hover:bg-white/10"
           >
             <Sparkles size={14} className="mt-1 shrink-0 text-slate-500 group-hover:text-slate-300" aria-hidden="true" />
@@ -145,8 +167,11 @@ function ConversationHistory({
   activeId,
   onClearConversations,
   onSelectConversation,
-  onDeleteConversation
-}: Pick<SidebarProps, "conversations" | "activeId" | "onClearConversations" | "onSelectConversation" | "onDeleteConversation">) {
+  onDeleteConversation,
+  onAfterAction
+}: Pick<SidebarProps, "conversations" | "activeId" | "onClearConversations" | "onSelectConversation" | "onDeleteConversation"> & {
+  onAfterAction?: ActionCallback;
+}) {
   return (
     <section>
       <div className="mb-2 flex items-center justify-between gap-2">
@@ -154,7 +179,10 @@ function ConversationHistory({
         {conversations.length > 1 || conversations.some((conversation) => conversation.messages.length > 0) ? (
           <button
             type="button"
-            onClick={onClearConversations}
+            onClick={() => {
+              onClearConversations();
+              onAfterAction?.();
+            }}
             className="text-xs text-slate-500 underline-offset-2 hover:text-slate-200 hover:underline"
           >
             Clear all
@@ -173,7 +201,10 @@ function ConversationHistory({
           >
             <button
               type="button"
-              onClick={() => onSelectConversation(conversation.id, conversation.mode)}
+              onClick={() => {
+                onSelectConversation(conversation.id, conversation.mode);
+                onAfterAction?.();
+              }}
               className="min-w-0 flex-1 text-left"
             >
               <span className="block truncate">{conversation.title}</span>
@@ -196,20 +227,96 @@ function ConversationHistory({
   );
 }
 
-function SidebarControls(props: SidebarProps) {
+function SidebarControls(props: SidebarProps & { onAfterAction?: ActionCallback }) {
   return (
     <>
-      <NewSessionButton mode={props.mode} onNewChat={props.onNewChat} />
-      <ModeSwitch mode={props.mode} onSwitchMode={props.onSwitchMode} />
-      <UtilityActions onOpenGovernance={props.onOpenGovernance} onOpenCaseStudy={props.onOpenCaseStudy} />
-      <PromptList prompts={props.prompts} onSendPrompt={props.onSendPrompt} />
+      <NewSessionButton mode={props.mode} onNewChat={props.onNewChat} onAfterAction={props.onAfterAction} />
+      <ModeSwitch mode={props.mode} onSwitchMode={props.onSwitchMode} onAfterAction={props.onAfterAction} />
+      <UtilityActions
+        onOpenGovernance={props.onOpenGovernance}
+        onOpenCaseStudy={props.onOpenCaseStudy}
+        onAfterAction={props.onAfterAction}
+      />
+      <PromptList prompts={props.prompts} onSendPrompt={props.onSendPrompt} onAfterAction={props.onAfterAction} />
       <ConversationHistory
         conversations={props.conversations}
         activeId={props.activeId}
         onClearConversations={props.onClearConversations}
         onSelectConversation={props.onSelectConversation}
         onDeleteConversation={props.onDeleteConversation}
+        onAfterAction={props.onAfterAction}
       />
+    </>
+  );
+}
+
+function MobileCommandDrawer(props: SidebarProps) {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
+  return (
+    <>
+      <aside className="sticky top-0 z-30 border-b border-white/10 bg-ink-900/95 backdrop-blur xl:hidden">
+        <div className="flex items-center justify-between gap-3 px-4 py-3">
+          <BrandIntro compact />
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="inline-flex min-h-10 shrink-0 items-center gap-2 rounded-md border border-white/10 px-3 py-2 text-xs text-slate-200 hover:bg-white/10"
+            aria-haspopup="dialog"
+            aria-expanded={open}
+          >
+            <Command size={14} aria-hidden="true" />
+            Menu
+          </button>
+        </div>
+      </aside>
+
+      {open ? (
+        <div className="fixed inset-0 z-50 xl:hidden" role="dialog" aria-modal="true" aria-label="Workbench command drawer">
+          <button
+            type="button"
+            className="absolute inset-0 cursor-default bg-black/60"
+            onClick={() => setOpen(false)}
+            aria-label="Close command drawer"
+          />
+          <div className="absolute inset-x-0 bottom-0 max-h-[86dvh] overflow-y-auto rounded-t-md border border-white/10 bg-ink-900 shadow-panel">
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-white/10 bg-ink-900/95 px-4 py-3 backdrop-blur">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Command Center</p>
+                <h2 className="text-base font-semibold tracking-normal text-white">Workbench actions</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="rounded border border-white/10 p-2 text-slate-200 hover:bg-white/10"
+                aria-label="Close command drawer"
+              >
+                <X size={16} aria-hidden="true" />
+              </button>
+            </div>
+            <div className="space-y-4 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4">
+              <div className="rounded-md border border-emerald-300/20 bg-emerald-300/[0.06] p-3">
+                <p className="text-sm font-medium text-emerald-50">
+                  {props.mode === "workflow" ? "Workflow mode active" : "Assistant mode active"}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-emerald-50/70">
+                  Launch a demo path, switch modes, inspect governance, or resume a prior session.
+                </p>
+              </div>
+              <SidebarControls {...props} onAfterAction={() => setOpen(false)} />
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }
@@ -232,20 +339,7 @@ export default function Sidebar(props: SidebarProps) {
 
   return (
     <>
-      <aside className="sticky top-0 z-30 border-b border-white/10 bg-ink-900/95 backdrop-blur xl:hidden">
-        <details className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
-            <BrandIntro compact />
-            <span className="inline-flex shrink-0 items-center gap-2 rounded-md border border-white/10 px-2.5 py-1.5 text-xs text-slate-300">
-              Menu
-              <ChevronDown size={14} className="text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
-            </span>
-          </summary>
-          <div className="space-y-4 border-t border-white/10 px-4 pb-4 pt-3">
-            <SidebarControls {...props} />
-          </div>
-        </details>
-      </aside>
+      <MobileCommandDrawer {...props} />
 
       <aside className="hidden w-80 shrink-0 border-r border-white/10 bg-ink-900 xl:block xl:h-screen xl:overflow-y-auto">
         <div className="space-y-5 p-4">

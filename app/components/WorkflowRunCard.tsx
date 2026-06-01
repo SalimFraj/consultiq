@@ -1,8 +1,9 @@
 "use client";
 
 import type { ToolEvent } from "@/lib/types";
-import { AlertTriangle, CheckCircle2, ClipboardCheck, FileText, ShieldCheck, Workflow } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ClipboardCheck, Database, FileText, ShieldCheck, Workflow, Wrench } from "lucide-react";
 import DocumentPreview from "./DocumentPreview";
+import WorkflowPath from "./WorkflowPath";
 
 type ProjectFacts = {
   name?: string;
@@ -170,6 +171,42 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
           </div>
         </div>
       </div>
+
+      <WorkflowPath
+        compact
+        steps={[
+          {
+            icon: Database,
+            label: "Sources",
+            description: "Notes, risks, and project facts read",
+            status: "complete"
+          },
+          {
+            icon: Wrench,
+            label: "Tools",
+            description: `${event.durationMs}ms bounded workflow run`,
+            status: "complete"
+          },
+          {
+            icon: AlertTriangle,
+            label: "Risks",
+            description: `${workflow.detected_risks?.total ?? risks.length} surfaced for review`,
+            status: increasingRisks.length > 0 ? "active" : "complete"
+          },
+          {
+            icon: ShieldCheck,
+            label: "Gate",
+            description: workflow.approval_status?.status ?? "Human review required",
+            status: "active"
+          },
+          {
+            icon: FileText,
+            label: "Draft",
+            description: workflow.drafted_update ? "Final update generated" : "Draft pending",
+            status: workflow.drafted_update ? "complete" : "pending"
+          }
+        ]}
+      />
 
       <div className="rounded-md border border-white/10 bg-ink-950/60 p-4">
         <div className="mb-4 flex items-center justify-between gap-3">

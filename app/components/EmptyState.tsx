@@ -1,28 +1,25 @@
 import { FileText, FlaskConical, MessageSquare, ShieldCheck, Workflow } from "lucide-react";
+import WorkflowPath, { type WorkflowPathStep } from "./WorkflowPath";
 
-const workbenchSteps = [
+const workbenchSteps: WorkflowPathStep[] = [
   {
     icon: MessageSquare,
-    step: "1",
-    title: "Read Sources",
+    label: "Read Sources",
     description: "Load fake project notes, meeting notes, decisions, and risk logs."
   },
   {
     icon: Workflow,
-    step: "2",
-    title: "Run Process",
+    label: "Run Process",
     description: "Pull project status, detect risks, and assemble the weekly update."
   },
   {
     icon: ShieldCheck,
-    step: "3",
-    title: "Review Gate",
+    label: "Review Gate",
     description: "Flag client-facing approval requirements before anything is used."
   },
   {
     icon: FlaskConical,
-    step: "4",
-    title: "Output",
+    label: "Output",
     description: "Produce an approval-ready update plus traceable evidence."
   }
 ];
@@ -73,21 +70,17 @@ export default function EmptyState({ onRunWorkflow }: EmptyStateProps) {
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {workbenchSteps.map(({ icon: Icon, step, title, description }, index) => (
-          <div
-            key={step}
-            className="animate-fade-in-up rounded-md border border-white/10 bg-white/[0.03] p-3"
-            style={{ animationDelay: `${index * 80}ms` }}
-          >
-            <div className="flex items-center justify-between">
-              <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Step {step}</p>
-              <Icon size={16} className="text-slate-400" aria-hidden="true" />
-            </div>
-            <h3 className="mt-3 text-sm font-semibold text-white">{title}</h3>
-            <p className="mt-1 text-xs leading-5 text-slate-400">{description}</p>
-          </div>
-        ))}
+      <div className="animate-fade-in-up">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Workflow Path</p>
+          <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">4 governed steps</span>
+        </div>
+        <WorkflowPath
+          steps={workbenchSteps.map((step, index) => ({
+            ...step,
+            status: index === 0 ? "active" : "pending"
+          }))}
+        />
       </div>
     </>
   );

@@ -43,10 +43,77 @@ type CapabilityPanelContentProps = {
   onRunEvals: () => void;
 };
 
+function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
+  const passCount = suite?.passCount ?? 0;
+  const totalCount = suite?.totalCount ?? 10;
+  const reviewCount = suite ? suite.totalCount - suite.passCount : 0;
+  const passRate = suite ? Math.round((suite.passCount / Math.max(1, suite.totalCount)) * 100) : 0;
+  const checkedCases = suite ? suite.totalCount : 0;
+
+  const metrics = [
+    {
+      label: "Pass rate",
+      value: suite ? `${passRate}%` : "Ready",
+      detail: suite ? `${passCount}/${totalCount} cases passed` : "Run suite to score",
+      tone: "emerald",
+      progress: passRate
+    },
+    {
+      label: "Review queue",
+      value: suite ? reviewCount : 0,
+      detail: suite ? "Cases needing attention" : "No run loaded",
+      tone: "amber",
+      progress: suite ? Math.round((reviewCount / Math.max(1, totalCount)) * 100) : 0
+    },
+    {
+      label: "Coverage",
+      value: suite ? checkedCases : totalCount,
+      detail: "Tool routing and governance checks",
+      tone: "sky",
+      progress: suite ? 100 : 35
+    }
+  ];
+
+  return (
+    <section className="glow-card rounded-md border border-white/10 bg-ink-950/50 p-4">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Metrics</p>
+          <h3 className="mt-1 text-sm font-semibold text-white">Regression signal</h3>
+        </div>
+        <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
+          {suite ? "Current run" : "Not run"}
+        </span>
+      </div>
+      <div className="grid gap-2">
+        {metrics.map((metric) => (
+          <div key={metric.label} className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-500">{metric.label}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-400">{metric.detail}</p>
+              </div>
+              <p className="text-lg font-semibold text-white">{metric.value}</p>
+            </div>
+            <div className="mt-3 h-1.5 overflow-hidden rounded bg-white/10">
+              <div
+                className={`h-full rounded ${
+                  metric.tone === "emerald" ? "bg-emerald-300" : metric.tone === "amber" ? "bg-amber-300" : "bg-sky-300"
+                }`}
+                style={{ width: `${Math.max(4, metric.progress)}%` }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelContentProps) {
   return (
     <div className="space-y-4 p-4">
-      <section className="rounded-md border border-white/10 bg-ink-950/50 p-4">
+      <section className="glow-card glow-card-emerald rounded-md border border-white/10 bg-ink-950/50 p-4">
         <p className="text-xs uppercase tracking-[0.18em] text-slate-500">AI Lab Capability Factory</p>
         <h2 className="mt-1 inline-flex items-center gap-2 text-base font-semibold tracking-normal text-white">
           <PackageCheck size={18} className="shrink-0 text-emerald-200" aria-hidden="true" />
@@ -58,25 +125,25 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
       </section>
 
       <section className="grid grid-cols-2 gap-2">
-        <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+        <div className="glow-card rounded-md border border-white/10 bg-white/[0.03] p-3">
           <p className="text-2xl font-semibold tracking-normal text-white">{capabilities.length}</p>
           <p className="mt-1 text-xs leading-5 text-slate-500">bounded tools</p>
         </div>
-        <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+        <div className="glow-card rounded-md border border-white/10 bg-white/[0.03] p-3">
           <p className="text-2xl font-semibold tracking-normal text-white">5</p>
           <p className="mt-1 text-xs leading-5 text-slate-500">tool-call cap</p>
         </div>
-        <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+        <div className="glow-card rounded-md border border-white/10 bg-white/[0.03] p-3">
           <p className="text-2xl font-semibold tracking-normal text-white">0</p>
           <p className="mt-1 text-xs leading-5 text-slate-500">server records stored</p>
         </div>
-        <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+        <div className="glow-card rounded-md border border-white/10 bg-white/[0.03] p-3">
           <p className="text-2xl font-semibold tracking-normal text-white">{suite ? `${suite.passCount}/${suite.totalCount}` : "10"}</p>
           <p className="mt-1 text-xs leading-5 text-slate-500">eval cases</p>
         </div>
       </section>
 
-      <details className="group rounded-md border border-white/10 bg-white/[0.03]">
+      <details className="glow-card group rounded-md border border-white/10 bg-white/[0.03]">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
           <span>
             <span className="block text-xs uppercase tracking-[0.18em] text-slate-500">Lifecycle</span>
@@ -88,7 +155,7 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
           {capabilityLifecycle.map((item, index) => {
             const Icon = lifecycleIcons[item.stage];
             return (
-              <li key={item.stage} className="rounded-md border border-white/10 bg-ink-950/50 p-3">
+                <li key={item.stage} className="rounded-md border border-white/10 bg-ink-950/50 p-3">
                 <div className="flex items-start gap-3">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-white/10 bg-ink-950 text-slate-300">
                     <Icon size={15} aria-hidden="true" />
@@ -138,7 +205,9 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
         </div>
       </section>
 
-      <section className="rounded-md border border-white/10 bg-ink-950/50 p-4">
+      <EvalMetricsPanel suite={suite} />
+
+      <section className="glow-card glow-card-amber rounded-md border border-white/10 bg-ink-950/50 p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Harness</p>
