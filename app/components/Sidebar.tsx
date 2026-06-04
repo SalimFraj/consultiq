@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BookOpen, Bot, Command, MessageSquare, Plus, ShieldCheck, Sparkles, Trash2, Workflow, X } from "lucide-react";
+import { BookOpen, Bot, Command, MessageSquare, Plus, ShieldCheck, Trash2, Workflow, X } from "lucide-react";
 import type { ChatMode } from "@/lib/types";
 
 type Conversation = {
@@ -39,7 +39,7 @@ function BrandIntro({ compact = false }: { compact?: boolean }) {
         <h1 className="mt-1 truncate text-xl font-semibold tracking-normal text-white sm:text-2xl xl:text-2xl">ConsultIQ</h1>
         {compact ? null : (
           <p className="mt-2 text-sm leading-6 text-slate-400">
-            Turn messy internal workflow problems into governed agentic capability prototypes.
+            Bridge software execution and business workflow design through governed AI prototypes.
           </p>
         )}
       </div>
@@ -116,7 +116,7 @@ function UtilityActions({
         <ShieldCheck size={18} className="mt-0.5 shrink-0 text-emerald-200" aria-hidden="true" />
         <span className="min-w-0">
           AI Governance
-          <span className="block text-xs text-slate-500">Model, data, tools, and review boundaries</span>
+          <span className="block text-xs text-slate-500">Compliance rules, data boundaries, and human review</span>
         </span>
       </button>
 
@@ -131,7 +131,7 @@ function UtilityActions({
         <BookOpen size={18} className="mt-0.5 shrink-0 text-sky-200" aria-hidden="true" />
         <span className="min-w-0">
           Case Study
-          <span className="block text-xs text-slate-500">Problem, architecture, evals, and production path</span>
+          <span className="block text-xs text-slate-500">Business problem, system design, evals, and rollout path</span>
         </span>
       </button>
     </div>
@@ -141,7 +141,7 @@ function UtilityActions({
 function PromptList({ prompts, onSendPrompt, onAfterAction }: Pick<SidebarProps, "prompts" | "onSendPrompt"> & { onAfterAction?: ActionCallback }) {
   return (
     <section>
-      <p className="mb-2 text-xs uppercase tracking-[0.18em] text-slate-500">Demo Paths</p>
+      <p className="mb-2 text-xs uppercase tracking-[0.18em] text-slate-500">Operator Scenarios</p>
       <div className="grid max-h-52 gap-2 overflow-y-auto pr-1 sm:grid-cols-2 xl:max-h-none xl:grid-cols-1 xl:overflow-visible xl:pr-0">
         {prompts.map((prompt) => (
           <button
@@ -153,7 +153,7 @@ function PromptList({ prompts, onSendPrompt, onAfterAction }: Pick<SidebarProps,
             }}
             className="group flex min-h-12 w-full items-start gap-2 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-left text-sm leading-5 text-slate-300 hover:bg-white/10"
           >
-            <Sparkles size={14} className="mt-1 shrink-0 text-slate-500 group-hover:text-slate-300" aria-hidden="true" />
+            <Workflow size={14} className="mt-1 shrink-0 text-slate-500 group-hover:text-slate-300" aria-hidden="true" />
             <span>{prompt}</span>
           </button>
         ))}
@@ -175,7 +175,7 @@ function ConversationHistory({
   return (
     <section>
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Conversation History</p>
+        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Session History</p>
         {conversations.length > 1 || conversations.some((conversation) => conversation.messages.length > 0) ? (
           <button
             type="button"

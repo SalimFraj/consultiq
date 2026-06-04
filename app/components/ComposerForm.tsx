@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, KeyboardEvent, useEffect, useRef } from "react";
-import { ArrowUp, Database, MessageSquare, ShieldCheck, Sparkles, Workflow } from "lucide-react";
+import { ArrowUp, ClipboardList, Database, MessageSquare, ShieldCheck, Workflow } from "lucide-react";
 import type { ChatMode } from "@/lib/types";
 
 type ComposerFormProps = {
@@ -47,11 +47,11 @@ export default function ComposerForm({ input, mode, loading, firstPrompt, focusT
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
             <Database size={13} aria-hidden="true" />
-            Local packet
+            Local evidence packet
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-xs text-amber-100">
             <ShieldCheck size={13} aria-hidden="true" />
-            Review gate
+            Deterministic review gate
           </span>
         </div>
         <div className="flex flex-col gap-2 md:flex-row">
@@ -62,8 +62,8 @@ export default function ComposerForm({ input, mode, loading, firstPrompt, focusT
             onKeyDown={handleKeyDown}
             placeholder={
               mode === "workflow"
-                ? "Run or design a governed workflow..."
-                : "Ask about policy, projects, compliance, or a document draft..."
+                ? "Run the Northstar update flow or describe a workflow bottleneck..."
+                : "Ask about policy, project state, compliance, or a stakeholder draft..."
             }
             rows={2}
             className="min-h-20 max-h-40 flex-1 resize-none rounded-md border border-white/10 bg-black/20 px-4 py-3 text-sm leading-6 text-white placeholder:text-slate-500 transition-colors focus:border-emerald-300/30 md:min-h-24"
@@ -84,7 +84,7 @@ export default function ComposerForm({ input, mode, loading, firstPrompt, focusT
               aria-label="Load example prompt"
               title="Load example prompt"
             >
-              <Sparkles size={16} aria-hidden="true" />
+              <ClipboardList size={16} aria-hidden="true" />
               <span className="hidden sm:inline md:hidden xl:inline">Example</span>
             </button>
           </div>

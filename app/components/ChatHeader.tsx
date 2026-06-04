@@ -1,4 +1,4 @@
-import { Database, MessageSquare, Workflow } from "lucide-react";
+import { Braces, BriefcaseBusiness, Database, MessageSquare, Workflow } from "lucide-react";
 import type { ChatMode } from "@/lib/types";
 
 type ChatHeaderProps = {
@@ -19,11 +19,15 @@ export default function ChatHeader({ mode, messageCount, toolCallCount }: ChatHe
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
               <Database size={13} aria-hidden="true" />
-              Local static data
+              Northstar sample packet
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
+              <BriefcaseBusiness size={13} aria-hidden="true" />
+              Business to software bridge
             </span>
           </div>
           <h2 className="max-w-full break-words text-lg font-semibold tracking-normal text-white sm:text-xl">
-            {mode === "workflow" ? "Execute a governed reporting workflow" : "Ask about policy, projects, compliance, or drafts"}
+            {mode === "workflow" ? "Execute the governed reporting workflow" : "Inspect policy, project state, compliance, or drafts"}
           </h2>
         </div>
         <div className="grid grid-cols-3 gap-2 text-center md:min-w-64">
@@ -32,7 +36,10 @@ export default function ChatHeader({ mode, messageCount, toolCallCount }: ChatHe
             <p className="text-[11px] text-slate-500">Messages</p>
           </div>
           <div className="rounded-md border border-white/10 px-2 py-2 sm:px-3">
-            <p className="text-sm font-semibold text-white">{toolCallCount}</p>
+            <p className="inline-flex items-center justify-center gap-1 text-sm font-semibold text-white">
+              <Braces size={13} aria-hidden="true" />
+              {toolCallCount}
+            </p>
             <p className="text-[11px] text-slate-500">
               <span className="sm:hidden">Tools</span>
               <span className="hidden sm:inline">Tool calls</span>

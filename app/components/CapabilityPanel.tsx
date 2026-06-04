@@ -75,7 +75,7 @@ function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
   ];
 
   return (
-    <section className="glow-card rounded-md border border-white/10 bg-ink-950/50 p-4">
+    <section className="signal-card rounded-md border border-white/10 bg-ink-950/50 p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
           <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Metrics</p>
@@ -113,37 +113,37 @@ function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
 function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelContentProps) {
   return (
     <div className="space-y-4 p-4">
-      <section className="glow-card glow-card-emerald rounded-md border border-white/10 bg-ink-950/50 p-4">
-        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">AI Lab Capability Factory</p>
+      <section className="signal-card signal-card-emerald rounded-md border border-white/10 bg-ink-950/50 p-4">
+        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Bridge Layer</p>
         <h2 className="mt-1 inline-flex items-center gap-2 text-base font-semibold tracking-normal text-white">
           <PackageCheck size={18} className="shrink-0 text-emerald-200" aria-hidden="true" />
-          Reusable workflow capability
+          Business workflow to software mechanism
         </h2>
         <p className="mt-2 text-sm leading-6 text-slate-400">
-          Compact proof that the workflow runner has bounded tools, evals, and a review gate.
+          The screen shows the operating problem, the bounded tool path, the eval signal, and the review gate in one place.
         </p>
       </section>
 
       <section className="grid grid-cols-2 gap-2">
-        <div className="glow-card rounded-md border border-white/10 bg-white/[0.03] p-3">
+        <div className="signal-card rounded-md border border-white/10 bg-white/[0.03] p-3">
           <p className="text-2xl font-semibold tracking-normal text-white">{capabilities.length}</p>
-          <p className="mt-1 text-xs leading-5 text-slate-500">bounded tools</p>
+          <p className="mt-1 text-xs leading-5 text-slate-500">bounded software tools</p>
         </div>
-        <div className="glow-card rounded-md border border-white/10 bg-white/[0.03] p-3">
+        <div className="signal-card rounded-md border border-white/10 bg-white/[0.03] p-3">
           <p className="text-2xl font-semibold tracking-normal text-white">5</p>
           <p className="mt-1 text-xs leading-5 text-slate-500">tool-call cap</p>
         </div>
-        <div className="glow-card rounded-md border border-white/10 bg-white/[0.03] p-3">
+        <div className="signal-card rounded-md border border-white/10 bg-white/[0.03] p-3">
           <p className="text-2xl font-semibold tracking-normal text-white">0</p>
-          <p className="mt-1 text-xs leading-5 text-slate-500">server records stored</p>
+          <p className="mt-1 text-xs leading-5 text-slate-500">client records stored</p>
         </div>
-        <div className="glow-card rounded-md border border-white/10 bg-white/[0.03] p-3">
+        <div className="signal-card rounded-md border border-white/10 bg-white/[0.03] p-3">
           <p className="text-2xl font-semibold tracking-normal text-white">{suite ? `${suite.passCount}/${suite.totalCount}` : "10"}</p>
           <p className="mt-1 text-xs leading-5 text-slate-500">eval cases</p>
         </div>
       </section>
 
-      <details className="glow-card group rounded-md border border-white/10 bg-white/[0.03]">
+      <details className="signal-card group rounded-md border border-white/10 bg-white/[0.03]">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
           <span>
             <span className="block text-xs uppercase tracking-[0.18em] text-slate-500">Lifecycle</span>
@@ -207,7 +207,7 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
 
       <EvalMetricsPanel suite={suite} />
 
-      <section className="glow-card glow-card-amber rounded-md border border-white/10 bg-ink-950/50 p-4">
+      <section className="signal-card signal-card-amber rounded-md border border-white/10 bg-ink-950/50 p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Harness</p>

@@ -131,7 +131,7 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
           </h3>
           <p className="mt-1 text-sm leading-6 text-emerald-50/80">
             {workflow.reporting_period ? `${workflow.reporting_period}. ` : ""}
-            The runner turned scattered notes, risk logs, and project facts into a review-ready update.
+            The runner turns scattered notes, risk logs, and project facts into a controlled draft an engagement owner can review.
           </p>
         </div>
 

@@ -63,13 +63,17 @@ async function createPage() {
   const sessionId = attached.sessionId;
   await cdp("Page.enable", {}, sessionId);
   await cdp("Runtime.enable", {}, sessionId);
-  await cdp("Emulation.setDeviceMetricsOverride", {
+  await setViewport(sessionId, {
     width: 1440,
     height: 950,
     deviceScaleFactor: 1,
     mobile: false
-  }, sessionId);
+  });
   return sessionId;
+}
+
+async function setViewport(sessionId, metrics) {
+  await cdp("Emulation.setDeviceMetricsOverride", metrics, sessionId);
 }
 
 async function evaluate(sessionId, expression, awaitPromise = true) {
@@ -204,6 +208,24 @@ async function main() {
     await evaluate(sessionId, "localStorage.clear(); location.reload();");
     await wait(1200);
     await screenshot(sessionId, "first-run.png");
+
+    await setViewport(sessionId, {
+      width: 390,
+      height: 844,
+      deviceScaleFactor: 2,
+      mobile: true
+    });
+    await goto(sessionId, appUrl);
+    await evaluate(sessionId, "localStorage.clear(); location.reload();");
+    await wait(1200);
+    await screenshot(sessionId, "first-run-mobile.png");
+
+    await setViewport(sessionId, {
+      width: 1440,
+      height: 950,
+      deviceScaleFactor: 1,
+      mobile: false
+    });
 
     await runWorkflow(sessionId);
     await screenshot(sessionId, "candidate-packet.png");

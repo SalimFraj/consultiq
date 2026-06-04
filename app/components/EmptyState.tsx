@@ -1,4 +1,4 @@
-import { FileText, FlaskConical, MessageSquare, ShieldCheck, Workflow } from "lucide-react";
+import { Braces, BriefcaseBusiness, FileText, FlaskConical, MessageSquare, ShieldCheck, Workflow } from "lucide-react";
 import WorkflowPath, { type WorkflowPathStep } from "./WorkflowPath";
 
 const workbenchSteps: WorkflowPathStep[] = [
@@ -34,13 +34,30 @@ export default function EmptyState({ onRunWorkflow }: EmptyStateProps) {
       <div className="animate-fade-in overflow-hidden rounded-md border border-white/10 bg-ink-850">
         <div className="grid gap-0 md:grid-cols-[1.25fr_0.75fr]">
           <div className="p-4 sm:p-5">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">First Run</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Northstar Runbook</p>
             <h3 className="mt-2 text-xl font-semibold tracking-normal text-white sm:text-2xl">
-              Run the weekly reporting workflow.
+              Turn scattered project evidence into a governed update.
             </h3>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400">
-              The strongest demo path executes the process end to end: read fake notes and risks, pull project facts, draft the update, and stop at a human review gate.
+              This path starts with a real consulting operating problem: meeting notes, project facts, risk logs, and client-facing review rules are spread across different sources.
             </p>
+            <div className="mt-4 grid gap-2 text-sm text-slate-300 sm:grid-cols-3">
+              <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+                <BriefcaseBusiness size={16} className="mb-2 text-slate-300" aria-hidden="true" />
+                <p className="font-medium text-white">Business lens</p>
+                <p className="mt-1 text-xs leading-5 text-slate-500">Weekly client update bottleneck</p>
+              </div>
+              <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+                <Braces size={16} className="mb-2 text-slate-300" aria-hidden="true" />
+                <p className="font-medium text-white">Software move</p>
+                <p className="mt-1 text-xs leading-5 text-slate-500">Bounded tool run over local data</p>
+              </div>
+              <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+                <ShieldCheck size={16} className="mb-2 text-amber-200" aria-hidden="true" />
+                <p className="font-medium text-white">Control point</p>
+                <p className="mt-1 text-xs leading-5 text-slate-500">Human review before use</p>
+              </div>
+            </div>
             <button
               type="button"
               onClick={onRunWorkflow}
@@ -51,19 +68,19 @@ export default function EmptyState({ onRunWorkflow }: EmptyStateProps) {
             </button>
           </div>
           <div className="border-t border-white/10 bg-white/[0.03] p-4 sm:p-5 md:border-l md:border-t-0">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Portfolio Signal</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Evidence On Screen</p>
             <div className="mt-3 grid gap-3 text-sm text-slate-300 sm:grid-cols-3 md:block md:space-y-3">
               <div className="flex items-center gap-2">
                 <ShieldCheck size={16} className="text-emerald-200" aria-hidden="true" />
-                Governed by local rules
+                Compliance verdict is deterministic
               </div>
               <div className="flex items-center gap-2">
                 <FileText size={16} className="text-sky-200" aria-hidden="true" />
-                Produces review-ready briefs
+                Output is a stakeholder artifact
               </div>
               <div className="flex items-center gap-2">
                 <FlaskConical size={16} className="text-amber-200" aria-hidden="true" />
-                Includes eval visibility
+                Evals are visible in the workbench
               </div>
             </div>
           </div>
