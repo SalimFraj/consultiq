@@ -10,6 +10,7 @@ import EmptyState from "./components/EmptyState";
 import GovernanceModal from "./components/GovernanceModal";
 import Sidebar from "./components/Sidebar";
 import ToolCallIndicator from "./components/ToolCallIndicator";
+import { MAX_TOOL_CALLS } from "./lib/constants";
 import type { ChatApiResponse, ChatMode } from "./lib/types";
 
 type Conversation = {
@@ -265,7 +266,7 @@ export default function Home() {
     <main className="min-h-[100dvh] bg-ink-950 text-white">
       <GovernanceModal open={governanceOpen} onClose={() => setGovernanceOpen(false)} />
       <CaseStudyModal open={caseStudyOpen} onClose={() => setCaseStudyOpen(false)} />
-      <div className="flex min-h-[100dvh] flex-col xl:h-screen xl:min-h-0 xl:overflow-hidden xl:flex-row">
+      <div className="flex min-h-[100dvh] flex-col lg:h-screen lg:min-h-0 lg:overflow-hidden lg:flex-row">
         <Sidebar
           mode={mode}
           conversations={conversations}
@@ -284,8 +285,13 @@ export default function Home() {
           onOpenCaseStudy={() => setCaseStudyOpen(true)}
         />
 
-        <section className="flex min-h-[calc(100dvh-73px)] flex-1 flex-col xl:h-screen xl:min-h-0">
-          <ChatHeader mode={mode} messageCount={messageCount} toolCallCount={toolCallCount} />
+        <section className="flex min-h-[calc(100dvh-73px)] flex-1 flex-col lg:h-screen lg:min-h-0">
+          <ChatHeader
+            mode={mode}
+            messageCount={messageCount}
+            toolCallCount={toolCallCount}
+            toolCallLimit={MAX_TOOL_CALLS}
+          />
 
           <div ref={scrollAreaRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-4 lg:px-6 lg:py-5">
             <div className="mx-auto max-w-5xl space-y-4">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Clipboard } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -10,8 +11,17 @@ type DocumentPreviewProps = {
 };
 
 export default function DocumentPreview({ content, label = "Generated Brief" }: DocumentPreviewProps) {
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+
   const copy = async () => {
-    await navigator.clipboard.writeText(content);
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 1800);
+    } catch {
+      setCopyState("error");
+      window.setTimeout(() => setCopyState("idle"), 2200);
+    }
   };
 
   return (
@@ -22,9 +32,10 @@ export default function DocumentPreview({ content, label = "Generated Brief" }: 
           type="button"
           onClick={copy}
           className="inline-flex min-h-9 items-center gap-2 rounded border border-white/10 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10"
+          aria-live="polite"
         >
           <Clipboard size={13} aria-hidden="true" />
-          Copy
+          {copyState === "copied" ? "Copied" : copyState === "error" ? "Copy failed" : "Copy"}
         </button>
       </div>
       <div className="min-w-0 px-3 py-4 sm:px-4">

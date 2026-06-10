@@ -1,4 +1,14 @@
-import { Braces, BriefcaseBusiness, FileText, FlaskConical, MessageSquare, ShieldCheck, Workflow } from "lucide-react";
+import {
+  Braces,
+  BriefcaseBusiness,
+  CheckCircle2,
+  Database,
+  FileText,
+  FlaskConical,
+  MessageSquare,
+  ShieldCheck,
+  Workflow
+} from "lucide-react";
 import WorkflowPath, { type WorkflowPathStep } from "./WorkflowPath";
 
 const workbenchSteps: WorkflowPathStep[] = [
@@ -68,19 +78,52 @@ export default function EmptyState({ onRunWorkflow }: EmptyStateProps) {
             </button>
           </div>
           <div className="border-t border-white/10 bg-white/[0.03] p-4 sm:p-5 md:border-l md:border-t-0">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Evidence On Screen</p>
-            <div className="mt-3 grid gap-3 text-sm text-slate-300 sm:grid-cols-3 md:block md:space-y-3">
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={16} className="text-emerald-200" aria-hidden="true" />
-                Compliance verdict is deterministic
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Run Schematic</p>
+            <div className="mt-4 rounded-md border border-white/10 bg-ink-950/55 p-3">
+              <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded border border-sky-300/25 bg-sky-300/10 text-sky-100">
+                  <Database size={16} aria-hidden="true" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white">Source packet</p>
+                  <p className="mt-0.5 text-xs leading-5 text-slate-500">Notes, decisions, risks</p>
+                </div>
+                <div className="justify-self-center h-7 w-px bg-white/10" aria-hidden="true" />
+                <div className="flex items-center">
+                  <div className="h-px flex-1 bg-gradient-to-r from-sky-300/45 to-emerald-300/25" aria-hidden="true" />
+                </div>
+                <div className="flex h-9 w-9 items-center justify-center rounded border border-emerald-300/25 bg-emerald-300/10 text-emerald-100">
+                  <Workflow size={16} aria-hidden="true" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white">Bounded tools</p>
+                  <p className="mt-0.5 text-xs leading-5 text-slate-500">5-call cap, local artifacts</p>
+                </div>
+                <div className="justify-self-center h-7 w-px bg-white/10" aria-hidden="true" />
+                <div className="flex items-center">
+                  <div className="h-px flex-1 bg-gradient-to-r from-emerald-300/45 to-amber-300/25" aria-hidden="true" />
+                </div>
+                <div className="flex h-9 w-9 items-center justify-center rounded border border-amber-300/25 bg-amber-300/10 text-amber-100">
+                  <ShieldCheck size={16} aria-hidden="true" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white">Review gate</p>
+                  <p className="mt-0.5 text-xs leading-5 text-slate-500">Client-facing approval</p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <FileText size={16} className="text-sky-200" aria-hidden="true" />
-                Output is a stakeholder artifact
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              <div className="rounded border border-white/10 bg-ink-950/45 px-2 py-2">
+                <CheckCircle2 size={14} className="text-emerald-200" aria-hidden="true" />
+                <p className="mt-1 text-[11px] leading-4 text-slate-400">Rules pass</p>
               </div>
-              <div className="flex items-center gap-2">
-                <FlaskConical size={16} className="text-amber-200" aria-hidden="true" />
-                Evals are visible in the workbench
+              <div className="rounded border border-white/10 bg-ink-950/45 px-2 py-2">
+                <FileText size={14} className="text-sky-200" aria-hidden="true" />
+                <p className="mt-1 text-[11px] leading-4 text-slate-400">Draft ready</p>
+              </div>
+              <div className="rounded border border-white/10 bg-ink-950/45 px-2 py-2">
+                <FlaskConical size={14} className="text-amber-200" aria-hidden="true" />
+                <p className="mt-1 text-[11px] leading-4 text-slate-400">Evals visible</p>
               </div>
             </div>
           </div>

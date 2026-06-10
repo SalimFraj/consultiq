@@ -1,7 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BookOpen, Bot, Command, MessageSquare, Plus, ShieldCheck, Trash2, Workflow, X } from "lucide-react";
+import {
+  BookOpen,
+  Bot,
+  Command,
+  FlaskConical,
+  MessageSquare,
+  PackageCheck,
+  Plus,
+  ShieldCheck,
+  Trash2,
+  Workflow,
+  X
+} from "lucide-react";
+import { capabilities } from "@/lib/capabilities";
+import { MAX_TOOL_CALLS } from "@/lib/constants";
 import type { ChatMode } from "@/lib/types";
 
 type Conversation = {
@@ -36,7 +50,7 @@ function BrandIntro({ compact = false }: { compact?: boolean }) {
         <p className={`${compact ? "truncate tracking-[0.12em]" : "tracking-[0.2em]"} text-xs uppercase text-slate-500`}>
           AI Builder Workbench
         </p>
-        <h1 className="mt-1 truncate text-xl font-semibold tracking-normal text-white sm:text-2xl xl:text-2xl">ConsultIQ</h1>
+        <h1 className="mt-1 truncate text-xl font-semibold tracking-normal text-white sm:text-2xl">ConsultIQ</h1>
         {compact ? null : (
           <p className="mt-2 text-sm leading-6 text-slate-400">
             Bridge software execution and business workflow design through governed AI prototypes.
@@ -104,7 +118,7 @@ function UtilityActions({
   onAfterAction
 }: Pick<SidebarProps, "onOpenGovernance" | "onOpenCaseStudy"> & { onAfterAction?: ActionCallback }) {
   return (
-    <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
+    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
       <button
         type="button"
         onClick={() => {
@@ -138,11 +152,47 @@ function UtilityActions({
   );
 }
 
+function CompactCapabilitySummary() {
+  return (
+    <section className="hidden rounded-md border border-emerald-300/20 bg-emerald-300/[0.06] p-3 lg:block xl:hidden">
+      <div className="flex items-start gap-3">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-emerald-300/20 bg-ink-950 text-emerald-100">
+          <PackageCheck size={15} aria-hidden="true" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs uppercase tracking-[0.18em] text-emerald-100/70">Capability Factory</p>
+          <h2 className="mt-1 text-sm font-semibold text-white">Workbench signal stays visible</h2>
+          <p className="mt-1 text-xs leading-5 text-emerald-50/75">
+            Bounded tools, call cap, and eval coverage are summarized here until the full panel has room.
+          </p>
+        </div>
+      </div>
+      <dl className="mt-3 grid grid-cols-3 gap-2">
+        <div className="rounded border border-white/10 bg-ink-950/45 px-2 py-2">
+          <dt className="text-[11px] leading-4 text-slate-500">Tools</dt>
+          <dd className="mt-1 text-lg font-semibold text-white">{capabilities.length}</dd>
+        </div>
+        <div className="rounded border border-white/10 bg-ink-950/45 px-2 py-2">
+          <dt className="text-[11px] leading-4 text-slate-500">Cap</dt>
+          <dd className="mt-1 text-lg font-semibold text-white">{MAX_TOOL_CALLS}</dd>
+        </div>
+        <div className="rounded border border-white/10 bg-ink-950/45 px-2 py-2">
+          <dt className="text-[11px] leading-4 text-slate-500">Evals</dt>
+          <dd className="mt-1 inline-flex items-center gap-1 text-lg font-semibold text-white">
+            <FlaskConical size={14} className="text-amber-200" aria-hidden="true" />
+            10
+          </dd>
+        </div>
+      </dl>
+    </section>
+  );
+}
+
 function PromptList({ prompts, onSendPrompt, onAfterAction }: Pick<SidebarProps, "prompts" | "onSendPrompt"> & { onAfterAction?: ActionCallback }) {
   return (
     <section>
       <p className="mb-2 text-xs uppercase tracking-[0.18em] text-slate-500">Operator Scenarios</p>
-      <div className="grid max-h-52 gap-2 overflow-y-auto pr-1 sm:grid-cols-2 xl:max-h-none xl:grid-cols-1 xl:overflow-visible xl:pr-0">
+      <div className="grid max-h-52 gap-2 overflow-y-auto pr-1 sm:grid-cols-2 lg:max-h-none lg:grid-cols-1 lg:overflow-visible lg:pr-0">
         {prompts.map((prompt) => (
           <button
             type="button"
@@ -189,7 +239,7 @@ function ConversationHistory({
           </button>
         ) : null}
       </div>
-      <div className="max-h-52 space-y-2 overflow-auto pr-1 xl:max-h-64">
+      <div className="max-h-52 space-y-2 overflow-auto pr-1 lg:max-h-64">
         {conversations.map((conversation) => (
           <div
             key={conversation.id}
@@ -237,6 +287,7 @@ function SidebarControls(props: SidebarProps & { onAfterAction?: ActionCallback 
         onOpenCaseStudy={props.onOpenCaseStudy}
         onAfterAction={props.onAfterAction}
       />
+      <CompactCapabilitySummary />
       <PromptList prompts={props.prompts} onSendPrompt={props.onSendPrompt} onAfterAction={props.onAfterAction} />
       <ConversationHistory
         conversations={props.conversations}
@@ -264,7 +315,7 @@ function MobileCommandDrawer(props: SidebarProps) {
 
   return (
     <>
-      <aside className="sticky top-0 z-30 border-b border-white/10 bg-ink-900/95 backdrop-blur xl:hidden">
+      <aside className="sticky top-0 z-30 border-b border-white/10 bg-ink-900/95 backdrop-blur lg:hidden">
         <div className="flex items-center justify-between gap-3 px-4 py-3">
           <BrandIntro compact />
           <button
@@ -281,7 +332,7 @@ function MobileCommandDrawer(props: SidebarProps) {
       </aside>
 
       {open ? (
-        <div className="fixed inset-0 z-50 xl:hidden" role="dialog" aria-modal="true" aria-label="Workbench command drawer">
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Workbench command drawer">
           <button
             type="button"
             className="absolute inset-0 cursor-default bg-black/60"
@@ -297,10 +348,12 @@ function MobileCommandDrawer(props: SidebarProps) {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded border border-white/10 p-2 text-slate-200 hover:bg-white/10"
+                className="inline-flex min-h-9 items-center gap-2 rounded border border-white/10 px-3 py-2 text-xs text-slate-200 hover:bg-white/10"
                 aria-label="Close command drawer"
+                title="Close command drawer"
               >
                 <X size={16} aria-hidden="true" />
+                Close
               </button>
             </div>
             <div className="space-y-4 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4">
@@ -341,7 +394,7 @@ export default function Sidebar(props: SidebarProps) {
     <>
       <MobileCommandDrawer {...props} />
 
-      <aside className="hidden w-80 shrink-0 border-r border-white/10 bg-ink-900 xl:block xl:h-screen xl:overflow-y-auto">
+      <aside className="hidden w-72 shrink-0 border-r border-white/10 bg-ink-900 lg:block lg:h-screen lg:overflow-y-auto xl:w-80">
         <div className="space-y-5 p-4">
           <BrandIntro />
           <SidebarControls

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { capabilities } from "@/lib/capabilities";
 import { capabilityLifecycle, type CapabilityLifecycleStage, type CapabilityLifecycleStatus } from "@/lib/capabilityLifecycle";
+import { MAX_TOOL_CALLS } from "@/lib/constants";
 import type { EvalSuiteResponse } from "@/lib/types";
 
 const lifecycleIcons: Record<CapabilityLifecycleStage["stage"], typeof ClipboardList> = {
@@ -130,7 +131,7 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
           <p className="mt-1 text-xs leading-5 text-slate-500">bounded software tools</p>
         </div>
         <div className="signal-card rounded-md border border-white/10 bg-white/[0.03] p-3">
-          <p className="text-2xl font-semibold tracking-normal text-white">5</p>
+          <p className="text-2xl font-semibold tracking-normal text-white">{MAX_TOOL_CALLS}</p>
           <p className="mt-1 text-xs leading-5 text-slate-500">tool-call cap</p>
         </div>
         <div className="signal-card rounded-md border border-white/10 bg-white/[0.03] p-3">
@@ -155,7 +156,7 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
           {capabilityLifecycle.map((item, index) => {
             const Icon = lifecycleIcons[item.stage];
             return (
-                <li key={item.stage} className="rounded-md border border-white/10 bg-ink-950/50 p-3">
+              <li key={item.stage} className="rounded-md border border-white/10 bg-ink-950/50 p-3">
                 <div className="flex items-start gap-3">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded border border-white/10 bg-ink-950 text-slate-300">
                     <Icon size={15} aria-hidden="true" />
@@ -286,7 +287,7 @@ export default function CapabilityPanel() {
 
   return (
     <>
-      <aside className="border-t border-white/10 bg-ink-900 xl:hidden">
+      <aside className="border-t border-white/10 bg-ink-900 lg:hidden">
         <details className="group">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
             <span>

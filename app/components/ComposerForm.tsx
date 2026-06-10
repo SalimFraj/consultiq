@@ -40,16 +40,16 @@ export default function ComposerForm({ input, mode, loading, firstPrompt, focusT
       className="sticky bottom-0 z-20 border-t border-white/10 bg-ink-900/95 px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur sm:px-4 lg:px-6 lg:py-4"
     >
       <div className="mx-auto max-w-5xl rounded-md border border-white/10 bg-ink-950/80 p-2 shadow-panel">
-        <div className="mb-2 flex flex-wrap items-center gap-2 px-1">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2.5 py-1 text-xs text-emerald-100">
+        <div className="mb-2 flex items-center gap-2 overflow-hidden px-1">
+          <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2.5 py-1 text-xs text-emerald-100">
             <ModeIcon size={13} aria-hidden="true" />
-            {mode === "workflow" ? "Workflow command" : "Assistant command"}
+            <span className="truncate">{mode === "workflow" ? "Workflow command" : "Assistant command"}</span>
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
+          <span className="hidden shrink-0 items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400 min-[380px]:inline-flex">
             <Database size={13} aria-hidden="true" />
             Local evidence packet
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-xs text-amber-100">
+          <span className="hidden shrink-0 items-center gap-1.5 rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-xs text-amber-100 sm:inline-flex">
             <ShieldCheck size={13} aria-hidden="true" />
             Deterministic review gate
           </span>

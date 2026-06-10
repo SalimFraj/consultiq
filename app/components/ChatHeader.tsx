@@ -5,9 +5,10 @@ type ChatHeaderProps = {
   mode: ChatMode;
   messageCount: number;
   toolCallCount: number;
+  toolCallLimit: number;
 };
 
-export default function ChatHeader({ mode, messageCount, toolCallCount }: ChatHeaderProps) {
+export default function ChatHeader({ mode, messageCount, toolCallCount, toolCallLimit }: ChatHeaderProps) {
   return (
     <header className="border-b border-white/10 bg-ink-900/90 px-3 py-3 sm:px-4 lg:px-6 lg:py-4">
       <div className="mx-auto flex max-w-5xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -46,7 +47,7 @@ export default function ChatHeader({ mode, messageCount, toolCallCount }: ChatHe
             </p>
           </div>
           <div className="rounded-md border border-white/10 px-2 py-2 sm:px-3">
-            <p className="text-sm font-semibold text-white">5</p>
+            <p className="text-sm font-semibold text-white">{toolCallLimit}</p>
             <p className="text-[11px] text-slate-500">
               <span className="sm:hidden">Cap</span>
               <span className="hidden sm:inline">Call cap</span>

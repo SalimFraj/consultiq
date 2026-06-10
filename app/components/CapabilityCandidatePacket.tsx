@@ -136,7 +136,7 @@ Advance as an internal MVP candidate only after access control, logging, approva
 }
 
 export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCandidatePacketProps) {
-  const [copied, setCopied] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
   const workflow = findWeeklyWorkflow(toolEvents);
   if (!workflow?.found) return null;
 
@@ -168,9 +168,14 @@ export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCand
   });
 
   const copyMarkdown = async () => {
-    await navigator.clipboard.writeText(markdown);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+    try {
+      await navigator.clipboard.writeText(markdown);
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 1800);
+    } catch {
+      setCopyState("error");
+      window.setTimeout(() => setCopyState("idle"), 2200);
+    }
   };
 
   const downloadMarkdown = () => {
@@ -207,9 +212,10 @@ export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCand
             type="button"
             onClick={() => void copyMarkdown()}
             className="inline-flex items-center gap-2 rounded border border-white/10 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10"
+            aria-live="polite"
           >
-            {copied ? <Check size={13} aria-hidden="true" /> : <Clipboard size={13} aria-hidden="true" />}
-            {copied ? "Copied" : "Copy markdown"}
+            {copyState === "copied" ? <Check size={13} aria-hidden="true" /> : <Clipboard size={13} aria-hidden="true" />}
+            {copyState === "copied" ? "Copied" : copyState === "error" ? "Copy failed" : "Copy markdown"}
           </button>
           <button
             type="button"
