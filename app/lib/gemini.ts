@@ -175,20 +175,33 @@ function extractFunctionCalls(response: unknown): Array<{ name: string; args: Re
   );
 }
 
-function detectFlags(message: string, toolEvents: ToolEvent[]) {
+export function detectFlags(message: string, toolEvents: ToolEvent[]) {
   const lower = message.toLowerCase();
   const resultText = JSON.stringify(toolEvents.map((event) => event.result)).toLowerCase();
+  const complianceVerdict =
+    resultText.includes("review required") ||
+    resultText.includes("not allowed") ||
+    lower.includes("compliance review") ||
+    lower.includes("not compliant") ||
+    lower.includes("policy violation");
+  const humanReviewRequired =
+    resultText.includes("review required") ||
+    resultText.includes("not allowed") ||
+    lower.includes("human review required") ||
+    lower.includes("requires human review") ||
+    lower.includes("review required") ||
+    lower.includes("client-facing approval") ||
+    lower.includes("before client-facing use");
+
   return {
-    uncertainty: lower.includes("uncertain") || lower.includes("not enough information") || lower.includes("no exact"),
-    complianceWarning:
-      lower.includes("compliance") ||
-      resultText.includes("review required") ||
-      resultText.includes("not allowed"),
-    humanReviewRequired:
-      lower.includes("human review") ||
-      lower.includes("review required") ||
-      resultText.includes("review required") ||
-      resultText.includes("not allowed")
+    uncertainty:
+      lower.includes("uncertain") ||
+      lower.includes("not enough information") ||
+      lower.includes("do not have enough information") ||
+      lower.includes("don't have enough information") ||
+      lower.includes("no exact"),
+    complianceWarning: complianceVerdict,
+    humanReviewRequired
   };
 }
 

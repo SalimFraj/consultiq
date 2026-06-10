@@ -46,8 +46,6 @@ export default function ChatMessage({ message }: ChatMessageProps) {
     message.metadata?.model.includes("fallback") || message.metadata?.model.startsWith("groq:")
   );
   const providerPath = providerPathLabel(message.metadata);
-  const tokenEstimate =
-    message.metadata?.estimatedOutputTokens ?? Math.max(1, Math.ceil(message.content.length / 4));
   const shouldRenderDocument = isAssistant && /(^|\n)#\s/.test(message.content);
   const workflowEvent = isAssistant ? getWeeklyWorkflowEvent(message.toolEvents ?? []) : undefined;
 
@@ -59,7 +57,6 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             {isAssistant ? <Bot size={14} aria-hidden="true" /> : <UserRound size={14} aria-hidden="true" />}
             {isAssistant ? "ConsultIQ" : "You"}
           </p>
-          <span className="text-xs text-slate-500">~{tokenEstimate} tokens</span>
         </div>
 
         {message.flags?.humanReviewRequired || message.flags?.complianceWarning || message.flags?.uncertainty ? (

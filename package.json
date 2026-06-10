@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "browser:smoke": "node scripts/browser-smoke.mjs",
     "security:audit": "npm audit --omit=dev",
     "security:secrets": "node scripts/check-secrets.mjs",
     "screenshots:docs": "node scripts/capture-docs-screenshots.mjs"
