@@ -8,9 +8,10 @@ import remarkGfm from "remark-gfm";
 type DocumentPreviewProps = {
   content: string;
   label?: string;
+  defaultOpen?: boolean;
 };
 
-export default function DocumentPreview({ content, label = "Generated Brief" }: DocumentPreviewProps) {
+export default function DocumentPreview({ content, label = "Generated Brief", defaultOpen = true }: DocumentPreviewProps) {
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
 
   const copy = async () => {
@@ -24,21 +25,8 @@ export default function DocumentPreview({ content, label = "Generated Brief" }: 
     }
   };
 
-  return (
-    <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/60">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-3 py-3 sm:px-4">
-        <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">{label}</span>
-        <button
-          type="button"
-          onClick={copy}
-          className="inline-flex min-h-9 items-center gap-2 rounded border border-white/10 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10"
-          aria-live="polite"
-        >
-          <Clipboard size={13} aria-hidden="true" />
-          {copyState === "copied" ? "Copied" : copyState === "error" ? "Copy failed" : "Copy"}
-        </button>
-      </div>
-      <div className="min-w-0 px-3 py-4 sm:px-4">
+  const contentBlock = (
+    <div className="min-w-0 px-3 py-4 sm:px-4">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
@@ -79,6 +67,53 @@ export default function DocumentPreview({ content, label = "Generated Brief" }: 
           {content}
         </ReactMarkdown>
       </div>
+  );
+
+  const header = (
+    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-3 py-3 sm:px-4">
+      <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">{label}</span>
+      <button
+        type="button"
+        onClick={copy}
+        className="inline-flex min-h-9 items-center gap-2 rounded border border-white/10 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10"
+        aria-live="polite"
+      >
+        <Clipboard size={13} aria-hidden="true" />
+        {copyState === "copied" ? "Copied" : copyState === "error" ? "Copy failed" : "Copy"}
+      </button>
+    </div>
+  );
+
+  if (!defaultOpen) {
+    return (
+      <details className="group min-w-0 rounded-md border border-white/10 bg-ink-950/60">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 sm:px-4">
+          <span className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">{label}</span>
+          <span className="text-xs text-slate-500 group-open:hidden">Open</span>
+          <span className="hidden text-xs text-slate-500 group-open:inline">Close</span>
+        </summary>
+        <div className="border-t border-white/10">
+          <div className="flex justify-end px-3 pt-3 sm:px-4">
+            <button
+              type="button"
+              onClick={copy}
+              className="inline-flex min-h-9 items-center gap-2 rounded border border-white/10 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10"
+              aria-live="polite"
+            >
+              <Clipboard size={13} aria-hidden="true" />
+              {copyState === "copied" ? "Copied" : copyState === "error" ? "Copy failed" : "Copy"}
+            </button>
+          </div>
+          {contentBlock}
+        </div>
+      </details>
+    );
+  }
+
+  return (
+    <div className="min-w-0 rounded-md border border-white/10 bg-ink-950/60">
+      {header}
+      {contentBlock}
     </div>
   );
 }

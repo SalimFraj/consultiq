@@ -180,7 +180,7 @@ function CompactCapabilitySummary() {
           <dt className="text-[11px] leading-4 text-slate-500">Evals</dt>
           <dd className="mt-1 inline-flex items-center gap-1 text-lg font-semibold text-white">
             <FlaskConical size={14} className="text-amber-200" aria-hidden="true" />
-            10
+            11
           </dd>
         </div>
       </dl>

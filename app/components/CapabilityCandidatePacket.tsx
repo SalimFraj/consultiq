@@ -202,7 +202,7 @@ export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCand
 
   return (
     <section className="mt-4 rounded-md border border-emerald-300/20 bg-emerald-300/[0.04]">
-      <div className="border-b border-emerald-300/20 px-4 py-3">
+      <div className="px-4 py-3">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-emerald-100/80">
           Capability Candidate Packet
         </p>
@@ -219,6 +219,38 @@ export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCand
             Human review required
           </span>
         </div>
+        <div className="mt-4 grid gap-2 md:grid-cols-4">
+          <div className="rounded border border-white/10 bg-ink-950/60 p-3">
+            <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Readiness</p>
+            <p className="mt-1 text-2xl font-semibold text-white">{readinessScore}/100</p>
+            <p className="text-xs text-slate-500">
+              {passedSignals}/{signals.length} signals
+            </p>
+          </div>
+          <div className="rounded border border-white/10 bg-ink-950/60 p-3">
+            <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Evidence</p>
+            <p className="mt-1 text-2xl font-semibold text-white">{sourceCount}</p>
+            <p className="text-xs text-slate-500">source artifacts</p>
+          </div>
+          <div className="rounded border border-white/10 bg-ink-950/60 p-3">
+            <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Owner</p>
+            <p className="mt-1 truncate text-sm font-semibold text-white">
+              {workflow.accountability?.business_owner ?? workflow.project?.owner ?? "Engagement owner"}
+            </p>
+            <p className="text-xs text-slate-500">business accountable</p>
+          </div>
+          <div className="rounded border border-amber-300/20 bg-amber-300/[0.07] p-3">
+            <p className="text-xs uppercase tracking-[0.14em] text-amber-100/70">Gate</p>
+            <p className="mt-1 text-sm font-semibold capitalize text-amber-50">
+              {workflow.approval_status?.status ?? "human review required"}
+            </p>
+            <p className="text-xs text-amber-100/65">before handoff</p>
+          </div>
+        </div>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
+          {workflow.accountability?.success_metric ??
+            "Reduce reporting prep time while preserving source traceability and review controls."}
+        </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <button
             type="button"
@@ -240,29 +272,16 @@ export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCand
         </div>
       </div>
 
-      <div className="space-y-4 px-4 py-4">
-        <div className="grid gap-2 md:grid-cols-3">
-          <div className="rounded border border-white/10 bg-ink-950/60 p-3">
-            <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Prototype readiness</p>
-            <p className="mt-1 text-2xl font-semibold text-white">{readinessScore}/100</p>
-            <p className="text-xs text-slate-500">
-              {passedSignals}/{signals.length} signals demonstrated
-            </p>
-          </div>
-          <div className="rounded border border-white/10 bg-ink-950/60 p-3">
-            <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Source artifacts</p>
-            <p className="mt-1 text-2xl font-semibold text-white">{sourceCount}</p>
-            <p className="text-xs text-slate-500">notes, risks, decisions, updates</p>
-          </div>
-          <div className="rounded border border-white/10 bg-ink-950/60 p-3">
-            <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Risk posture</p>
-            <p className="mt-1 text-2xl font-semibold capitalize text-white">{workflow.project?.risk_level ?? "review"}</p>
-            <p className="text-xs text-slate-500">
-              {workflow.detected_risks?.increasing?.length ?? 0} increasing risks detected
-            </p>
-          </div>
-        </div>
-
+      <details className="group border-t border-emerald-300/20">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm text-slate-200">
+          <span className="inline-flex items-center gap-2 font-medium">
+            <ClipboardList size={15} className="text-emerald-200" aria-hidden="true" />
+            Inspect packet evidence
+          </span>
+          <span className="text-xs text-slate-500 group-open:hidden">Open</span>
+          <span className="hidden text-xs text-slate-500 group-open:inline">Close</span>
+        </summary>
+        <div className="space-y-4 border-t border-emerald-300/20 px-4 py-4">
         <div className="grid gap-3 md:grid-cols-2">
           <div className="rounded border border-sky-300/20 bg-sky-300/[0.05] p-3">
             <h4 className="inline-flex items-center gap-2 text-sm font-semibold text-sky-50">
@@ -402,6 +421,7 @@ export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCand
           </ul>
         </div>
       </div>
+      </details>
     </section>
   );
 }

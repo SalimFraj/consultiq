@@ -68,8 +68,8 @@ export default function ChatMessage({ message }: ChatMessageProps) {
                 <p className="mt-1 text-amber-100/85">
                   {isFallback
                     ? message.metadata?.model.startsWith("groq:")
-                      ? "Gemini was unavailable or quota-limited, so ConsultIQ used local deterministic tools with Groq for final synthesis."
-                      : "Live provider quota was reached, so ConsultIQ used the deterministic local fallback with the same fake static tools."
+                      ? "Gemini was unavailable, so local tools ran and Groq wrote the final synthesis."
+                      : "Live provider quota was reached, so the deterministic local fallback generated this demo output."
                     : message.flags?.uncertainty
                     ? "This response used a fallback or contains uncertainty. Confirm with the relevant process owner before acting."
                     : "Human review is required before using this output for client-facing, production, or sensitive decisions."}
@@ -98,14 +98,19 @@ export default function ChatMessage({ message }: ChatMessageProps) {
         {isAssistant ? <ToolCallIndicator events={message.toolEvents ?? []} /> : null}
 
         {message.metadata ? (
-          <footer className="mt-3 flex min-w-0 flex-wrap gap-x-4 gap-y-1 border-t border-white/10 pt-3 text-xs text-slate-500">
-            <span>Model: {message.metadata.model}</span>
-            <span>Latency: {message.metadata.latencyMs}ms</span>
-            <span className="break-words">Tools: {message.metadata.toolsUsed.length > 0 ? message.metadata.toolsUsed.join(", ") : "none"}</span>
-            {providerPath ? (
-              <span className="text-amber-300/80">{providerPath}</span>
-            ) : null}
-          </footer>
+          <details className="mt-3 border-t border-white/10 pt-3 text-xs text-slate-500">
+            <summary className="cursor-pointer list-none text-slate-500">
+              Model and run metadata
+            </summary>
+            <footer className="mt-2 flex min-w-0 flex-wrap gap-x-4 gap-y-1">
+              <span>Model: {message.metadata.model}</span>
+              <span>Latency: {message.metadata.latencyMs}ms</span>
+              <span className="break-words">Tools: {message.metadata.toolsUsed.length > 0 ? message.metadata.toolsUsed.join(", ") : "none"}</span>
+              {providerPath ? (
+                <span className="text-amber-300/80">{providerPath}</span>
+              ) : null}
+            </footer>
+          </details>
         ) : null}
       </div>
     </article>

@@ -208,15 +208,15 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
         ]}
       />
 
-      <div className="rounded-md border border-white/10 bg-ink-950/60 p-4">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
+      <details className="group rounded-md border border-white/10 bg-ink-950/60">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+          <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
             <CheckCircle2 size={14} aria-hidden="true" />
-            Execution Timeline
-          </p>
+            Execution timeline
+          </span>
           <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">{steps.length} steps</span>
-        </div>
-        <ol className="grid gap-3 sm:grid-cols-2">
+        </summary>
+        <ol className="grid gap-3 border-t border-white/10 p-4 sm:grid-cols-2">
           {steps.map((step, index) => (
             <li key={`${step}-${index}`} className="flex gap-3">
               <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-emerald-300/30 bg-emerald-300/10 text-xs font-semibold text-emerald-100">
@@ -226,11 +226,11 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
             </li>
           ))}
         </ol>
-      </div>
+      </details>
 
       <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="space-y-4">
-          <details open className="rounded-md border border-white/10 bg-white/[0.03]">
+          <details className="rounded-md border border-white/10 bg-white/[0.03]">
             <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-100">
               Source artifacts read
             </summary>
@@ -275,12 +275,21 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
             </div>
           </details>
 
-          <div className="rounded-md border border-amber-300/20 bg-amber-300/[0.06] p-4">
-            <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-amber-100">
-              <AlertTriangle size={14} aria-hidden="true" />
-              Risks Detected
-            </p>
-            <div className="mt-3 space-y-3">
+          <details className="group rounded-md border border-amber-300/20 bg-amber-300/[0.06]">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+              <span>
+                <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-amber-100">
+                  <AlertTriangle size={14} aria-hidden="true" />
+                  Risks detected
+                </span>
+                <span className="mt-1 block text-sm text-amber-50">
+                  {risks.length} logged, {increasingRisks.length} increasing
+                </span>
+              </span>
+              <span className="text-xs text-amber-100/70 group-open:hidden">Open</span>
+              <span className="hidden text-xs text-amber-100/70 group-open:inline">Close</span>
+            </summary>
+            <div className="space-y-3 border-t border-amber-300/20 px-4 py-3">
               {risks.map((risk) => (
                 <div key={risk.id} className="rounded border border-white/10 bg-ink-950/45 p-3">
                   <div className="flex flex-wrap items-center gap-2">
@@ -293,13 +302,13 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
                   <p className="mt-2 text-xs leading-5 text-slate-400">Owner: {risk.owner}. Mitigation: {risk.mitigation}</p>
                 </div>
               ))}
+              {increasingRisks.length > 0 ? (
+                <p className="text-sm leading-6 text-amber-50">
+                  {increasingRisks.length} increasing risk must be visible before the update is approved.
+                </p>
+              ) : null}
             </div>
-            {increasingRisks.length > 0 ? (
-              <p className="mt-3 text-sm leading-6 text-amber-50">
-                {increasingRisks.length} increasing risk must be visible before the update is approved.
-              </p>
-            ) : null}
-          </div>
+          </details>
         </div>
 
         <div className="space-y-4">
@@ -341,7 +350,7 @@ export default function WorkflowRunCard({ event }: WorkflowRunCardProps) {
       </div>
 
       {workflow.drafted_update ? (
-        <DocumentPreview content={workflow.drafted_update} label="Final Update Draft" />
+        <DocumentPreview content={workflow.drafted_update} label="Final Update Draft" defaultOpen={false} />
       ) : (
         <div className="rounded-md border border-white/10 bg-ink-950/60 p-4 text-sm text-slate-300">
           <ClipboardCheck size={16} className="mb-2 text-slate-400" aria-hidden="true" />

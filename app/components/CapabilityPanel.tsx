@@ -131,7 +131,7 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
           Business workflow to software mechanism
         </h2>
         <p className="mt-2 text-sm leading-6 text-slate-400">
-          The screen shows the operating problem, the bounded tool path, the eval signal, and the review gate in one place.
+          Operating problem, tool path, eval signal, and review gate.
         </p>
       </section>
 
@@ -218,31 +218,31 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
 
       <EvalMetricsPanel suite={suite} />
 
-      <section className="signal-card signal-card-amber rounded-md border border-white/10 bg-ink-950/50 p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Harness</p>
-            <h3 className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-white">
+      <details className="signal-card signal-card-amber group rounded-md border border-white/10 bg-ink-950/50">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+          <span>
+            <span className="block text-xs uppercase tracking-[0.18em] text-slate-500">Eval Harness</span>
+            <span className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-white">
               <FlaskConical size={16} className="shrink-0 text-amber-200" aria-hidden="true" />
-              Portfolio regression checks
-            </h3>
-          </div>
+              {suite ? `${suite.passCount}/${suite.totalCount} evals passed` : "Portfolio regression checks"}
+            </span>
+          </span>
           <button
             type="button"
-            onClick={onRunEvals}
+            onClick={(event) => {
+              event.preventDefault();
+              onRunEvals();
+            }}
             disabled={loading}
             className="inline-flex min-h-9 items-center gap-2 rounded border border-white/10 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10 disabled:opacity-50"
           >
             <Play size={12} aria-hidden="true" />
             {loading ? "Running" : "Run"}
           </button>
-        </div>
+        </summary>
 
         {suite ? (
-          <div className="mt-4 space-y-2">
-            <div className="rounded border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-300">
-              Passed {suite.passCount} of {suite.totalCount} evals
-            </div>
+          <div className="space-y-2 border-t border-white/10 p-4">
             {suite.results.map((result) => (
               <details key={result.id} className="rounded border border-white/10 bg-white/[0.03]">
                 <summary className="cursor-pointer list-none px-3 py-2 text-sm text-slate-200">
@@ -271,19 +271,24 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
             ))}
           </div>
         ) : (
-          <p className="mt-3 text-sm leading-6 text-slate-400">
+          <p className="border-t border-white/10 px-4 py-3 text-sm leading-6 text-slate-400">
             Run the suite to show expected tool routing, compliance preservation, and workflow-builder coverage.
           </p>
         )}
-      </section>
+      </details>
 
-      <section className="signal-card rounded-md border border-white/10 bg-ink-950/50 p-4">
-        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Next Build</p>
-        <h3 className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-white">
-          <GitBranch size={16} className="shrink-0 text-sky-200" aria-hidden="true" />
-          Production path I would add next
-        </h3>
-        <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-400">
+      <details className="signal-card group rounded-md border border-white/10 bg-ink-950/50">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+          <span>
+            <span className="block text-xs uppercase tracking-[0.18em] text-slate-500">Next Build</span>
+            <span className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-white">
+              <GitBranch size={16} className="shrink-0 text-sky-200" aria-hidden="true" />
+              Production path
+            </span>
+          </span>
+          <ChevronDown size={15} className="shrink-0 text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
+        </summary>
+        <ul className="space-y-2 border-t border-white/10 px-4 py-3 text-xs leading-5 text-slate-400">
           {nextBuildItems.map((item) => (
             <li key={item} className="flex gap-2">
               <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-sky-200" aria-hidden="true" />
@@ -291,7 +296,7 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
             </li>
           ))}
         </ul>
-      </section>
+      </details>
     </div>
   );
 }

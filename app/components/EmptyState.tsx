@@ -1,6 +1,4 @@
 import {
-  Braces,
-  BriefcaseBusiness,
   CheckCircle2,
   Database,
   FileText,
@@ -66,22 +64,8 @@ export default function EmptyState({ onRunWorkflow, onRunGuidedDemo }: EmptyStat
                 <p className="mt-1 text-slate-300">Accountable owner and human review before handoff.</p>
               </div>
             </div>
-            <div className="mt-4 grid gap-2 text-sm text-slate-300 sm:grid-cols-3">
-              <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
-                <BriefcaseBusiness size={16} className="mb-2 text-slate-300" aria-hidden="true" />
-                <p className="font-medium text-white">Business lens</p>
-                <p className="mt-1 text-xs leading-5 text-slate-500">Weekly client update bottleneck</p>
-              </div>
-              <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
-                <Braces size={16} className="mb-2 text-slate-300" aria-hidden="true" />
-                <p className="font-medium text-white">Software move</p>
-                <p className="mt-1 text-xs leading-5 text-slate-500">Bounded tool run over local data</p>
-              </div>
-              <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
-                <ShieldCheck size={16} className="mb-2 text-amber-200" aria-hidden="true" />
-                <p className="font-medium text-white">Control point</p>
-                <p className="mt-1 text-xs leading-5 text-slate-500">Human review before use</p>
-              </div>
+            <div className="mt-4 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-300">
+              <span className="text-slate-100">Flow:</span> source packet {"->"} bounded tools {"->"} review gate {"->"} draft packet.
             </div>
             <button
               type="button"

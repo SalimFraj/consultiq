@@ -25,6 +25,45 @@ export default function ToolCallIndicator({ events, loading, mode = "assistant" 
   if (!loading && events.length === 0) return null;
   const loadingSteps = mode === "workflow" ? workflowLoadingSteps : assistantLoadingSteps;
 
+  if (!loading) {
+    return (
+      <details className="group mt-3 rounded-md border border-white/10 bg-ink-950/55">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm text-slate-200">
+          <span className="inline-flex min-w-0 items-center gap-2">
+            <Wrench size={14} className="shrink-0 text-slate-400" aria-hidden="true" />
+            <span className="font-medium">Tool trace</span>
+            <span className="text-xs text-slate-500">{events.length} calls</span>
+          </span>
+          <ChevronDown size={15} className="shrink-0 text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
+        </summary>
+        <div className="space-y-2 border-t border-white/10 p-3">
+          {events.map((event) => (
+            <details key={event.id} className="group rounded border border-white/10 bg-white/[0.03]">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm text-slate-200">
+                <span className="inline-flex min-w-0 items-center gap-2">
+                  <CheckCircle2 size={15} className="shrink-0 text-emerald-200" aria-hidden="true" />
+                  <span className="truncate font-medium">{event.label}</span>
+                  <span className="shrink-0 text-xs text-slate-500">{event.durationMs}ms</span>
+                </span>
+                <ChevronDown size={15} className="shrink-0 text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
+              </summary>
+              <div className="border-t border-white/10 px-3 py-2">
+                <p className="mb-1 text-xs uppercase tracking-[0.16em] text-slate-500">Arguments</p>
+                <pre className="mb-3 max-h-40 overflow-auto rounded bg-black/20 p-2 text-xs text-slate-300">
+                  {JSON.stringify(event.args, null, 2)}
+                </pre>
+                <p className="mb-1 text-xs uppercase tracking-[0.16em] text-slate-500">Result</p>
+                <pre className="max-h-64 overflow-auto rounded bg-black/20 p-2 text-xs text-slate-300">
+                  {JSON.stringify(event.result, null, 2)}
+                </pre>
+              </div>
+            </details>
+          ))}
+        </div>
+      </details>
+    );
+  }
+
   return (
     <div className="animate-fade-in space-y-3 rounded-md border border-white/10 bg-ink-950/70 p-3">
       <div className="flex items-center justify-between">
@@ -77,30 +116,6 @@ export default function ToolCallIndicator({ events, loading, mode = "assistant" 
         </div>
       ) : null}
 
-      <div className="space-y-2">
-        {events.map((event) => (
-          <details key={event.id} className="group rounded border border-white/10 bg-white/[0.03]">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm text-slate-200">
-              <span className="inline-flex min-w-0 items-center gap-2">
-                <CheckCircle2 size={15} className="shrink-0 text-emerald-200" aria-hidden="true" />
-                <span className="truncate font-medium">{event.label}</span>
-                <span className="shrink-0 text-xs text-slate-500">{event.durationMs}ms</span>
-              </span>
-              <ChevronDown size={15} className="shrink-0 text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
-            </summary>
-            <div className="border-t border-white/10 px-3 py-2">
-              <p className="mb-1 text-xs uppercase tracking-[0.16em] text-slate-500">Arguments</p>
-              <pre className="mb-3 max-h-40 overflow-auto rounded bg-black/20 p-2 text-xs text-slate-300">
-                {JSON.stringify(event.args, null, 2)}
-              </pre>
-              <p className="mb-1 text-xs uppercase tracking-[0.16em] text-slate-500">Result</p>
-              <pre className="max-h-64 overflow-auto rounded bg-black/20 p-2 text-xs text-slate-300">
-                {JSON.stringify(event.result, null, 2)}
-              </pre>
-            </div>
-          </details>
-        ))}
-      </div>
     </div>
   );
 }
