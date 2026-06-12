@@ -32,6 +32,8 @@ const assistantPrompts = [
 
 const workflowPrompts = [
   "Run the weekly update workflow for Project Northstar using the sample notes and risk log.",
+  "Run a 90-second reviewer path for ConsultIQ: show the messy source artifacts, bounded tool calls, generated weekly update, compliance gate, capability candidate packet, accountable owner, success metric, and production gaps.",
+  "Create an AI Lab prototype brief for a Gemini Enterprise adoption readiness workflow that captures use case intake, data sensitivity, accountable owner, adoption risk, measurable outcome, human review, and rollout recommendation.",
   "Our teams spend too much time preparing weekly client updates from scattered notes and risk logs. Design an agentic workflow to improve this.",
   "Create an AI Lab prototype brief for automating internal engagement status reporting."
 ];
@@ -296,7 +298,10 @@ export default function Home() {
           <div ref={scrollAreaRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-4 lg:px-6 lg:py-5">
             <div className="mx-auto max-w-5xl space-y-4">
               {activeConversation?.messages.length === 0 ? (
-                <EmptyState onRunWorkflow={() => void sendMessage(workflowPrompts[0])} />
+                <EmptyState
+                  onRunWorkflow={() => void sendMessage(workflowPrompts[0])}
+                  onRunGuidedDemo={() => void sendMessage(workflowPrompts[1])}
+                />
               ) : null}
 
               {activeConversation?.messages.map((message) => (

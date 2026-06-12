@@ -7,6 +7,7 @@ import {
   Check,
   CheckCircle2,
   Clipboard,
+  ClipboardCheck,
   ClipboardList,
   Download,
   FlaskConical,
@@ -53,6 +54,13 @@ type WeeklyUpdateWorkflowResult = {
     status?: string;
     required_reviewer?: string;
     reason?: string;
+  };
+  accountability?: {
+    business_owner?: string;
+    technical_owner?: string;
+    required_reviewer?: string;
+    success_metric?: string;
+    handoff_condition?: string;
   };
   value_summary?: {
     before?: string;
@@ -121,7 +129,11 @@ ${workflow.value_summary?.after ?? "Governed AI-assisted reporting workflow."}
 - Compliance verdict: ${workflow.compliance_check?.verdict ?? "review required"}
 - Approval status: ${workflow.approval_status?.status ?? "human review required"}
 - Required reviewer: ${workflow.approval_status?.required_reviewer ?? "engagement owner"}
-- Eval coverage: 10/10 deterministic portfolio evals passing; eval_010 validates source artifacts, draft output, and review gate.
+- Business owner: ${workflow.accountability?.business_owner ?? workflow.project?.owner ?? "engagement owner"}
+- Technical owner: ${workflow.accountability?.technical_owner ?? "AI Lab prototype owner"}
+- Success metric: ${workflow.accountability?.success_metric ?? "Reduce reporting prep time while preserving source traceability and review controls."}
+- Handoff condition: ${workflow.accountability?.handoff_condition ?? "Do not hand off until ownership, review boundary, and eval gates are confirmed."}
+- Eval coverage: 11/11 deterministic portfolio evals passing; eval_010 validates source artifacts, draft output, ownership, and review gate; eval_011 covers Gemini adoption readiness.
 - Tools used: ${toolsUsed.map((tool) => formattedToolName(tool)).join(", ")}
 
 ## Audit Trace Timeline
@@ -201,7 +213,7 @@ export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCand
           </h3>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2 py-0.5 text-xs text-emerald-100">
             <FlaskConical size={12} aria-hidden="true" />
-            Eval coverage: 10/10 passing
+            Eval coverage: 11/11 passing
           </span>
           <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-2 py-0.5 text-xs text-amber-100">
             Human review required
@@ -247,6 +259,47 @@ export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCand
             <p className="mt-1 text-2xl font-semibold capitalize text-white">{workflow.project?.risk_level ?? "review"}</p>
             <p className="text-xs text-slate-500">
               {workflow.detected_risks?.increasing?.length ?? 0} increasing risks detected
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-2">
+          <div className="rounded border border-sky-300/20 bg-sky-300/[0.05] p-3">
+            <h4 className="inline-flex items-center gap-2 text-sm font-semibold text-sky-50">
+              <ClipboardCheck size={15} className="text-sky-200" aria-hidden="true" />
+              Accountable Ownership
+            </h4>
+            <dl className="mt-3 grid gap-2 text-xs leading-5">
+              <div>
+                <dt className="text-slate-500">Business owner</dt>
+                <dd className="text-slate-200">{workflow.accountability?.business_owner ?? workflow.project?.owner}</dd>
+              </div>
+              <div>
+                <dt className="text-slate-500">Technical owner</dt>
+                <dd className="text-slate-200">{workflow.accountability?.technical_owner ?? "AI Lab prototype owner"}</dd>
+              </div>
+              <div>
+                <dt className="text-slate-500">Required reviewer</dt>
+                <dd className="text-slate-200">
+                  {workflow.accountability?.required_reviewer ?? workflow.approval_status?.required_reviewer}
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <div className="rounded border border-emerald-300/20 bg-emerald-300/[0.05] p-3">
+            <h4 className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-50">
+              <CheckCircle2 size={15} className="text-emerald-200" aria-hidden="true" />
+              Adoption Metric
+            </h4>
+            <p className="mt-3 text-xs leading-5 text-slate-300">
+              {workflow.accountability?.success_metric ??
+                "Reduce reporting prep time while preserving source traceability and review controls."}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              Handoff:{" "}
+              {workflow.accountability?.handoff_condition ??
+                "Do not hand off until ownership, review boundary, and eval gates are confirmed."}
             </p>
           </div>
         </div>
@@ -298,7 +351,7 @@ export default function CapabilityCandidatePacket({ toolEvents }: CapabilityCand
               </p>
               <p>
                 <span className="text-slate-500">Eval coverage:</span> eval_010 validates source artifacts, draft
-                output, and review gate; the full suite checks 10 deterministic scenarios.
+                output, ownership, and review gate; eval_011 checks Gemini adoption readiness.
               </p>
               <p>
                 <span className="text-slate-500">Tools used:</span>{" "}

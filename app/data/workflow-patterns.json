@@ -57,6 +57,21 @@
       ],
       "human_gates": ["owner review for stale guidance", "subject-matter expert escalation"],
       "eval_criteria": ["retrieves relevant docs", "cites source titles", "flags uncertainty", "does not answer beyond sources"]
+    },
+    {
+      "id": "pattern_005",
+      "name": "Gemini Enterprise Adoption Readiness Agent",
+      "best_for": ["Gemini Enterprise", "Google Cloud AI adoption", "use case intake", "AI rollout readiness", "agentic transformation"],
+      "steps": [
+        "Capture the business workflow and accountable owner before prototyping",
+        "Classify data sensitivity and approved system boundaries",
+        "Assess adoption risk, training needs, and change-management dependency",
+        "Define measurable business outcome and effort level",
+        "Recommend prototype, pilot, or defer decision with human review",
+        "Create rollout packet with governance, evals, and owner handoff"
+      ],
+      "human_gates": ["business-owner approval", "data/privacy triage", "AI governance review", "pilot go/no-go decision"],
+      "eval_criteria": ["owner named before prototype", "data sensitivity classified", "measurable outcome present", "human review retained", "rollout recommendation is bounded"]
     }
   ]
 }

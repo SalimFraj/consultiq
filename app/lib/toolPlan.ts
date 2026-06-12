@@ -62,6 +62,7 @@ export function createDeterministicToolPlan(prompt: string, mode: ChatMode = "as
   if (
     lower.includes("run weekly update workflow") ||
     lower.includes("weekly update workflow") ||
+    lower.includes("90-second reviewer path") ||
     lower.includes("sample notes and risk log")
   ) {
     const projectArgs = { project_id: extractProjectReference(lower) || "Project Northstar" };

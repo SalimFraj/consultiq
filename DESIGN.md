@@ -12,9 +12,12 @@ The default path is **Run Workflow**, not a blank chatbot. The strongest demo ru
 4. Detect risk movement.
 5. Check client-facing review requirements.
 6. Draft the weekly update.
-7. Stop at human approval.
+7. Name the accountable owner, success metric, and handoff condition.
+8. Stop at human approval.
 
 That interaction is closer to enterprise AI builder work than a general assistant answer. It shows process redesign, tool orchestration, auditability, and decision boundaries.
+
+The workbench also includes a Gemini Enterprise adoption-readiness scenario. That path evaluates whether an AI idea has a real workflow owner, safe data boundary, measurable outcome, adoption plan, and review path before it becomes a prototype.
 
 ## 2. Deterministic Tools
 
@@ -55,6 +58,16 @@ Client-facing or sensitive outputs are not treated as final actions. The weekly 
 
 This matters because enterprise autonomy is not all-or-nothing. The useful pattern here is supervised automation: the agent drafts, organizes evidence, and exposes risks, while a human owns external use.
 
+The prototype also makes ownership explicit before handoff:
+
+- business owner,
+- technical owner,
+- required reviewer,
+- success metric,
+- handoff condition.
+
+This keeps the build from becoming a polished demo with no operational owner.
+
 ## 5. Eval Strategy
 
 The eval harness is a deterministic tool-plan regression suite. It does not claim to grade open-ended model quality.
@@ -64,7 +77,8 @@ It checks:
 - expected tools are called,
 - compliance verdicts match static rules,
 - workflow outputs contain required structure,
-- the weekly update runner returns source artifacts, a draft, and a review gate,
+- the weekly update runner returns source artifacts, a draft, ownership metadata, and a review gate,
+- the Gemini adoption-readiness scenario preserves owner, data sensitivity, measurable outcome, human review, and rollout recommendation,
 - unknown project prompts do not invent facts.
 
 A production version would add golden-output tests, model-graded quality checks, human review sampling, prompt/tool versioning, and CI gates.
@@ -76,6 +90,7 @@ To productionize this pattern:
 - replace JSON files with approved enterprise connectors,
 - add auth and role-based tool access,
 - persist approval decisions,
+- persist accountable owner and handoff state,
 - move rate limiting to Redis or an equivalent shared store,
 - log tool calls with prompt version, data source version, latency, and review outcome,
 - add monitoring, incident ownership, and rollback paths.

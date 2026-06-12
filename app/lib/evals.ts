@@ -145,6 +145,7 @@ function validateWeeklyUpdateWorkflow(
         source_artifacts?: { meeting_notes?: unknown[]; risk_log?: unknown[] };
         drafted_update?: string;
         approval_status?: { status?: string };
+        accountability?: { business_owner?: string; success_metric?: string; handoff_condition?: string };
       }
     | undefined;
 
@@ -162,6 +163,16 @@ function validateWeeklyUpdateWorkflow(
     check: "weekly_update_review_gate",
     passed: result?.approval_status?.status === "human review required",
     detail: "Workflow output should stop at a human review gate before client-facing use."
+  });
+  checks.push({
+    check: "weekly_update_accountable_owner",
+    passed: Boolean(result?.accountability?.business_owner && result.accountability.success_metric),
+    detail: "Workflow output should name an accountable owner and measurable success metric."
+  });
+  checks.push({
+    check: "weekly_update_handoff_condition",
+    passed: Boolean(result?.accountability?.handoff_condition),
+    detail: "Workflow output should define the condition for handoff beyond prototype."
   });
 
   return checks;

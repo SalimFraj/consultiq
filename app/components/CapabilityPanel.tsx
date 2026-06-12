@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ClipboardCheck,
   ClipboardList,
+  GitBranch,
   FlaskConical,
   PackageCheck,
   Play,
@@ -38,6 +39,15 @@ const statusClasses: Record<CapabilityLifecycleStatus, string> = {
   "production-candidate": "border-sky-300/20 bg-sky-300/10 text-sky-100"
 };
 
+const nextBuildItems = [
+  "Connector layer for approved systems of record",
+  "Role-based access and reviewer permissions",
+  "Persistent audit log for prompts, tools, outputs, and approvals",
+  "CI eval gates with prompt and tool-version tracking",
+  "Workflow template library for repeatable AI Lab builds",
+  "Adoption dashboard for owner, metric, usage, risk, and handoff status"
+];
+
 type CapabilityPanelContentProps = {
   suite: EvalSuiteResponse | null;
   loading: boolean;
@@ -46,7 +56,7 @@ type CapabilityPanelContentProps = {
 
 function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
   const passCount = suite?.passCount ?? 0;
-  const totalCount = suite?.totalCount ?? 10;
+  const totalCount = suite?.totalCount ?? 11;
   const reviewCount = suite ? suite.totalCount - suite.passCount : 0;
   const passRate = suite ? Math.round((suite.passCount / Math.max(1, suite.totalCount)) * 100) : 0;
   const checkedCases = suite ? suite.totalCount : 0;
@@ -139,7 +149,7 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
           <p className="mt-1 text-xs leading-5 text-slate-500">client records stored</p>
         </div>
         <div className="signal-card rounded-md border border-white/10 bg-white/[0.03] p-3">
-          <p className="text-2xl font-semibold tracking-normal text-white">{suite ? `${suite.passCount}/${suite.totalCount}` : "10"}</p>
+          <p className="text-2xl font-semibold tracking-normal text-white">{suite ? `${suite.passCount}/${suite.totalCount}` : "11"}</p>
           <p className="mt-1 text-xs leading-5 text-slate-500">eval cases</p>
         </div>
       </section>
@@ -265,6 +275,22 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
             Run the suite to show expected tool routing, compliance preservation, and workflow-builder coverage.
           </p>
         )}
+      </section>
+
+      <section className="signal-card rounded-md border border-white/10 bg-ink-950/50 p-4">
+        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Next Build</p>
+        <h3 className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-white">
+          <GitBranch size={16} className="shrink-0 text-sky-200" aria-hidden="true" />
+          Production path I would add next
+        </h3>
+        <ul className="mt-3 space-y-2 text-xs leading-5 text-slate-400">
+          {nextBuildItems.map((item) => (
+            <li key={item} className="flex gap-2">
+              <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-sky-200" aria-hidden="true" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   );

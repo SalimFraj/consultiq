@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import { FlaskConical, GitBranch, PackageCheck, ShieldCheck, Workflow, X } from "lucide-react";
+import { CheckCircle2, ClipboardList, FlaskConical, GitBranch, PackageCheck, ShieldCheck, Workflow, X } from "lucide-react";
 
 type CaseStudyModalProps = {
   open: boolean;
@@ -26,6 +26,18 @@ const caseStudySections = [
     title: "Architecture",
     body:
       "A Next.js App Router UI calls a guarded API route. The agent loop can use Gemini function calling, Groq synthesis fallback, or deterministic local fallback, while local tools remain the source of record."
+  },
+  {
+    icon: ClipboardList,
+    title: "Ownership Model",
+    body:
+      "The workflow names a business owner, technical owner, required reviewer, success metric, and handoff condition before the capability is treated as more than a prototype."
+  },
+  {
+    icon: CheckCircle2,
+    title: "Business Outcome",
+    body:
+      "The demo frames value in operational terms: a 60-90 minute reporting task becomes a review-ready draft path with source traceability, risk visibility, and accountable human approval."
   },
   {
     icon: ShieldCheck,

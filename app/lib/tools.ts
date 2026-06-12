@@ -211,6 +211,7 @@ export function designAgenticWorkflow(problem: string) {
       "problem summary",
       "current-state workflow",
       "pain points and bottlenecks",
+      "accountable owner and success metric",
       "proposed agentic workflow",
       "required tools and data sources",
       "human-in-the-loop approval points",
@@ -235,6 +236,7 @@ export function generateDocument(type: string, context: string) {
         "Problem Summary",
         "Current-State Workflow",
         "Pain Points and Bottlenecks",
+        "Accountable Owner and Success Metric",
         "Proposed Agentic Workflow",
         "Required Tools/Data Sources",
         "Human-in-the-Loop Approval Points",
@@ -317,6 +319,13 @@ type WeeklyUpdateWorkflowResult =
         status: "human review required";
         required_reviewer: string;
         reason: string;
+      };
+      accountability: {
+        business_owner: string;
+        technical_owner: string;
+        required_reviewer: string;
+        success_metric: string;
+        handoff_condition: string;
       };
       value_summary: {
         before: string;
@@ -411,6 +420,14 @@ This draft must be reviewed by ${project.owner} before it is used as a client-fa
       status: "human review required",
       required_reviewer: project.owner,
       reason: "Client-facing AI-assisted deliverables require engagement-owner review before external use."
+    },
+    accountability: {
+      business_owner: project.owner,
+      technical_owner: "AI Lab prototype owner",
+      required_reviewer: project.owner,
+      success_metric: "Cut weekly reporting prep from 60-90 minutes to a reviewed draft in under 15 minutes while preserving risk escalation and source traceability.",
+      handoff_condition:
+        "Only hand off after the business owner confirms the workflow, the reviewer approves the output boundary, and evals pass against source, draft, and review-gate checks."
     },
     value_summary: {
       before: "A project lead manually reads scattered notes and risk logs, reconciles project facts, writes the update, and remembers review requirements.",

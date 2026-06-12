@@ -295,6 +295,13 @@ function demoResponse(messages: ClientMessage[], mode: ChatMode, startedAt: numb
       detected_risks?: { total: number; increasing: Array<{ id: string; risk: string; severity: string; trend: string }>; requires_escalation: boolean };
       drafted_update?: string;
       approval_status?: { status: string; required_reviewer?: string; reason: string };
+      accountability?: {
+        business_owner?: string;
+        technical_owner?: string;
+        required_reviewer?: string;
+        success_metric?: string;
+        handoff_condition?: string;
+      };
       value_summary?: { before: string; after: string; estimated_time_saved: string; risk_reduction: string };
     }>(plan, "run_weekly_update_workflow");
 
@@ -323,6 +330,13 @@ Reason: ${workflow?.reason ?? "No matching project or source packet was found."}
 - Owner: ${workflow.project?.owner}
 - Next milestone: ${workflow.project?.next_milestone}
 - Reporting period: ${workflow.reporting_period}
+
+## Accountable Owner And Success Metric
+- Business owner: ${workflow.accountability?.business_owner ?? workflow.project?.owner}
+- Technical owner: ${workflow.accountability?.technical_owner ?? "AI Lab prototype owner"}
+- Required reviewer: ${workflow.accountability?.required_reviewer ?? workflow.approval_status?.required_reviewer}
+- Success metric: ${workflow.accountability?.success_metric}
+- Handoff condition: ${workflow.accountability?.handoff_condition}
 
 ## Workflow Execution
 ${workflow.execution_steps?.map((step, index) => `${index + 1}. ${step}`).join("\n")}
@@ -353,7 +367,74 @@ Reviewer: ${workflow.approval_status?.required_reviewer}.
 Reason: ${workflow.approval_status?.reason}`;
     }
   } else if (plan.scenario === "workflow") {
-    message = `# AI Lab Prototype Brief
+    if (prompt.toLowerCase().includes("gemini")) {
+      message = `# AI Lab Prototype Brief
+
+## Problem Summary
+Teams need a practical way to decide which Google Cloud / Gemini Enterprise AI ideas should become pilots, which need more governance work, and which should be deferred. The goal is to move from enthusiasm to accountable adoption with measurable business outcomes.
+
+## Current-State Workflow
+1. Business teams propose AI ideas with uneven detail.
+2. Technical teams assess feasibility after the idea has already gathered momentum.
+3. Data sensitivity, ownership, and rollout readiness are clarified late.
+4. Promising ideas compete with demo-only ideas because success metrics are not consistent.
+
+## Pain Points and Bottlenecks
+1. AI ideas can become prototypes before a real workflow owner is named.
+2. Data and platform constraints are often discovered after the demo.
+3. Adoption risk is underweighted compared with technical novelty.
+4. Leadership needs a repeatable way to compare impact, effort, and governance readiness.
+
+## Accountable Owner and Success Metric
+- Business owner: named process owner before prototyping.
+- Technical owner: AI Lab / Data & AI prototype lead.
+- Reviewer: data/privacy or AI governance reviewer when sensitive data, external tools, or high-autonomy decisions are involved.
+- Success metric: each candidate must define one measurable workflow outcome, such as hours saved, cycle-time reduction, risk reduction, or adoption rate.
+- Handoff condition: do not move to pilot until the owner, data boundary, review gate, eval plan, and rollout metric are accepted.
+
+## Proposed Agentic Workflow
+Create a Gemini Enterprise Adoption Readiness Agent that captures the use case, maps the current workflow, classifies data sensitivity, identifies the accountable owner, scores adoption risk, recommends prototype/pilot/defer, and produces a rollout packet for review.
+
+## Required Tools/Data Sources
+1. AI use-case intake form
+2. Approved system and data-source inventory
+3. Data sensitivity and privacy rules
+4. Workflow ownership register
+5. Adoption-risk checklist
+6. Eval and pilot-readiness template
+
+## Human-in-the-Loop Approval Points
+1. Business-owner approval before prototype build
+2. Data/privacy triage before connecting systems
+3. AI governance review before pilot
+4. Go/no-go decision before broader rollout
+
+## Autonomy Level
+Advisory intake and readiness recommendation. The agent can structure evidence and recommend a path, but it cannot approve pilots, connect enterprise systems, or launch workflows without owner review.
+
+## Compliance/Risk Assessment
+Review required. Gemini Enterprise adoption decisions involve data access, workflow change, employee adoption, and governance boundaries. Sensitive data and high-autonomy use cases must be reviewed before prototyping.
+
+## MVP Prototype Scope
+Build a single-screen readiness workflow that accepts a proposed AI use case, classifies ownership and data sensitivity, scores value/effort/adoption risk, and outputs a pilot-readiness packet with clear next steps.
+
+## Evaluation Checklist
+1. Names an accountable owner before prototype approval
+2. Classifies data sensitivity and tool boundary
+3. Requires human review for sensitive or high-autonomy use cases
+4. Defines a measurable business outcome
+5. Produces a bounded rollout recommendation
+
+## Production-Readiness Checklist
+1. Role-based access
+2. Approved connector inventory
+3. Persistent audit log
+4. Prompt/tool versioning
+5. CI eval gates
+6. Adoption dashboard
+7. Owner handoff and support model`;
+    } else {
+      message = `# AI Lab Prototype Brief
 
 ## Problem Summary
 Engagement teams spend too much time preparing weekly client updates from scattered notes, status trackers, and risk logs. The opportunity is to convert that manual reporting cycle into a governed AI-assisted workflow that drafts updates, surfaces risks, and routes client-facing content for human approval.
@@ -369,6 +450,13 @@ Engagement teams spend too much time preparing weekly client updates from scatte
 2. Risk changes can be missed when logs and notes are not reconciled.
 3. Status language varies by author, making updates less consistent.
 4. Review happens late instead of being designed into the workflow.
+
+## Accountable Owner and Success Metric
+- Business owner: engagement owner before prototype approval
+- Technical owner: AI Lab prototype owner
+- Reviewer: engagement owner plus risk/compliance reviewer when escalation is triggered
+- Success metric: reduce reporting prep from 60-90 minutes to a reviewed draft in under 15 minutes while preserving source traceability and review controls
+- Handoff condition: move to MVP only after owner, data boundary, approval path, and eval gates are accepted
 
 ## Proposed Agentic Workflow
 Use a supervised Engagement Status Reporting Agent that gathers approved project inputs, summarizes accomplishments and blockers, flags risk movement, checks communication and confidentiality rules, drafts the update, and routes it to the engagement owner for approval.
@@ -409,6 +497,7 @@ Build a single-engagement prototype that ingests fake status notes and a fake ri
 5. Human escalation path
 6. Prompt and tool-version tracking
 7. Data retention and incident response owner`;
+    }
   } else if (plan.scenario === "project_status") {
     const projectResult = firstToolResult<{
       found?: boolean;

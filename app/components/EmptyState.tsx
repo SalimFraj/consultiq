@@ -36,9 +36,10 @@ const workbenchSteps: WorkflowPathStep[] = [
 
 type EmptyStateProps = {
   onRunWorkflow: () => void;
+  onRunGuidedDemo: () => void;
 };
 
-export default function EmptyState({ onRunWorkflow }: EmptyStateProps) {
+export default function EmptyState({ onRunWorkflow, onRunGuidedDemo }: EmptyStateProps) {
   return (
     <>
       <div className="animate-fade-in overflow-hidden rounded-md border border-white/10 bg-ink-850">
@@ -51,6 +52,20 @@ export default function EmptyState({ onRunWorkflow }: EmptyStateProps) {
             <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400">
               This path starts with a real consulting operating problem: meeting notes, project facts, risk logs, and client-facing review rules are spread across different sources.
             </p>
+            <div className="mt-4 grid gap-2 rounded-md border border-sky-300/20 bg-sky-300/[0.05] p-3 text-sm sm:grid-cols-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Before</p>
+                <p className="mt-1 text-slate-300">60-90 minutes assembling weekly updates by hand.</p>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-500">After</p>
+                <p className="mt-1 text-slate-300">Review-ready draft with source trace and risk movement.</p>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Control</p>
+                <p className="mt-1 text-slate-300">Accountable owner and human review before handoff.</p>
+              </div>
+            </div>
             <div className="mt-4 grid gap-2 text-sm text-slate-300 sm:grid-cols-3">
               <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
                 <BriefcaseBusiness size={16} className="mb-2 text-slate-300" aria-hidden="true" />
@@ -75,6 +90,14 @@ export default function EmptyState({ onRunWorkflow }: EmptyStateProps) {
             >
               <Workflow size={16} aria-hidden="true" />
               Run weekly update workflow
+            </button>
+            <button
+              type="button"
+              onClick={onRunGuidedDemo}
+              className="mt-2 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-sky-300/25 px-4 py-2 text-sm font-medium text-sky-50 hover:bg-sky-300/10 sm:ml-2 sm:mt-5 sm:w-auto"
+            >
+              <FileText size={16} aria-hidden="true" />
+              Run 90-second reviewer path
             </button>
           </div>
           <div className="border-t border-white/10 bg-white/[0.03] p-4 sm:p-5 md:border-l md:border-t-0">

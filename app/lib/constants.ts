@@ -4,6 +4,7 @@ export const WORKFLOW_SECTIONS = [
   "Problem Summary",
   "Current-State Workflow",
   "Pain Points and Bottlenecks",
+  "Accountable Owner and Success Metric",
   "Proposed Agentic Workflow",
   "Required Tools/Data Sources",
   "Human-in-the-Loop Approval Points",

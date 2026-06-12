@@ -59,6 +59,12 @@
       "prompt": "Run the weekly update workflow for Project Northstar using the sample notes and risk log.",
       "expected_tools": ["get_project_status", "run_weekly_update_workflow", "check_compliance"],
       "expected_behavior": "Execute the sample workflow, use project facts and source notes, draft a weekly update, and require human review before client-facing use."
+    },
+    {
+      "id": "eval_011",
+      "prompt": "Create an AI Lab prototype brief for a Gemini Enterprise adoption readiness workflow.",
+      "expected_tools": ["design_agentic_workflow", "generate_document", "check_compliance"],
+      "expected_behavior": "Produce a governed adoption-readiness workflow with accountable owner, data sensitivity, measurable outcome, human review, and bounded rollout recommendation."
     }
   ]
 }
