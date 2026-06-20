@@ -2,6 +2,7 @@ import CapabilityCandidatePacket from "./CapabilityCandidatePacket";
 import DocumentPreview from "./DocumentPreview";
 import ToolCallIndicator from "./ToolCallIndicator";
 import WorkflowRunCard, { getWeeklyWorkflowEvent } from "./WorkflowRunCard";
+import type { ReviewerDemoPayload } from "@/lib/reviewerDemo";
 import type { AssistantMetadata, ToolEvent } from "@/lib/types";
 import { AlertTriangle, Bot, CheckCircle2, RotateCcw, UserRound } from "lucide-react";
 
@@ -17,6 +18,7 @@ export type UIMessage = {
     humanReviewRequired: boolean;
   };
   guidedReview?: boolean;
+  reviewerDemo?: ReviewerDemoPayload;
 };
 
 type ChatMessageProps = {

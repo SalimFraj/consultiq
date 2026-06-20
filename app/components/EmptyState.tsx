@@ -4,6 +4,7 @@ import {
   FileText,
   FlaskConical,
   MessageSquare,
+  PlayCircle,
   ShieldCheck,
   Workflow
 } from "lucide-react";
@@ -67,22 +68,24 @@ export default function EmptyState({ onRunWorkflow, onRunGuidedDemo }: EmptyStat
             <div className="mt-4 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-300">
               <span className="text-slate-100">Flow:</span> source packet {"->"} bounded tools {"->"} review gate {"->"} draft packet.
             </div>
-            <button
-              type="button"
-              onClick={onRunWorkflow}
-              className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-emerald-300/30 bg-emerald-300/15 px-4 py-2 text-sm font-medium text-emerald-50 hover:bg-emerald-300/25 sm:w-auto"
-            >
-              <Workflow size={16} aria-hidden="true" />
-              Run weekly update workflow
-            </button>
-            <button
-              type="button"
-              onClick={onRunGuidedDemo}
-              className="mt-2 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-sky-300/25 px-4 py-2 text-sm font-medium text-sky-50 hover:bg-sky-300/10 sm:ml-2 sm:mt-5 sm:w-auto"
-            >
-              <FileText size={16} aria-hidden="true" />
-              Run 90-second reviewer path
-            </button>
+            <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                onClick={onRunGuidedDemo}
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-emerald-200/40 bg-emerald-300 px-4 py-2 text-sm font-semibold text-ink-950 shadow-[0_10px_30px_rgba(110,231,183,0.18)] hover:bg-emerald-200 sm:w-auto"
+              >
+                <PlayCircle size={17} aria-hidden="true" />
+                Start guided recruiter review
+              </button>
+              <button
+                type="button"
+                onClick={onRunWorkflow}
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-white/15 px-4 py-2 text-sm font-medium text-slate-200 hover:bg-white/[0.06] sm:w-auto"
+              >
+                <Workflow size={16} aria-hidden="true" />
+                Run workflow yourself
+              </button>
+            </div>
           </div>
           <div className="border-t border-white/10 bg-white/[0.03] p-4 sm:p-5 md:border-l md:border-t-0">
             <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Run Schematic</p>
