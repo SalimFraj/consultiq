@@ -8,6 +8,7 @@ import ChatMessage, { type UIMessage } from "./components/ChatMessage";
 import ComposerForm from "./components/ComposerForm";
 import EmptyState from "./components/EmptyState";
 import GovernanceModal from "./components/GovernanceModal";
+import ReviewerWalkthrough from "./components/ReviewerWalkthrough";
 import Sidebar from "./components/Sidebar";
 import ToolCallIndicator from "./components/ToolCallIndicator";
 import { MAX_TOOL_CALLS } from "./lib/constants";
@@ -64,6 +65,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [governanceOpen, setGovernanceOpen] = useState(false);
   const [caseStudyOpen, setCaseStudyOpen] = useState(false);
+  const [reviewerWalkthrough, setReviewerWalkthrough] = useState<{
+    open: boolean;
+    loading: boolean;
+    message?: UIMessage;
+    error?: string;
+  }>({ open: false, loading: false });
   const [composerFocusToken, setComposerFocusToken] = useState(0);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -185,9 +192,13 @@ export default function Home() {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify([replacement]));
   };
 
-  const sendMessage = async (overridePrompt?: string) => {
+  const sendMessage = async (overridePrompt?: string, options: { guidedReview?: boolean } = {}) => {
     const prompt = (overridePrompt ?? input).trim();
     if (!prompt || loading || !activeConversation) return;
+
+    if (options.guidedReview) {
+      setReviewerWalkthrough({ open: true, loading: true });
+    }
 
     const userMessage: UIMessage = {
       id: newId("msg"),
@@ -234,7 +245,8 @@ export default function Home() {
         content: data.message,
         toolEvents: data.toolEvents,
         metadata: data.metadata,
-        flags: data.flags
+        flags: data.flags,
+        guidedReview: options.guidedReview
       };
 
       updateActiveConversation((conversation) => ({
@@ -242,6 +254,9 @@ export default function Home() {
         messages: [...conversation.messages, assistantMessage],
         updatedAt: new Date().toISOString()
       }));
+      if (options.guidedReview) {
+        setReviewerWalkthrough({ open: true, loading: false, message: assistantMessage });
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       const assistantMessage: UIMessage = {
@@ -259,6 +274,9 @@ export default function Home() {
         messages: [...conversation.messages, assistantMessage],
         updatedAt: new Date().toISOString()
       }));
+      if (options.guidedReview) {
+        setReviewerWalkthrough({ open: true, loading: false, error: message });
+      }
     } finally {
       setLoading(false);
     }
@@ -268,6 +286,18 @@ export default function Home() {
     <main className="min-h-[100dvh] bg-ink-950 text-white">
       <GovernanceModal open={governanceOpen} onClose={() => setGovernanceOpen(false)} />
       <CaseStudyModal open={caseStudyOpen} onClose={() => setCaseStudyOpen(false)} />
+      <ReviewerWalkthrough
+        open={reviewerWalkthrough.open}
+        loading={reviewerWalkthrough.loading}
+        toolEvents={reviewerWalkthrough.message?.toolEvents}
+        error={reviewerWalkthrough.error}
+        onClose={() => setReviewerWalkthrough((current) => ({ ...current, open: false }))}
+        onRetry={() => void sendMessage(workflowPrompts[1], { guidedReview: true })}
+        onOpenEvidence={() => {
+          setReviewerWalkthrough((current) => ({ ...current, open: false }));
+          requestAnimationFrame(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }));
+        }}
+      />
       <div className="flex min-h-[100dvh] flex-col lg:h-screen lg:min-h-0 lg:overflow-hidden lg:flex-row">
         <Sidebar
           mode={mode}
@@ -300,12 +330,16 @@ export default function Home() {
               {activeConversation?.messages.length === 0 ? (
                 <EmptyState
                   onRunWorkflow={() => void sendMessage(workflowPrompts[0])}
-                  onRunGuidedDemo={() => void sendMessage(workflowPrompts[1])}
+                  onRunGuidedDemo={() => void sendMessage(workflowPrompts[1], { guidedReview: true })}
                 />
               ) : null}
 
               {activeConversation?.messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
+                <ChatMessage
+                  key={message.id}
+                  message={message}
+                  onReplayReviewer={message.guidedReview ? () => setReviewerWalkthrough({ open: true, loading: false, message }) : undefined}
+                />
               ))}
 
               {loading ? <ToolCallIndicator events={[]} loading mode={mode} /> : null}

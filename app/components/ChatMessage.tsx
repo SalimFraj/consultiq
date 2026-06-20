@@ -3,7 +3,7 @@ import DocumentPreview from "./DocumentPreview";
 import ToolCallIndicator from "./ToolCallIndicator";
 import WorkflowRunCard, { getWeeklyWorkflowEvent } from "./WorkflowRunCard";
 import type { AssistantMetadata, ToolEvent } from "@/lib/types";
-import { AlertTriangle, Bot, CheckCircle2, UserRound } from "lucide-react";
+import { AlertTriangle, Bot, CheckCircle2, RotateCcw, UserRound } from "lucide-react";
 
 export type UIMessage = {
   id: string;
@@ -16,10 +16,12 @@ export type UIMessage = {
     complianceWarning: boolean;
     humanReviewRequired: boolean;
   };
+  guidedReview?: boolean;
 };
 
 type ChatMessageProps = {
   message: UIMessage;
+  onReplayReviewer?: () => void;
 };
 
 function providerPathLabel(metadata?: AssistantMetadata) {
@@ -40,7 +42,7 @@ function providerPathLabel(metadata?: AssistantMetadata) {
   return "Provider path: Live provider recovered with local tool guardrails.";
 }
 
-export default function ChatMessage({ message }: ChatMessageProps) {
+export default function ChatMessage({ message, onReplayReviewer }: ChatMessageProps) {
   const isAssistant = message.role === "assistant";
   const isFallback = Boolean(
     message.metadata?.model.includes("fallback") || message.metadata?.model.startsWith("groq:")
@@ -57,6 +59,16 @@ export default function ChatMessage({ message }: ChatMessageProps) {
             {isAssistant ? <Bot size={14} aria-hidden="true" /> : <UserRound size={14} aria-hidden="true" />}
             {isAssistant ? "ConsultIQ" : "You"}
           </p>
+          {onReplayReviewer ? (
+            <button
+              type="button"
+              onClick={onReplayReviewer}
+              className="inline-flex min-h-8 items-center gap-2 rounded border border-sky-300/20 px-2.5 text-xs text-sky-100 hover:bg-sky-300/10"
+            >
+              <RotateCcw size={13} aria-hidden="true" />
+              Replay reviewer walkthrough
+            </button>
+          ) : null}
         </div>
 
         {message.flags?.humanReviewRequired || message.flags?.complianceWarning || message.flags?.uncertainty ? (

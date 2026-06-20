@@ -6,14 +6,13 @@ Live demo: [https://consultiq.vercel.app/](https://consultiq.vercel.app/)
 
 ## Reviewer Path
 
-1. Open the live demo.
-2. Click **Run weekly update workflow**.
-3. Inspect the workflow run card: source notes, risk log, project facts, generated update, and review gate.
-4. Expand **Tool Activity** to see deterministic tool calls.
-5. Review the **Capability Candidate Packet** and audit trace.
-6. Open **Case Study** for the build story.
-7. Run the eval suite from the right panel.
-8. Try **Run 90-second reviewer path** or the Gemini Enterprise adoption-readiness prompt.
+1. Open the live demo and click **Run 90-second reviewer path**.
+2. The app executes the real weekly-update workflow, then opens a six-chapter guided review.
+3. Let the walkthrough auto-play, or use pause, previous, next, chapter navigation, and keyboard controls.
+4. Review the business problem, bounded sources, observed tool calls, generated update, compliance gate, and handoff decision.
+5. Select **Full evidence** to inspect the underlying workflow card, tool activity, capability packet, and audit trace.
+6. Replay the walkthrough from the completed response, open **Case Study**, and run the eval suite from the right panel.
+7. Try the Gemini Enterprise adoption-readiness prompt as a second workflow design scenario.
 
 ## What To Notice
 
