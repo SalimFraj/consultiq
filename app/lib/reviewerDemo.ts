@@ -23,6 +23,8 @@ export type ReviewerDemoResponse = {
   review: ReviewerDemoPayload;
 };
 
+export const REVIEWER_DEMO_PROMPT = "Run the weekly update workflow for Project Northstar using the sample notes and risk log.";
+
 export const reviewerTakeaways = [
   "A credible AI build starts with a measurable operating problem, not a model demo.",
   "Reviewers can see the complete data boundary and verify that missing facts are not invented.",
@@ -73,7 +75,7 @@ export function createReviewerDecision(runId: string, decision: ReviewerDecision
 }
 
 export function createReviewerDemo(): ReviewerDemoResponse {
-  const prompt = "Run the weekly update workflow for Project Northstar using the sample notes and risk log.";
+  const prompt = REVIEWER_DEMO_PROMPT;
   const plan = createDeterministicToolPlan(prompt, "workflow");
   const walkthrough = buildReviewerWalkthrough(plan.toolEvents);
   if (!walkthrough) throw new Error("The reviewer demo could not assemble structured workflow evidence.");
@@ -111,7 +113,7 @@ export function createReviewerDemo(): ReviewerDemoResponse {
   };
 
   return {
-    message: "# Guided Reviewer Demo\n\nThe structured reviewer path executed the Northstar workflow and produced traceable evidence, a governed draft, and a conditional internal-MVP recommendation.",
+    message: "# Reviewer Evidence Packet\n\nStarting prompt: Run the weekly update workflow for Project Northstar using the sample notes and risk log.\n\nThe local deterministic workflow executed the Northstar source packet, produced traceable evidence, generated a governed draft, and stopped at a human review gate.",
     toolEvents: plan.toolEvents,
     metadata: {
       model: "reviewer-demo: deterministic workflow",

@@ -73,6 +73,7 @@ export default function Home() {
     loading: boolean;
     demo?: ReviewerDemoPayload;
     error?: string;
+    startAtOutcome?: boolean;
   }>({ open: false, loading: false });
   const [composerFocusToken, setComposerFocusToken] = useState(0);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
@@ -80,7 +81,7 @@ export default function Home() {
   const hasHydratedRef = useRef(false);
   const shouldAutoScrollRef = useRef(false);
   const recruiterEntryHandledRef = useRef(false);
-  const runReviewerDemoRef = useRef<() => Promise<void>>(async () => {});
+  const runReviewerDemoRef = useRef<(options?: { startAtOutcome?: boolean }) => Promise<void>>(async () => {});
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -239,13 +240,14 @@ export default function Home() {
     }
   };
 
-  const runReviewerDemo = async () => {
+  const runReviewerDemo = async (options: { startAtOutcome?: boolean } = {}) => {
     if (loading || !activeConversation) return;
+    const startAtOutcome = options.startAtOutcome ?? false;
     const userMessage: UIMessage = { id: newId("msg"), role: "user", content: "Run the structured 90-second recruiter review for ConsultIQ." };
 
     window.sessionStorage.setItem("consultiq.recruiter-invite.v1", "seen");
     setRecruiterInviteOpen(false);
-    setReviewerWalkthrough({ open: true, loading: true });
+    setReviewerWalkthrough({ open: true, loading: true, startAtOutcome });
     updateActiveConversation((conversation) => ({
       ...conversation,
       title: conversation.messages.length === 0 ? "90-second recruiter review" : conversation.title,
@@ -275,10 +277,10 @@ export default function Home() {
         reviewerDemo: data.review
       };
       updateActiveConversation((conversation) => ({ ...conversation, messages: [...conversation.messages, assistantMessage], updatedAt: new Date().toISOString() }));
-      setReviewerWalkthrough({ open: true, loading: false, demo: data.review });
+      setReviewerWalkthrough({ open: true, loading: false, demo: data.review, startAtOutcome });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
-      setReviewerWalkthrough({ open: true, loading: false, error: message });
+      setReviewerWalkthrough({ open: true, loading: false, error: message, startAtOutcome: false });
     } finally {
       setLoading(false);
     }
@@ -291,7 +293,7 @@ export default function Home() {
   useEffect(() => {
     if (!activeConversation || recruiterEntryHandledRef.current) return;
     recruiterEntryHandledRef.current = true;
-    const directReview = new URLSearchParams(window.location.search).get("review") === "1";
+    const directReview = window.location.pathname === "/review" || new URLSearchParams(window.location.search).get("review") === "1";
     if (directReview) {
       void runReviewerDemoRef.current();
       return;
@@ -308,6 +310,7 @@ export default function Home() {
       <RecruiterReviewInvite
         open={recruiterInviteOpen}
         onStart={() => void runReviewerDemo()}
+        onSkipToOutcome={() => void runReviewerDemo({ startAtOutcome: true })}
         onExplore={() => {
           window.sessionStorage.setItem("consultiq.recruiter-invite.v1", "seen");
           setRecruiterInviteOpen(false);
@@ -322,11 +325,16 @@ export default function Home() {
         loading={reviewerWalkthrough.loading}
         demo={reviewerWalkthrough.demo}
         error={reviewerWalkthrough.error}
+        startAtOutcome={reviewerWalkthrough.startAtOutcome}
         onClose={() => setReviewerWalkthrough((current) => ({ ...current, open: false }))}
         onRetry={() => void runReviewerDemo()}
         onOpenEvidence={() => {
           setReviewerWalkthrough((current) => ({ ...current, open: false }));
-          requestAnimationFrame(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }));
+          requestAnimationFrame(() => {
+            const evidenceCards = document.querySelectorAll('[data-reviewer-evidence="true"]');
+            const latestEvidence = evidenceCards[evidenceCards.length - 1];
+            latestEvidence?.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
         }}
       />
       <div className="flex min-h-[100dvh] flex-col lg:h-screen lg:min-h-0 lg:overflow-hidden lg:flex-row">
