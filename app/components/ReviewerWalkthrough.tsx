@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  REVIEWER_DEMO_PROMPT,
   createReviewerDecision,
   reviewerTakeaways,
   type ReviewerDecisionRecord,
@@ -26,6 +27,7 @@ type ReviewerWalkthroughProps = {
   loading: boolean;
   demo?: ReviewerDemoPayload;
   error?: string;
+  startAtOutcome?: boolean;
   onClose: () => void;
   onRetry: () => void;
   onOpenEvidence: () => void;
@@ -41,7 +43,7 @@ function readDecisions(runId: string) {
   }
 }
 
-export default function ReviewerWalkthrough({ open, loading, demo, error, onClose, onRetry, onOpenEvidence }: ReviewerWalkthroughProps) {
+export default function ReviewerWalkthrough({ open, loading, demo, error, startAtOutcome = false, onClose, onRetry, onOpenEvidence }: ReviewerWalkthroughProps) {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [decisions, setDecisions] = useState<ReviewerDecisionRecord[]>([]);
@@ -52,8 +54,8 @@ export default function ReviewerWalkthrough({ open, loading, demo, error, onClos
 
   useEffect(() => {
     if (!open) return;
-    setElapsedSeconds(0);
-    setPlaying(true);
+    setElapsedSeconds(startAtOutcome ? reviewerElapsedForStage(reviewerStages.length - 1) : 0);
+    setPlaying(!startAtOutcome);
     setDecisions(demo ? readDecisions(demo.runId) : []);
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -61,7 +63,7 @@ export default function ReviewerWalkthrough({ open, loading, demo, error, onClos
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [demo, open]);
+  }, [demo, open, startAtOutcome]);
 
   useEffect(() => {
     if (!open || loading || !demo || error || !playing || complete) return;
@@ -127,7 +129,7 @@ export default function ReviewerWalkthrough({ open, loading, demo, error, onClos
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
                 <span>Recruiter review</span><span aria-hidden="true">/</span><span>Chapter {stageIndex + 1} of {reviewerStages.length}</span>
-                {demo ? <span className="text-emerald-200">Structured run</span> : null}
+                {demo ? <span className="text-emerald-200">Deterministic local demo</span> : null}
               </div>
               <h2 id="reviewer-walkthrough-title" className="mt-1 truncate text-base font-semibold text-white sm:text-lg">
                 ConsultIQ capability review
@@ -135,9 +137,14 @@ export default function ReviewerWalkthrough({ open, loading, demo, error, onClos
             </div>
             <div className="flex shrink-0 items-center gap-2">
               {demo ? (
-                <button type="button" onClick={onOpenEvidence} className="hidden min-h-9 items-center rounded border border-white/10 px-3 text-xs text-slate-300 hover:bg-white/10 sm:inline-flex">
-                  Full evidence
-                </button>
+                <>
+                  <button type="button" onClick={() => moveToStage(reviewerStages.length - 1)} className="hidden min-h-9 items-center rounded border border-white/10 px-3 text-xs text-slate-300 hover:bg-white/10 sm:inline-flex">
+                    Skip to outcome
+                  </button>
+                  <button type="button" onClick={onOpenEvidence} className="hidden min-h-9 items-center rounded border border-white/10 px-3 text-xs text-slate-300 hover:bg-white/10 sm:inline-flex">
+                    View workflow evidence
+                  </button>
+                </>
               ) : null}
               <button ref={closeButtonRef} type="button" onClick={onClose} className="flex h-9 w-9 items-center justify-center rounded border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white" aria-label="Close reviewer walkthrough">
                 <X size={17} />
@@ -193,6 +200,22 @@ export default function ReviewerWalkthrough({ open, loading, demo, error, onClos
                     <p className="text-xs font-medium uppercase tracking-[0.16em] text-sky-200">{stage.shortLabel} - {REVIEWER_STAGE_SECONDS} seconds</p>
                     <h3 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">{stage.title}</h3>
                     <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">{stage.description}</p>
+                    {stageIndex === 0 ? (
+                      <div className="mt-4 grid gap-3 rounded-md border border-white/10 bg-white/[0.03] p-3 text-xs leading-5 text-slate-400 sm:grid-cols-3">
+                        <div>
+                          <p className="font-medium uppercase tracking-[0.14em] text-sky-200">Starting prompt</p>
+                          <p className="mt-1 text-slate-200">{REVIEWER_DEMO_PROMPT}</p>
+                        </div>
+                        <div>
+                          <p className="font-medium uppercase tracking-[0.14em] text-emerald-200">What runs</p>
+                          <p className="mt-1">Three bounded tools read fake evidence, draft the update, and enforce review.</p>
+                        </div>
+                        <div>
+                          <p className="font-medium uppercase tracking-[0.14em] text-amber-200">Real vs simulated</p>
+                          <p className="mt-1">Workflow logic, tracing, and controls are built; enterprise connectors and auth are simulated.</p>
+                        </div>
+                      </div>
+                    ) : null}
                     <div className="mt-3 flex gap-2 rounded-md border border-sky-300/15 bg-sky-300/[0.04] px-3 py-2">
                       <Lightbulb size={15} className="mt-0.5 shrink-0 text-sky-200" aria-hidden="true" />
                       <p className="text-xs leading-5 text-sky-50/85"><span className="font-medium text-sky-100">Why it matters:</span> {reviewerTakeaways[stageIndex]}</p>
@@ -217,7 +240,10 @@ export default function ReviewerWalkthrough({ open, loading, demo, error, onClos
                   </button>
                   <button type="button" onClick={() => moveToStage(stageIndex + 1)} disabled={stageIndex === reviewerStages.length - 1} className="flex h-10 w-10 items-center justify-center rounded border border-white/10 text-slate-300 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-30" aria-label="Next chapter"><ArrowRight size={16} /></button>
                 </div>
-                <button type="button" onClick={onOpenEvidence} className="inline-flex min-h-10 items-center rounded border border-white/10 px-3 text-xs text-slate-300 hover:bg-white/10 sm:hidden">Evidence</button>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => moveToStage(reviewerStages.length - 1)} className="inline-flex min-h-10 items-center rounded border border-white/10 px-3 text-xs text-slate-300 hover:bg-white/10 sm:hidden">Outcome</button>
+                  <button type="button" onClick={onOpenEvidence} className="inline-flex min-h-10 items-center rounded border border-white/10 px-3 text-xs text-slate-300 hover:bg-white/10 sm:hidden">Evidence</button>
+                </div>
                 <div className="hidden w-24 text-right text-xs text-slate-500 sm:block">{playing && !complete ? "Auto-playing" : complete ? "Complete" : "Paused"}</div>
               </div>
             </footer>

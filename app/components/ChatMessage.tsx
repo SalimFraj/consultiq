@@ -2,9 +2,9 @@ import CapabilityCandidatePacket from "./CapabilityCandidatePacket";
 import DocumentPreview from "./DocumentPreview";
 import ToolCallIndicator from "./ToolCallIndicator";
 import WorkflowRunCard, { getWeeklyWorkflowEvent } from "./WorkflowRunCard";
-import type { ReviewerDemoPayload } from "@/lib/reviewerDemo";
+import { REVIEWER_DEMO_PROMPT, type ReviewerDemoPayload } from "@/lib/reviewerDemo";
 import type { AssistantMetadata, ToolEvent } from "@/lib/types";
-import { AlertTriangle, Bot, CheckCircle2, RotateCcw, UserRound } from "lucide-react";
+import { AlertTriangle, Bot, CheckCircle2, GitBranch, RotateCcw, TerminalSquare, UserRound } from "lucide-react";
 
 export type UIMessage = {
   id: string;
@@ -54,7 +54,10 @@ export default function ChatMessage({ message, onReplayReviewer }: ChatMessagePr
   const workflowEvent = isAssistant ? getWeeklyWorkflowEvent(message.toolEvents ?? []) : undefined;
 
   return (
-    <article className={`flex min-w-0 ${isAssistant ? "justify-start" : "justify-end"} ${isAssistant ? "animate-slide-in-left" : "animate-slide-in-right"}`}>
+    <article
+      data-reviewer-evidence={message.guidedReview ? "true" : undefined}
+      className={`flex min-w-0 ${isAssistant ? "justify-start" : "justify-end"} ${isAssistant ? "animate-slide-in-left" : "animate-slide-in-right"}`}
+    >
       <div className={`min-w-0 rounded-md border px-3 py-4 sm:px-4 ${isAssistant ? "w-full max-w-3xl border-white/10 bg-ink-850" : "max-w-[92%] border-slate-500/30 bg-slate-800 sm:max-w-3xl"}`}>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-slate-400">
@@ -72,6 +75,33 @@ export default function ChatMessage({ message, onReplayReviewer }: ChatMessagePr
             </button>
           ) : null}
         </div>
+
+        {message.guidedReview ? (
+          <section className="mb-3 rounded-md border border-sky-300/20 bg-sky-300/[0.05] p-3">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-sky-100">
+                  <TerminalSquare size={14} aria-hidden="true" />
+                  Reviewer Evidence Packet
+                </p>
+                <h3 className="mt-1 text-base font-semibold text-white">The demo starts from a bounded workflow prompt.</h3>
+              </div>
+              <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-2.5 py-1 text-xs text-emerald-100">Local deterministic demo</span>
+            </div>
+            <p className="mt-3 rounded border border-white/10 bg-ink-950/55 px-3 py-2 text-sm leading-6 text-slate-200">
+              {REVIEWER_DEMO_PROMPT}
+            </p>
+            <div className="mt-3 grid gap-2 text-xs leading-5 text-slate-400 sm:grid-cols-3">
+              <p><span className="font-medium text-slate-200">Runs:</span> source retrieval, weekly-update workflow, compliance check.</p>
+              <p><span className="font-medium text-slate-200">Built:</span> tool orchestration, evidence tracing, review gate, local eval signals.</p>
+              <p><span className="font-medium text-slate-200">Simulated:</span> enterprise connectors, auth, durable approval storage.</p>
+            </div>
+            <p className="mt-3 inline-flex items-start gap-2 text-xs leading-5 text-sky-50/85">
+              <GitBranch size={14} className="mt-0.5 shrink-0 text-sky-200" aria-hidden="true" />
+              Hiring signal: full-stack workflow design, deterministic controls, auditability, frontend UX, and production-gap awareness.
+            </p>
+          </section>
+        ) : null}
 
         {message.flags?.humanReviewRequired || message.flags?.complianceWarning || message.flags?.uncertainty ? (
           <div className="mb-3 rounded-md border border-amber-300/25 bg-amber-300/10 px-3 py-2 text-sm text-amber-50">
