@@ -11,6 +11,7 @@ import GovernanceModal from "./components/GovernanceModal";
 import RecruiterReviewInvite from "./components/RecruiterReviewInvite";
 import ReviewerWalkthrough from "./components/ReviewerWalkthrough";
 import Sidebar from "./components/Sidebar";
+import SourceDataModal from "./components/SourceDataModal";
 import ToolCallIndicator from "./components/ToolCallIndicator";
 import { MAX_TOOL_CALLS } from "./lib/constants";
 import type { ReviewerDemoPayload, ReviewerDemoResponse } from "./lib/reviewerDemo";
@@ -67,6 +68,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [governanceOpen, setGovernanceOpen] = useState(false);
   const [caseStudyOpen, setCaseStudyOpen] = useState(false);
+  const [sourceDataOpen, setSourceDataOpen] = useState(false);
   const [recruiterInviteOpen, setRecruiterInviteOpen] = useState(false);
   const [reviewerWalkthrough, setReviewerWalkthrough] = useState<{
     open: boolean;
@@ -307,6 +309,7 @@ export default function Home() {
     <main className="min-h-[100dvh] bg-ink-950 text-white">
       <GovernanceModal open={governanceOpen} onClose={() => setGovernanceOpen(false)} />
       <CaseStudyModal open={caseStudyOpen} onClose={() => setCaseStudyOpen(false)} />
+      <SourceDataModal open={sourceDataOpen} onClose={() => setSourceDataOpen(false)} />
       <RecruiterReviewInvite
         open={recruiterInviteOpen}
         onStart={() => void runReviewerDemo()}
@@ -364,6 +367,7 @@ export default function Home() {
             messageCount={messageCount}
             toolCallCount={toolCallCount}
             toolCallLimit={MAX_TOOL_CALLS}
+            onOpenSourceData={() => setSourceDataOpen(true)}
           />
 
           <div ref={scrollAreaRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-4 lg:px-6 lg:py-5">

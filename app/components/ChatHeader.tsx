@@ -6,9 +6,10 @@ type ChatHeaderProps = {
   messageCount: number;
   toolCallCount: number;
   toolCallLimit: number;
+  onOpenSourceData: () => void;
 };
 
-export default function ChatHeader({ mode, messageCount, toolCallCount, toolCallLimit }: ChatHeaderProps) {
+export default function ChatHeader({ mode, messageCount, toolCallCount, toolCallLimit, onOpenSourceData }: ChatHeaderProps) {
   return (
     <header className="border-b border-white/10 bg-ink-900/90 px-3 py-3 sm:px-4 lg:px-6 lg:py-4">
       <div className="mx-auto flex max-w-5xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -31,7 +32,15 @@ export default function ChatHeader({ mode, messageCount, toolCallCount, toolCall
             {mode === "workflow" ? "Execute the governed reporting workflow" : "Inspect policy, project state, compliance, or drafts"}
           </h2>
         </div>
-        <div className="grid grid-cols-3 gap-2 text-center md:min-w-64">
+        <div className="grid grid-cols-2 gap-2 text-center sm:grid-cols-4 md:min-w-[24rem]">
+          <button
+            type="button"
+            onClick={onOpenSourceData}
+            className="inline-flex min-h-[54px] items-center justify-center gap-1.5 rounded-md border border-emerald-300/25 bg-emerald-300/10 px-2 py-2 text-xs font-medium text-emerald-100 transition hover:bg-emerald-300/15 sm:px-3"
+          >
+            <Database size={14} aria-hidden="true" />
+            <span>View Source Data</span>
+          </button>
           <div className="rounded-md border border-white/10 px-2 py-2 sm:px-3">
             <p className="text-sm font-semibold text-white">{messageCount}</p>
             <p className="text-[11px] text-slate-500">Messages</p>
