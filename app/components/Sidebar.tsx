@@ -188,30 +188,53 @@ function CompactCapabilitySummary() {
   );
 }
 
-function PromptList({ prompts, onSendPrompt, onAfterAction }: Pick<SidebarProps, "prompts" | "onSendPrompt"> & { onAfterAction?: ActionCallback }) {
+const VISIBLE_PROMPT_COUNT = 3;
+
+function PromptButton({ prompt, onSendPrompt, onAfterAction }: { prompt: string; onSendPrompt: (prompt: string) => void; onAfterAction?: ActionCallback }) {
   return (
-    <section>
-      <p className="mb-2 text-xs uppercase tracking-[0.18em] text-slate-500">Operator Scenarios</p>
-      <div className="grid max-h-52 gap-2 overflow-y-auto pr-1 sm:grid-cols-2 lg:max-h-none lg:grid-cols-1 lg:overflow-visible lg:pr-0">
-        {prompts.map((prompt) => (
-          <button
-            type="button"
-            key={prompt}
-            onClick={() => {
-              onSendPrompt(prompt);
-              onAfterAction?.();
-            }}
-            className="group flex min-h-12 w-full items-start gap-2 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-left text-sm leading-5 text-slate-300 hover:bg-white/10"
-          >
-            <Workflow size={14} className="mt-1 shrink-0 text-slate-500 group-hover:text-slate-300" aria-hidden="true" />
-            <span>{prompt}</span>
-          </button>
-        ))}
-      </div>
-    </section>
+    <button
+      type="button"
+      onClick={() => {
+        onSendPrompt(prompt);
+        onAfterAction?.();
+      }}
+      className="group flex min-h-12 w-full items-start gap-2 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-left text-sm leading-5 text-slate-300 hover:bg-white/10"
+    >
+      <Workflow size={14} className="mt-1 shrink-0 text-slate-500 group-hover:text-slate-300" aria-hidden="true" />
+      <span>{prompt}</span>
+    </button>
   );
 }
 
+function PromptList({ prompts, onSendPrompt, onAfterAction }: Pick<SidebarProps, "prompts" | "onSendPrompt"> & { onAfterAction?: ActionCallback }) {
+  const visiblePrompts = prompts.slice(0, VISIBLE_PROMPT_COUNT);
+  const hiddenPrompts = prompts.slice(VISIBLE_PROMPT_COUNT);
+
+  return (
+    <section>
+      <p className="mb-2 text-xs uppercase tracking-[0.18em] text-slate-500">Operator Scenarios</p>
+      <div className="grid gap-2">
+        {visiblePrompts.map((prompt) => (
+          <PromptButton key={prompt} prompt={prompt} onSendPrompt={onSendPrompt} onAfterAction={onAfterAction} />
+        ))}
+      </div>
+      {hiddenPrompts.length > 0 ? (
+        <details className="group mt-2">
+          <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-3 rounded-md border border-white/10 px-3 py-2 text-sm text-slate-300 hover:bg-white/10">
+            <span>More scenarios</span>
+            <span className="text-xs text-slate-500 group-open:hidden">Show {hiddenPrompts.length}</span>
+            <span className="hidden text-xs text-slate-400 group-open:inline">Hide</span>
+          </summary>
+          <div className="mt-2 grid gap-2">
+            {hiddenPrompts.map((prompt) => (
+              <PromptButton key={prompt} prompt={prompt} onSendPrompt={onSendPrompt} onAfterAction={onAfterAction} />
+            ))}
+          </div>
+        </details>
+      ) : null}
+    </section>
+  );
+}
 function ConversationHistory({
   conversations,
   activeId,
