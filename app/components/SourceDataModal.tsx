@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Database, X } from "lucide-react";
 import complianceRules from "@/data/compliance-rules.json";
 import evalCases from "@/data/eval-cases.json";
@@ -14,19 +14,51 @@ type SourceDataModalProps = {
   onClose: () => void;
 };
 
-const sourceDataBundle = {
-  weekly_update_sources: weeklyUpdateSources,
-  project_register: projects,
-  knowledge_base: knowledgeBase,
-  compliance_rules: complianceRules,
-  workflow_patterns: workflowPatterns,
-  eval_cases: evalCases
-};
+const sourceDataSections = [
+  {
+    id: "business",
+    label: "Business Data",
+    description: "Messy intake, project records, risk logs, decisions, and stakeholder updates used by the workflow.",
+    data: {
+      weekly_update_sources: weeklyUpdateSources,
+      project_register: projects
+    }
+  },
+  {
+    id: "policy",
+    label: "Policy Data",
+    description: "Knowledge-base documents and standards the assistant can retrieve before drafting or answering.",
+    data: {
+      knowledge_base: knowledgeBase
+    }
+  },
+  {
+    id: "rules",
+    label: "Rules",
+    description: "Compliance guardrails and workflow patterns that constrain how the AI should behave.",
+    data: {
+      compliance_rules: complianceRules,
+      workflow_patterns: workflowPatterns
+    }
+  },
+  {
+    id: "evals",
+    label: "Evals",
+    description: "Test prompts, expected tool usage, and expected behavior used to validate the prototype.",
+    data: {
+      eval_cases: evalCases
+    }
+  }
+] as const;
+
+type SourceDataSectionId = (typeof sourceDataSections)[number]["id"];
 
 export default function SourceDataModal({ open, onClose }: SourceDataModalProps) {
+  const [activeSectionId, setActiveSectionId] = useState<SourceDataSectionId>("business");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const rawSourceData = useMemo(() => JSON.stringify(sourceDataBundle, null, 2), []);
+  const activeSection = sourceDataSections.find((section) => section.id === activeSectionId) ?? sourceDataSections[0];
+  const rawSourceData = useMemo(() => JSON.stringify(activeSection.data, null, 2), [activeSection]);
 
   useEffect(() => {
     if (!open) return;
@@ -105,7 +137,32 @@ export default function SourceDataModal({ open, onClose }: SourceDataModalProps)
         </div>
 
         <div className="border-b border-white/10 px-4 py-3 text-sm text-slate-300 sm:px-5">
-          All fake sample data available to the local tool layer, shown as a raw dump.
+          This includes fake business inputs, policy docs, compliance rules, and eval cases used by the local AI workflow.
+        </div>
+
+        <div className="border-b border-white/10 px-4 py-3 sm:px-5">
+          <div className="flex flex-wrap gap-2" role="tablist" aria-label="Source data sections">
+            {sourceDataSections.map((section) => {
+              const selected = section.id === activeSection.id;
+              return (
+                <button
+                  key={section.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected}
+                  onClick={() => setActiveSectionId(section.id)}
+                  className={`rounded-md border px-3 py-2 text-xs font-medium transition ${
+                    selected
+                      ? "border-emerald-300/35 bg-emerald-300/15 text-emerald-100"
+                      : "border-white/10 text-slate-300 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  {section.label}
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-3 text-sm leading-6 text-slate-400">{activeSection.description}</p>
         </div>
 
         <div className="min-h-0 flex-1 overflow-auto bg-black/30 p-3 sm:p-4">
