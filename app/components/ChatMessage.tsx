@@ -1,5 +1,6 @@
 import CapabilityCandidatePacket from "./CapabilityCandidatePacket";
 import DocumentPreview from "./DocumentPreview";
+import RunTrace from "./RunTrace";
 import ToolCallIndicator from "./ToolCallIndicator";
 import WorkflowRunCard, { getWeeklyWorkflowEvent } from "./WorkflowRunCard";
 import { REVIEWER_DEMO_PROMPT, type ReviewerDemoPayload } from "@/lib/reviewerDemo";
@@ -136,6 +137,8 @@ export default function ChatMessage({ message, onReplayReviewer }: ChatMessagePr
         ) : (
           <p className="whitespace-pre-wrap text-sm leading-6 text-slate-200">{message.content}</p>
         )}
+
+        {isAssistant ? <RunTrace toolEvents={message.toolEvents ?? []} metadata={message.metadata} flags={message.flags} /> : null}
 
         {isAssistant ? <CapabilityCandidatePacket toolEvents={message.toolEvents ?? []} /> : null}
 
