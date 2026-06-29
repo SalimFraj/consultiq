@@ -79,7 +79,7 @@ export default function EmptyState({ onRunWorkflow, onRunGuidedDemo }: EmptyStat
               return (
                 <li key={step.label} className="relative flex gap-3">
                   {index < workbenchSteps.length - 1 ? (
-                    <span className="absolute left-4 top-9 h-[calc(100%-1rem)] w-px bg-gradient-to-b from-emerald-300/35 to-white/10" aria-hidden="true" />
+                    <span className="absolute bottom-0 left-4 top-9 w-px bg-gradient-to-b from-emerald-300/35 to-white/10" aria-hidden="true" />
                   ) : null}
                   <span
                     className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded border ${

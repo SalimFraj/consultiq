@@ -32,12 +32,12 @@ export default function RecruiterReviewInvite({ open, onStart, onSkipToOutcome, 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-40 flex items-center justify-center overflow-y-auto bg-black/70 p-4 backdrop-blur-sm">
       <section
         role="dialog"
         aria-modal="true"
         aria-labelledby="recruiter-review-title"
-        className="w-full max-w-2xl overflow-hidden rounded-md border border-sky-300/20 bg-ink-900 shadow-2xl"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto rounded-md border border-sky-300/20 bg-ink-900 shadow-2xl"
       >
         <div className="flex items-start justify-between gap-4 border-b border-white/10 px-5 py-4">
           <div>
