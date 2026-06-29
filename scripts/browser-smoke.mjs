@@ -1,19 +1,36 @@
 import { createRequire } from "node:module";
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 
 const require = createRequire(import.meta.url);
 
-const DEFAULT_CODEX_PLAYWRIGHT =
-  "C:/Users/salim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm/playwright@1.60.0/node_modules/playwright";
+const CODEX_PNPM_ROOT =
+  "C:/Users/salim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/.pnpm";
 const DEFAULT_CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
+
+function findCodexPlaywright() {
+  if (!existsSync(CODEX_PNPM_ROOT)) return null;
+
+  const candidates = readdirSync(CODEX_PNPM_ROOT)
+    .filter((entry) => /^playwright@/.test(entry))
+    .sort((left, right) => right.localeCompare(left, undefined, { numeric: true }));
+
+  for (const candidate of candidates) {
+    const packagePath = `${CODEX_PNPM_ROOT}/${candidate}/node_modules/playwright`;
+    if (existsSync(packagePath)) return packagePath;
+  }
+
+  return null;
+}
 
 function loadPlaywright() {
   try {
     return require("playwright");
   } catch {
-    const packagePath = process.env.PLAYWRIGHT_PACKAGE_PATH || DEFAULT_CODEX_PLAYWRIGHT;
-    if (!existsSync(packagePath)) {
-      throw new Error(`Playwright is not installed locally and was not found at ${packagePath}`);
+    const packagePath = process.env.PLAYWRIGHT_PACKAGE_PATH || findCodexPlaywright();
+    if (!packagePath || !existsSync(packagePath)) {
+      throw new Error(
+        "Playwright is not installed locally and no Codex runtime Playwright package was found."
+      );
     }
     return require(packagePath);
   }

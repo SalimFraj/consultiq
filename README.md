@@ -6,14 +6,15 @@ Live demo: [https://consultiq.vercel.app/](https://consultiq.vercel.app/)
 
 ## Reviewer Path
 
-1. Open the live demo.
-2. Click **Run weekly update workflow**.
-3. Inspect the workflow run card: source notes, risk log, project facts, generated update, and review gate.
-4. Expand **Tool Activity** to see deterministic tool calls.
-5. Review the **Capability Candidate Packet** and audit trace.
-6. Open **Case Study** for the build story.
-7. Run the eval suite from the right panel.
-8. Try **Run 90-second reviewer path** or the Gemini Enterprise adoption-readiness prompt.
+Open the live demo normally to see the recruiter-review invitation, or use the direct link: [https://consultiq.vercel.app/?review=1](https://consultiq.vercel.app/?review=1).
+
+1. Select **Start guided review**. The dedicated `/api/reviewer-demo` endpoint executes a deterministic Northstar workflow and returns a typed review packet.
+2. Follow the six 15-second chapters, or use pause, previous, next, chapter navigation, and keyboard controls.
+3. Inspect generated claims and open their exact source notes, risks, and decisions.
+4. Review the code-enforced compliance gate and the named human release owner.
+5. Compare what is demonstrated, what is simulated, and what is still required for production.
+6. Record **Approve internal MVP**, **Request changes**, or **Do not advance**. The clearly labelled simulated audit entry persists in the current browser.
+7. Select **Full evidence** to return to the complete workflow output and tool trace.
 
 ## What To Notice
 
@@ -70,7 +71,7 @@ Browser
   v
 Next.js App Router UI
   |
-  | POST /api/chat
+  | POST /api/chat or /api/reviewer-demo
   v
 Agent loop
   |

@@ -8,9 +8,13 @@ import ChatMessage, { type UIMessage } from "./components/ChatMessage";
 import ComposerForm from "./components/ComposerForm";
 import EmptyState from "./components/EmptyState";
 import GovernanceModal from "./components/GovernanceModal";
+import RecruiterReviewInvite from "./components/RecruiterReviewInvite";
+import ReviewerWalkthrough from "./components/ReviewerWalkthrough";
 import Sidebar from "./components/Sidebar";
+import SourceDataModal from "./components/SourceDataModal";
 import ToolCallIndicator from "./components/ToolCallIndicator";
 import { MAX_TOOL_CALLS } from "./lib/constants";
+import type { ReviewerDemoPayload, ReviewerDemoResponse } from "./lib/reviewerDemo";
 import type { ChatApiResponse, ChatMode } from "./lib/types";
 
 type Conversation = {
@@ -64,11 +68,22 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [governanceOpen, setGovernanceOpen] = useState(false);
   const [caseStudyOpen, setCaseStudyOpen] = useState(false);
+  const [sourceDataOpen, setSourceDataOpen] = useState(false);
+  const [recruiterInviteOpen, setRecruiterInviteOpen] = useState(false);
+  const [reviewerWalkthrough, setReviewerWalkthrough] = useState<{
+    open: boolean;
+    loading: boolean;
+    demo?: ReviewerDemoPayload;
+    error?: string;
+    startAtOutcome?: boolean;
+  }>({ open: false, loading: false });
   const [composerFocusToken, setComposerFocusToken] = useState(0);
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const hasHydratedRef = useRef(false);
   const shouldAutoScrollRef = useRef(false);
+  const recruiterEntryHandledRef = useRef(false);
+  const runReviewerDemoRef = useRef<(options?: { startAtOutcome?: boolean }) => Promise<void>>(async () => {});
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -189,12 +204,7 @@ export default function Home() {
     const prompt = (overridePrompt ?? input).trim();
     if (!prompt || loading || !activeConversation) return;
 
-    const userMessage: UIMessage = {
-      id: newId("msg"),
-      role: "user",
-      content: prompt
-    };
-
+    const userMessage: UIMessage = { id: newId("msg"), role: "user", content: prompt };
     const nextMessages = [...activeConversation.messages, userMessage];
     updateActiveConversation((conversation) => ({
       ...conversation,
@@ -210,53 +220,21 @@ export default function Home() {
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          mode,
-          messages: nextMessages.map((message) => ({
-            role: message.role,
-            content: message.content
-          }))
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode, messages: nextMessages.map((message) => ({ role: message.role, content: message.content })) })
       });
-
       if (!response.ok) {
         const error = (await response.json()) as { error?: string };
         throw new Error(error.error ?? "The chat request failed.");
       }
-
       const data = (await response.json()) as ChatApiResponse;
-      const assistantMessage: UIMessage = {
-        id: newId("msg"),
-        role: "assistant",
-        content: data.message,
-        toolEvents: data.toolEvents,
-        metadata: data.metadata,
-        flags: data.flags
-      };
-
-      updateActiveConversation((conversation) => ({
-        ...conversation,
-        messages: [...conversation.messages, assistantMessage],
-        updatedAt: new Date().toISOString()
-      }));
+      const assistantMessage: UIMessage = { id: newId("msg"), role: "assistant", content: data.message, toolEvents: data.toolEvents, metadata: data.metadata, flags: data.flags };
+      updateActiveConversation((conversation) => ({ ...conversation, messages: [...conversation.messages, assistantMessage], updatedAt: new Date().toISOString() }));
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
-      const assistantMessage: UIMessage = {
-        id: newId("msg"),
-        role: "assistant",
-        content: `I could not complete the request.\n\n${message}`,
-        flags: {
-          uncertainty: true,
-          complianceWarning: false,
-          humanReviewRequired: false
-        }
-      };
       updateActiveConversation((conversation) => ({
         ...conversation,
-        messages: [...conversation.messages, assistantMessage],
+        messages: [...conversation.messages, { id: newId("msg"), role: "assistant", content: "I could not complete the request.\n\n" + message, flags: { uncertainty: true, complianceWarning: false, humanReviewRequired: false } }],
         updatedAt: new Date().toISOString()
       }));
     } finally {
@@ -264,10 +242,104 @@ export default function Home() {
     }
   };
 
+  const runReviewerDemo = async (options: { startAtOutcome?: boolean } = {}) => {
+    if (loading || !activeConversation) return;
+    const startAtOutcome = options.startAtOutcome ?? false;
+    const userMessage: UIMessage = { id: newId("msg"), role: "user", content: "Run the structured 90-second recruiter review for ConsultIQ." };
+
+    window.sessionStorage.setItem("consultiq.recruiter-invite.v1", "seen");
+    setRecruiterInviteOpen(false);
+    setReviewerWalkthrough({ open: true, loading: true, startAtOutcome });
+    updateActiveConversation((conversation) => ({
+      ...conversation,
+      title: conversation.messages.length === 0 ? "90-second recruiter review" : conversation.title,
+      mode: "workflow",
+      messages: [...conversation.messages, userMessage],
+      updatedAt: new Date().toISOString()
+    }));
+    setMode("workflow");
+    shouldAutoScrollRef.current = true;
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/reviewer-demo", { method: "POST" });
+      if (!response.ok) {
+        const error = (await response.json()) as { error?: string };
+        throw new Error(error.error ?? "The reviewer demo request failed.");
+      }
+      const data = (await response.json()) as ReviewerDemoResponse;
+      const assistantMessage: UIMessage = {
+        id: newId("msg"),
+        role: "assistant",
+        content: data.message,
+        toolEvents: data.toolEvents,
+        metadata: data.metadata,
+        flags: data.flags,
+        guidedReview: true,
+        reviewerDemo: data.review
+      };
+      updateActiveConversation((conversation) => ({ ...conversation, messages: [...conversation.messages, assistantMessage], updatedAt: new Date().toISOString() }));
+      setReviewerWalkthrough({ open: true, loading: false, demo: data.review, startAtOutcome });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      setReviewerWalkthrough({ open: true, loading: false, error: message, startAtOutcome: false });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    runReviewerDemoRef.current = runReviewerDemo;
+  });
+
+  useEffect(() => {
+    if (!activeConversation || recruiterEntryHandledRef.current) return;
+    recruiterEntryHandledRef.current = true;
+    const directReview = window.location.pathname === "/review" || new URLSearchParams(window.location.search).get("review") === "1";
+    if (directReview) {
+      void runReviewerDemoRef.current();
+      return;
+    }
+    if (window.sessionStorage.getItem("consultiq.recruiter-invite.v1")) return;
+    const timer = window.setTimeout(() => setRecruiterInviteOpen(true), 450);
+    return () => window.clearTimeout(timer);
+  }, [activeConversation]);
+
   return (
     <main className="min-h-[100dvh] bg-ink-950 text-white">
       <GovernanceModal open={governanceOpen} onClose={() => setGovernanceOpen(false)} />
       <CaseStudyModal open={caseStudyOpen} onClose={() => setCaseStudyOpen(false)} />
+      <SourceDataModal open={sourceDataOpen} onClose={() => setSourceDataOpen(false)} />
+      <RecruiterReviewInvite
+        open={recruiterInviteOpen}
+        onStart={() => void runReviewerDemo()}
+        onSkipToOutcome={() => void runReviewerDemo({ startAtOutcome: true })}
+        onExplore={() => {
+          window.sessionStorage.setItem("consultiq.recruiter-invite.v1", "seen");
+          setRecruiterInviteOpen(false);
+        }}
+        onClose={() => {
+          window.sessionStorage.setItem("consultiq.recruiter-invite.v1", "seen");
+          setRecruiterInviteOpen(false);
+        }}
+      />
+      <ReviewerWalkthrough
+        open={reviewerWalkthrough.open}
+        loading={reviewerWalkthrough.loading}
+        demo={reviewerWalkthrough.demo}
+        error={reviewerWalkthrough.error}
+        startAtOutcome={reviewerWalkthrough.startAtOutcome}
+        onClose={() => setReviewerWalkthrough((current) => ({ ...current, open: false }))}
+        onRetry={() => void runReviewerDemo()}
+        onOpenEvidence={() => {
+          setReviewerWalkthrough((current) => ({ ...current, open: false }));
+          requestAnimationFrame(() => {
+            const evidenceCards = document.querySelectorAll('[data-reviewer-evidence="true"]');
+            const latestEvidence = evidenceCards[evidenceCards.length - 1];
+            latestEvidence?.scrollIntoView({ behavior: "smooth", block: "start" });
+          });
+        }}
+      />
       <div className="flex min-h-[100dvh] flex-col lg:h-screen lg:min-h-0 lg:overflow-hidden lg:flex-row">
         <Sidebar
           mode={mode}
@@ -282,7 +354,9 @@ export default function Home() {
           }}
           onDeleteConversation={deleteConversation}
           onClearConversations={clearConversations}
-          onSendPrompt={(prompt) => void sendMessage(prompt)}
+          onSendPrompt={(prompt) =>
+            prompt === workflowPrompts[1] ? void runReviewerDemo() : void sendMessage(prompt)
+          }
           onOpenGovernance={() => setGovernanceOpen(true)}
           onOpenCaseStudy={() => setCaseStudyOpen(true)}
         />
@@ -293,6 +367,7 @@ export default function Home() {
             messageCount={messageCount}
             toolCallCount={toolCallCount}
             toolCallLimit={MAX_TOOL_CALLS}
+            onOpenSourceData={() => setSourceDataOpen(true)}
           />
 
           <div ref={scrollAreaRef} className="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-4 lg:px-6 lg:py-5">
@@ -300,12 +375,16 @@ export default function Home() {
               {activeConversation?.messages.length === 0 ? (
                 <EmptyState
                   onRunWorkflow={() => void sendMessage(workflowPrompts[0])}
-                  onRunGuidedDemo={() => void sendMessage(workflowPrompts[1])}
+                  onRunGuidedDemo={() => void runReviewerDemo()}
                 />
               ) : null}
 
               {activeConversation?.messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
+                <ChatMessage
+                  key={message.id}
+                  message={message}
+                  onReplayReviewer={message.reviewerDemo ? () => setReviewerWalkthrough({ open: true, loading: false, demo: message.reviewerDemo }) : undefined}
+                />
               ))}
 
               {loading ? <ToolCallIndicator events={[]} loading mode={mode} /> : null}
