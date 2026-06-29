@@ -55,33 +55,65 @@ type CapabilityPanelContentProps = {
 };
 
 function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
-  const passCount = suite?.passCount ?? 0;
-  const totalCount = suite?.totalCount ?? 11;
-  const reviewCount = suite ? suite.totalCount - suite.passCount : 0;
-  const passRate = suite ? Math.round((suite.passCount / Math.max(1, suite.totalCount)) * 100) : 0;
-  const checkedCases = suite ? suite.totalCount : 0;
+  const configuredCount = suite?.totalCount ?? 11;
+
+  if (!suite) {
+    return (
+      <section className="signal-card rounded-md border border-white/10 bg-ink-950/50 p-4">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Readiness</p>
+            <h3 className="mt-1 text-sm font-semibold text-white">Governance checks configured</h3>
+          </div>
+          <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">Not run</span>
+        </div>
+
+        <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Configured suite</p>
+              <p className="mt-1 text-xs leading-5 text-slate-400">Tool routing, governance, and review-gate coverage.</p>
+            </div>
+            <p className="text-lg font-semibold text-white">{configuredCount}</p>
+          </div>
+          <div className="mt-3 grid grid-cols-3 gap-2 text-[11px] leading-4 text-slate-300">
+            <span className="rounded border border-emerald-300/15 bg-emerald-300/10 px-2 py-1">Routing</span>
+            <span className="rounded border border-sky-300/15 bg-sky-300/10 px-2 py-1">Governance</span>
+            <span className="rounded border border-amber-300/15 bg-amber-300/10 px-2 py-1">Review gate</span>
+          </div>
+        </div>
+
+        <p className="mt-3 text-xs leading-5 text-slate-500">Run the eval harness below to turn readiness into pass rate and review queue.</p>
+      </section>
+    );
+  }
+
+  const passCount = suite.passCount;
+  const totalCount = suite.totalCount;
+  const reviewCount = suite.totalCount - suite.passCount;
+  const passRate = Math.round((suite.passCount / Math.max(1, suite.totalCount)) * 100);
 
   const metrics = [
     {
       label: "Pass rate",
-      value: suite ? `${passRate}%` : "Ready",
-      detail: suite ? `${passCount}/${totalCount} cases passed` : "Run suite to score",
+      value: `${passRate}%`,
+      detail: `${passCount}/${totalCount} checks passed`,
       tone: "emerald",
       progress: passRate
     },
     {
-      label: "Review queue",
-      value: suite ? reviewCount : 0,
-      detail: suite ? "Cases needing attention" : "No run loaded",
+      label: "Needs review",
+      value: reviewCount,
+      detail: "Checks needing attention",
       tone: "amber",
-      progress: suite ? Math.round((reviewCount / Math.max(1, totalCount)) * 100) : 0
+      progress: Math.round((reviewCount / Math.max(1, totalCount)) * 100)
     },
     {
-      label: "Coverage",
-      value: suite ? checkedCases : totalCount,
-      detail: "Tool routing and governance checks",
+      label: "Checks run",
+      value: totalCount,
+      detail: "Tool routing and governance coverage",
       tone: "sky",
-      progress: suite ? 100 : 35
+      progress: 100
     }
   ];
 
@@ -89,12 +121,10 @@ function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
     <section className="signal-card rounded-md border border-white/10 bg-ink-950/50 p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Metrics</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Results</p>
           <h3 className="mt-1 text-sm font-semibold text-white">Regression signal</h3>
         </div>
-        <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">
-          {suite ? "Current run" : "Not run"}
-        </span>
+        <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">Current run</span>
       </div>
       <div className="grid gap-2">
         {metrics.map((metric) => (
@@ -125,13 +155,13 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
   return (
     <div className="space-y-4 p-4">
       <section className="signal-card signal-card-emerald rounded-md border border-white/10 bg-ink-950/50 p-4">
-        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Bridge Layer</p>
+        <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Evidence Rail</p>
         <h2 className="mt-1 inline-flex items-center gap-2 text-base font-semibold tracking-normal text-white">
           <PackageCheck size={18} className="shrink-0 text-emerald-200" aria-hidden="true" />
-          Business workflow to software mechanism
+          Implementation signals stay visible
         </h2>
         <p className="mt-2 text-sm leading-6 text-slate-400">
-          Operating problem, tool path, eval signal, and review gate.
+          Tool inventory, eval coverage, lifecycle stage, and production gaps stay one click away while the demo runs.
         </p>
       </section>
 
