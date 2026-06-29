@@ -54,27 +54,20 @@ type CapabilityPanelContentProps = {
   onRunEvals: () => void;
 };
 
-function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
+function EvalStatusContent({ suite }: { suite: EvalSuiteResponse | null }) {
   const configuredCount = suite?.totalCount ?? 11;
 
   if (!suite) {
     return (
-      <section className="signal-card rounded-md border border-white/10 bg-ink-950/50 p-4">
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Readiness</p>
-            <h3 className="mt-1 text-sm font-semibold text-white">Governance checks configured</h3>
-          </div>
-          <span className="shrink-0 rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">Not run</span>
-        </div>
-
+      <div className="mt-4 space-y-3">
         <div className="rounded-md border border-white/10 bg-white/[0.03] p-3">
           <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Configured suite</p>
+            <div className="min-w-0">
+              <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Readiness</p>
+              <p className="mt-1 text-sm font-semibold text-white">{configuredCount} checks configured</p>
               <p className="mt-1 text-xs leading-5 text-slate-400">Tool routing, governance, and review-gate coverage.</p>
             </div>
-            <p className="text-lg font-semibold text-white">{configuredCount}</p>
+            <span className="shrink-0 rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">Not run</span>
           </div>
           <div className="mt-3 flex flex-wrap gap-2 text-[11px] leading-4 text-slate-300">
             <span className="rounded border border-emerald-300/15 bg-emerald-300/10 px-2 py-1">Routing</span>
@@ -82,9 +75,8 @@ function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
             <span className="rounded border border-amber-300/15 bg-amber-300/10 px-2 py-1">Review gate</span>
           </div>
         </div>
-
-        <p className="mt-3 text-xs leading-5 text-slate-500">Run the eval harness below to turn readiness into pass rate and review queue.</p>
-      </section>
+        <p className="text-xs leading-5 text-slate-500">Run this harness to turn readiness into pass rate and review queue.</p>
+      </div>
     );
   }
 
@@ -118,23 +110,23 @@ function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
   ];
 
   return (
-    <section className="signal-card rounded-md border border-white/10 bg-ink-950/50 p-4">
+    <div className="mt-4">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Results</p>
           <h3 className="mt-1 text-sm font-semibold text-white">Regression signal</h3>
         </div>
-        <span className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">Current run</span>
+        <span className="shrink-0 rounded-full border border-white/10 px-2.5 py-1 text-xs text-slate-400">Current run</span>
       </div>
       <div className="grid gap-2">
         {metrics.map((metric) => (
           <div key={metric.label} className="rounded-md border border-white/10 bg-white/[0.03] p-3">
             <div className="flex items-center justify-between gap-3">
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-500">{metric.label}</p>
                 <p className="mt-1 text-xs leading-5 text-slate-400">{metric.detail}</p>
               </div>
-              <p className="text-lg font-semibold text-white">{metric.value}</p>
+              <p className="shrink-0 text-lg font-semibold text-white">{metric.value}</p>
             </div>
             <div className="mt-3 h-1.5 overflow-hidden rounded bg-white/10">
               <div
@@ -147,10 +139,73 @@ function EvalMetricsPanel({ suite }: { suite: EvalSuiteResponse | null }) {
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
 
+function EvalHarnessPanel({ suite, loading, onRunEvals }: CapabilityPanelContentProps) {
+  return (
+    <section className="signal-card signal-card-amber rounded-md border border-white/10 bg-ink-950/50 p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-500">Eval Harness</p>
+          <h3 className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-white">
+            <FlaskConical size={16} className="shrink-0 text-amber-200" aria-hidden="true" />
+            {suite ? `${suite.passCount}/${suite.totalCount} evals passed` : "Portfolio regression checks"}
+          </h3>
+        </div>
+        <button
+          type="button"
+          onClick={onRunEvals}
+          disabled={loading}
+          className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded border border-white/10 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10 disabled:opacity-50"
+        >
+          <Play size={12} aria-hidden="true" />
+          {loading ? "Running" : "Run"}
+        </button>
+      </div>
+
+      <EvalStatusContent suite={suite} />
+
+      {suite ? (
+        <details className="group mt-3 rounded-md border border-white/10 bg-white/[0.03]">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm text-slate-200">
+            <span>Eval case details</span>
+            <ChevronDown size={14} className="shrink-0 text-slate-500 transition group-open:rotate-180" aria-hidden="true" />
+          </summary>
+          <div className="space-y-2 border-t border-white/10 p-3">
+            {suite.results.map((result) => (
+              <details key={result.id} className="rounded border border-white/10 bg-ink-950/50">
+                <summary className="cursor-pointer list-none px-3 py-2 text-sm text-slate-200">
+                  <span className={`inline-flex items-center gap-1.5 ${result.passed ? "text-emerald-200" : "text-amber-200"}`}>
+                    {result.passed ? <CheckCircle2 size={14} aria-hidden="true" /> : <ClipboardCheck size={14} aria-hidden="true" />}
+                    {result.passed ? "Pass" : "Review"}
+                  </span>
+                  <span className="ml-2 break-all">{result.id}</span>
+                </summary>
+                <div className="space-y-2 border-t border-white/10 px-3 py-3 text-xs leading-5 text-slate-400">
+                  <p>{result.prompt}</p>
+                  <p>Expected: {result.expectedTools.join(", ")}</p>
+                  <p>Observed: {result.observedTools.join(", ") || "none"}</p>
+                  <p>{result.notes}</p>
+                  {result.checks && result.checks.length > 0 ? (
+                    <ul className="space-y-1">
+                      {result.checks.map((check) => (
+                        <li key={check.check} className={check.passed ? "text-emerald-200/80" : "text-amber-200/90"}>
+                          {check.passed ? "Pass" : "Review"}: {check.detail}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              </details>
+            ))}
+          </div>
+        </details>
+      ) : null}
+    </section>
+  );
+}
 function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelContentProps) {
   return (
     <div className="space-y-4 p-4">
@@ -246,66 +301,7 @@ function CapabilityPanelContent({ suite, loading, onRunEvals }: CapabilityPanelC
         </div>
       </section>
 
-      <EvalMetricsPanel suite={suite} />
-
-      <details className="signal-card signal-card-amber group rounded-md border border-white/10 bg-ink-950/50">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
-          <span>
-            <span className="block text-xs uppercase tracking-[0.18em] text-slate-500">Eval Harness</span>
-            <span className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-white">
-              <FlaskConical size={16} className="shrink-0 text-amber-200" aria-hidden="true" />
-              {suite ? `${suite.passCount}/${suite.totalCount} evals passed` : "Portfolio regression checks"}
-            </span>
-          </span>
-          <button
-            type="button"
-            onClick={(event) => {
-              event.preventDefault();
-              onRunEvals();
-            }}
-            disabled={loading}
-            className="inline-flex min-h-9 items-center gap-2 rounded border border-white/10 px-3 py-1.5 text-xs text-slate-200 hover:bg-white/10 disabled:opacity-50"
-          >
-            <Play size={12} aria-hidden="true" />
-            {loading ? "Running" : "Run"}
-          </button>
-        </summary>
-
-        {suite ? (
-          <div className="space-y-2 border-t border-white/10 p-4">
-            {suite.results.map((result) => (
-              <details key={result.id} className="rounded border border-white/10 bg-white/[0.03]">
-                <summary className="cursor-pointer list-none px-3 py-2 text-sm text-slate-200">
-                  <span className={`inline-flex items-center gap-1.5 ${result.passed ? "text-emerald-200" : "text-amber-200"}`}>
-                    {result.passed ? <CheckCircle2 size={14} aria-hidden="true" /> : <ClipboardCheck size={14} aria-hidden="true" />}
-                    {result.passed ? "Pass" : "Review"}
-                  </span>
-                  <span className="ml-2 break-all">{result.id}</span>
-                </summary>
-                <div className="space-y-2 border-t border-white/10 px-3 py-3 text-xs leading-5 text-slate-400">
-                  <p>{result.prompt}</p>
-                  <p>Expected: {result.expectedTools.join(", ")}</p>
-                  <p>Observed: {result.observedTools.join(", ") || "none"}</p>
-                  <p>{result.notes}</p>
-                  {result.checks && result.checks.length > 0 ? (
-                    <ul className="space-y-1">
-                      {result.checks.map((check) => (
-                        <li key={check.check} className={check.passed ? "text-emerald-200/80" : "text-amber-200/90"}>
-                          {check.passed ? "Pass" : "Review"}: {check.detail}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-              </details>
-            ))}
-          </div>
-        ) : (
-          <p className="border-t border-white/10 px-4 py-3 text-sm leading-6 text-slate-400">
-            Run the suite to show expected tool routing, compliance preservation, and workflow-builder coverage.
-          </p>
-        )}
-      </details>
+      <EvalHarnessPanel suite={suite} loading={loading} onRunEvals={onRunEvals} />
 
       <details className="signal-card group rounded-md border border-white/10 bg-ink-950/50">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
