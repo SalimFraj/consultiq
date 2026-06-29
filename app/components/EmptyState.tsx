@@ -51,23 +51,6 @@ export default function EmptyState({ onRunWorkflow, onRunGuidedDemo }: EmptyStat
             <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400">
               This path starts with a real consulting operating problem: meeting notes, project facts, risk logs, and client-facing review rules are spread across different sources.
             </p>
-            <div className="mt-4 grid gap-2 rounded-md border border-sky-300/20 bg-sky-300/[0.05] p-3 text-sm sm:grid-cols-3">
-              <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Before</p>
-                <p className="mt-1 text-slate-300">60-90 minutes assembling weekly updates by hand.</p>
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-500">After</p>
-                <p className="mt-1 text-slate-300">Review-ready draft with source trace and risk movement.</p>
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-500">Control</p>
-                <p className="mt-1 text-slate-300">Accountable owner and human review before handoff.</p>
-              </div>
-            </div>
-            <div className="mt-4 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-300">
-              <span className="text-slate-100">Flow:</span> source packet {"->"} bounded tools {"->"} review gate {"->"} draft packet.
-            </div>
             <div className="mt-5 flex flex-col gap-2 sm:flex-row">
               <button
                 type="button"
